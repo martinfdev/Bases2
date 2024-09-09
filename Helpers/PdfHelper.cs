@@ -43,8 +43,8 @@ namespace AppPdfGenAccountStatus.Helpers
 				throw new Exception("Error al obtener el estado cuenta "+data.codeClient, new Exception(statement.VtcInfoEstCtaTHResult.InfoTran.ReturnMessage));
 			}
 
-
-			string month = new DateTime(2024, 1, 1).ToString("MMMM"); //cabiar esto valores a como estaba solo para pruebas se utilizara no se utilizara el valor ingresado 
+			int day = data.Day == 0 ? 1 : data.Day;
+			string month = new DateTime(data.Year, data.Month, day).ToString("MMMM");
 			char reference = char.ToUpper(month[0]);
 			month = string.Concat(new ReadOnlySpan<char>(ref reference), month.Substring(1));
 			PdfDocument document = new PdfDocument();
