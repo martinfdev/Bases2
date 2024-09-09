@@ -87,7 +87,7 @@ namespace AppPdfGenAccountStatus.Services
 			}
 		}
 
-		public async Task<VtcObtenerMovimientosCuentaFechaResponse> GetMovAccountSpecificDayAsync(int anyo, int mes, int dia, string cuenta)
+		public async Task<VtcObtenerMovimientosCuentaFechaResponse> GetMovAccountSpecificDayAsync(int mes, int anyo, int dia, string cuenta)
 		{
 			SVCredentials credentials = new SVCredentials
 			{

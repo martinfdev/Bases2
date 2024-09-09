@@ -19,20 +19,32 @@ namespace AppPdfGenAccountStatus.Helpers
 		{
 			VtcInfoEstCtaTHResponse statement = data.estadoCuenta;
 			VtcObtenerMovimientosCuentaMesResponse vtcMovimientosMes = data.movimientosMes;
-			VtcObtenerMovimientosCuentaFechaResponse vtcObtenerMovimientosCuentaFecha = data.movimientosFecha;
+			VtcObtenerMovimientosCuentaFechaResponse vtcMovimientosFecha = data.movimientosFecha;
 			if (statement == null)
 			{
 				throw new Exception("Error al obtener el estado cuenta");
 			}
-			if (vtcMovimientosMes == null && vtcObtenerMovimientosCuentaFecha == null)
+			if (vtcMovimientosMes == null && vtcMovimientosFecha == null)
 			{
 				throw new Exception("Error al obtener los movimientos no se pudo generar el reporte");
 			}
-			if (vtcMovimientosMes == null)
+			if (vtcMovimientosMes != null && vtcMovimientosMes == null)
 			{
-				throw new Exception("Error al obtener los movimientos del mes");
+				vtcMovimientosMes = new VtcObtenerMovimientosCuentaMesResponse();
+				vtcMovimientosMes.VtcObtenerMovimientosCuentaMesResult.Detalle = vtcMovimientosFecha.VtcObtenerMovimientosCuentaFechaResult.Detalle;
+				vtcMovimientosMes.VtcObtenerMovimientosCuentaMesResult.Detalle2 = vtcMovimientosFecha.VtcObtenerMovimientosCuentaFechaResult.Detalle2;
+				vtcMovimientosMes.VtcObtenerMovimientosCuentaMesResult.InfoFinanciamiento = vtcMovimientosFecha.VtcObtenerMovimientosCuentaFechaResult.InfoFinanciamiento;
+				vtcMovimientosMes.VtcObtenerMovimientosCuentaMesResult.InfoTran = vtcMovimientosFecha.VtcObtenerMovimientosCuentaFechaResult.InfoTran;
+				vtcMovimientosMes.VtcObtenerMovimientosCuentaMesResult.Maestro = vtcMovimientosFecha.VtcObtenerMovimientosCuentaFechaResult.Maestro;
 			}
-			string month = new DateTime(data.Year, data.Month, 1).ToString("MMMM");
+
+			if (statement.VtcInfoEstCtaTHResult.InfoTran.IsError) 
+			{
+				throw new Exception("Error al obtener el estado cuenta "+data.codeClient, new Exception(statement.VtcInfoEstCtaTHResult.InfoTran.ReturnMessage));
+			}
+
+
+			string month = new DateTime(2024, 1, 1).ToString("MMMM"); //cabiar esto valores a como estaba solo para pruebas se utilizara no se utilizara el valor ingresado 
 			char reference = char.ToUpper(month[0]);
 			month = string.Concat(new ReadOnlySpan<char>(ref reference), month.Substring(1));
 			PdfDocument document = new PdfDocument();

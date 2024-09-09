@@ -55,6 +55,16 @@ static void LogException(Exception ex)
 {
     string logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "exceptions.txt");
     Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
-    string logMessage = $"[{DateTime.Now}] Excepción: {ex.Message}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}{new string('-', 50)}{Environment.NewLine}";
+
+    // Detalles de la excepción
+    string logMessage = $@"
+        [{DateTime.Now}] 
+        Tipo de Excepción: {ex.GetType().Name}
+        Mensaje: {ex.Message}
+        Inner Exception: {ex.InnerException?.Message}
+        StackTrace: {ex.StackTrace}
+        ------------------------------------------------";
+
+    // Escribir en archivo de log
     File.AppendAllText(logFilePath, logMessage);
 }

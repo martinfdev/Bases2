@@ -8,6 +8,6 @@ namespace AppPdfGenAccountStatus.Services
 
 		Task<VtcObtenerMovimientosCuentaMesResponse> GetAccountMoveMonth(int mes, int anyo, string cuenta);
 
-		Task<VtcObtenerMovimientosCuentaFechaResponse> GetMovAccountSpecificDayAsync(int anyo, int mes, int dia, string cuenta);
+		Task<VtcObtenerMovimientosCuentaFechaResponse> GetMovAccountSpecificDayAsync(int mes, int anyo, int dia, string cuenta);
 	}
 }
