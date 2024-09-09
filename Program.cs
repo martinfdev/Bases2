@@ -43,7 +43,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI(delegate (SwaggerUIOptions c)
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-        c.RoutePrefix = string.Empty;
+        c.RoutePrefix = "swagger";  // Cambia el prefijo de ruta a "swagger"
     });
 }
 
