@@ -19,7 +19,5 @@
             // Escribir en archivo de log
             File.AppendAllText(logFilePath, logMessage);
         }
-
-
     }
 }
