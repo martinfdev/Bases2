@@ -17,10 +17,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(delegate (DbContextOptionsBu
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddControllers();
+
+// Habilitar controladores con vistas (MVC)
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages(); // Opción para Razor Pages, si se necesitan
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-WebApplication app = builder.Build();
+
+var app = builder.Build();
+
+// Manejo de excepciones
 app.UseExceptionHandler(delegate (IApplicationBuilder errorApp)
 {
     errorApp.Run(async delegate (HttpContext context)
@@ -37,18 +43,41 @@ app.UseExceptionHandler(delegate (IApplicationBuilder errorApp)
     });
 });
 
+
+
+
+// Configuración para desarrollo y producción
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
+    // Configurar Swagger
     app.UseSwagger();
     app.UseSwaggerUI(delegate (SwaggerUIOptions c)
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
         c.RoutePrefix = "swagger";  // Cambia el prefijo de ruta a "swagger"
     });
+
+    // Redirigir la ruta raíz a la vista HTML personalizada
+    app.MapGet("/", async context =>
+    {
+        context.Response.Redirect("/home/index");
+    });
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();  // Permitir archivos estáticos como CSS, imágenes, JS
+app.UseRouting();
+
+// Configurar registros de rutas de nivel superior en lugar de UseEndpoints
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");  // Ruta por defecto
+
+
+// Mapear controladores y vistas
 app.MapControllers();
+app.MapRazorPages();  // Si utilizas Razor Pages
+
 app.Run();
 
 static void LogException(Exception ex)
