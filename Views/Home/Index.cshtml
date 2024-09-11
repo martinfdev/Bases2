@@ -1,0 +1,16 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Inicio";
+}
+<div class="flex flex-col items-center justify-center h-full">
+    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md text-center">
+        <h1 class="text-4xl font-bold text-gray-800 mb-6">@ViewData["Title"]</h1>
+        <p class="text-lg text-gray-600 mb-8">Seleccione el tipo de reporte que desea generar:</p>
+
+        <!-- Enlace para el reporte por mes -->
+        <a href="/Reports/ReportByMonth" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 ease-in-out block mb-4">Generar Reporte por Mes</a>
+
+        <!-- Enlace para el reporte por fecha -->
+        <a href="/Reports/ReportByDate" class="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 ease-in-out block">Generar Reporte por Fecha</a>
+    </div>
+</div>
