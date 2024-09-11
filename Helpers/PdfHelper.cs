@@ -17,33 +17,61 @@ namespace AppPdfGenAccountStatus.Helpers
 
 		public void CreatePdf(string filePath, DataInputModel data)
 		{
-			VtcInfoEstCtaTHResponse statement = data.estadoCuenta;
-			VtcObtenerMovimientosCuentaMesResponse vtcMovimientosMes = data.movimientosMes;
-			VtcObtenerMovimientosCuentaFechaResponse vtcMovimientosFecha = data.movimientosFecha;
-			if (statement == null)
-			{
-				throw new Exception("Error al obtener el estado cuenta");
-			}
-			if (vtcMovimientosMes == null && vtcMovimientosFecha == null)
-			{
-				throw new Exception("Error al obtener los movimientos no se pudo generar el reporte");
-			}
-			if (vtcMovimientosMes != null && vtcMovimientosMes == null)
-			{
-				vtcMovimientosMes = new VtcObtenerMovimientosCuentaMesResponse();
-				vtcMovimientosMes.VtcObtenerMovimientosCuentaMesResult.Detalle = vtcMovimientosFecha.VtcObtenerMovimientosCuentaFechaResult.Detalle;
-				vtcMovimientosMes.VtcObtenerMovimientosCuentaMesResult.Detalle2 = vtcMovimientosFecha.VtcObtenerMovimientosCuentaFechaResult.Detalle2;
-				vtcMovimientosMes.VtcObtenerMovimientosCuentaMesResult.InfoFinanciamiento = vtcMovimientosFecha.VtcObtenerMovimientosCuentaFechaResult.InfoFinanciamiento;
-				vtcMovimientosMes.VtcObtenerMovimientosCuentaMesResult.InfoTran = vtcMovimientosFecha.VtcObtenerMovimientosCuentaFechaResult.InfoTran;
-				vtcMovimientosMes.VtcObtenerMovimientosCuentaMesResult.Maestro = vtcMovimientosFecha.VtcObtenerMovimientosCuentaFechaResult.Maestro;
-			}
+            // Obtener el estado de cuenta y los movimientos
+            VtcInfoEstCtaTHResponse statement = data.estadoCuenta;
+            VtcObtenerMovimientosCuentaMesResponse vtcMovimientosMes = data.movimientosMes;
+            VtcObtenerMovimientosCuentaFechaResponse vtcMovimientosFecha = data.movimientosFecha;
 
-			if (statement.VtcInfoEstCtaTHResult.InfoTran.IsError) 
-			{
-				throw new Exception("Error al obtener el estado cuenta "+data.codeClient, new Exception(statement.VtcInfoEstCtaTHResult.InfoTran.ReturnMessage));
-			}
+            // Validar si el estado de cuenta es null
+            if (statement == null)
+            {
+                throw new Exception("Error al obtener el estado cuenta");
+            }
 
-			int day = data.Day == 0 ? 1 : data.Day;
+            // Validar si ambos movimientos (mes y fecha) son null
+            if (vtcMovimientosMes == null && vtcMovimientosFecha == null)
+            {
+                throw new Exception("Error al obtener los movimientos, no se pudo generar el reporte");
+            }
+
+            // Si los movimientos por fecha no son null, pero los movimientos por mes sí lo son,
+            // inicializar vtcMovimientosMes con un nuevo objeto y copiar los datos de movimientos por fecha
+            if (vtcMovimientosFecha != null && vtcMovimientosMes == null)
+            {
+                // Inicializar vtcMovimientosMes utilizando su constructor que acepta un parámetro
+                vtcMovimientosMes = new VtcObtenerMovimientosCuentaMesResponse(
+                    new SoapVstec.WsMaestroDetalle2OfEncabezadoMovimientosInfoTrxInfoMontosTarjetaInfoFinanciamiento
+                    {
+                        // Copiar los datos de los movimientos por fecha
+                        Detalle = vtcMovimientosFecha.VtcObtenerMovimientosCuentaFechaResult.Detalle,
+                        Detalle2 = vtcMovimientosFecha.VtcObtenerMovimientosCuentaFechaResult.Detalle2,
+                        InfoFinanciamiento = vtcMovimientosFecha.VtcObtenerMovimientosCuentaFechaResult.InfoFinanciamiento,
+                        InfoTran = vtcMovimientosFecha.VtcObtenerMovimientosCuentaFechaResult.InfoTran,
+                        Maestro = vtcMovimientosFecha.VtcObtenerMovimientosCuentaFechaResult.Maestro
+                    }
+                );
+            }
+
+            // Validar que el resultado del estado de cuenta no sea null antes de acceder a sus propiedades
+            if (statement.VtcInfoEstCtaTHResult == null)
+            {
+                throw new Exception("Error: VtcInfoEstCtaTHResult es null en el estado de cuenta");
+            }
+
+            // Verificar si hay algún error en la transacción de InfoTran
+            if (statement.VtcInfoEstCtaTHResult.InfoTran != null && statement.VtcInfoEstCtaTHResult.InfoTran.IsError)
+            {
+                Console.WriteLine(statement.VtcInfoEstCtaTHResult.InfoTran.ReturnMessage);
+                throw new Exception("Error al obtener el estado de cuenta para el cliente " + data.codeClient, new Exception(statement.VtcInfoEstCtaTHResult.InfoTran.ReturnMessage));
+            }
+
+            // Validar que vtcMovimientosMes y su resultado no sean null antes de acceder
+            if (vtcMovimientosMes == null || vtcMovimientosMes.VtcObtenerMovimientosCuentaMesResult == null)
+            {
+                throw new Exception("Error: Movimientos del mes o su resultado son null");
+            }
+
+            int day = data.Day == 0 ? 1 : data.Day;
 			string month = new DateTime(data.Year, data.Month, day).ToString("MMMM");
 			char reference = char.ToUpper(month[0]);
 			month = string.Concat(new ReadOnlySpan<char>(ref reference), month.Substring(1));

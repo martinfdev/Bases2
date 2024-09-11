@@ -101,10 +101,13 @@ namespace AppPdfGenAccountStatus.Services
 
                     if (day != 0)
                     {
+                        Console.WriteLine("Obteniendo movimientos por fecha");
                         taskMovimientosFecha = _soapService.GetMovAccountSpecificDayAsync(dataInput.Month, dataInput.Year, dataInput.Day, numCardEncripted);
+                        
                     }
                     else
                     {
+                        Console.WriteLine("Obteniendo movimientos por mes");
                         taskMovimientosMes = _soapService.GetAccountMoveMonth(dataInput.Month, dataInput.Year, numCardEncripted);
                     }
 
