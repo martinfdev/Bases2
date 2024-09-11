@@ -31,7 +31,6 @@ namespace AppPdfGenAccountStatus.Helpers
             // Validar si ambos movimientos (mes y fecha) son null
             if (vtcMovimientosMes == null && vtcMovimientosFecha == null)
             {
-                Console.WriteLine("Movimientos fecha y movimientos mes null");
                 throw new Exception("Error al obtener los movimientos, no se pudo generar el reporte");
             }
 
@@ -39,8 +38,6 @@ namespace AppPdfGenAccountStatus.Helpers
             // inicializar vtcMovimientosMes con un nuevo objeto y copiar los datos de movimientos por fecha
             if (vtcMovimientosFecha != null && vtcMovimientosMes == null)
             {
-                Console.WriteLine("Movimientos fecha no null y movimientos mes null");
-
                 // Inicializar vtcMovimientosMes utilizando su constructor que acepta un parámetro
                 vtcMovimientosMes = new VtcObtenerMovimientosCuentaMesResponse(
                     new SoapVstec.WsMaestroDetalle2OfEncabezadoMovimientosInfoTrxInfoMontosTarjetaInfoFinanciamiento
@@ -73,11 +70,6 @@ namespace AppPdfGenAccountStatus.Helpers
             {
                 throw new Exception("Error: Movimientos del mes o su resultado son null");
             }
-
-            Console.WriteLine("Generando PDF ....");
-            Console.WriteLine("Movimientos mes: " + vtcMovimientosMes.VtcObtenerMovimientosCuentaMesResult.InfoFinanciamiento.Length);
-
-
 
             int day = data.Day == 0 ? 1 : data.Day;
 			string month = new DateTime(data.Year, data.Month, day).ToString("MMMM");
