@@ -43,24 +43,21 @@ app.UseExceptionHandler(delegate (IApplicationBuilder errorApp)
     });
 });
 
-
-
-
-// Configuración para desarrollo y producción
+//Configuración para desarrollo y producción
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
+    // Redirigir la ruta raíz a la vista HTML personalizada
+    app.MapGet("/", async context =>
+    {
+        context.Response.Redirect("/home/index");
+    });
+
     // Configurar Swagger
     app.UseSwagger();
     app.UseSwaggerUI(delegate (SwaggerUIOptions c)
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
         c.RoutePrefix = "swagger";  // Cambia el prefijo de ruta a "swagger"
-    });
-
-    // Redirigir la ruta raíz a la vista HTML personalizada
-    app.MapGet("/", async context =>
-    {
-        context.Response.Redirect("/home/index");
     });
 }
 
