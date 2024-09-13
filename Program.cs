@@ -2,10 +2,7 @@ using AppPdfGenAccountStatus.Data;
 using AppPdfGenAccountStatus.Models;
 using AppPdfGenAccountStatus.Services;
 using AppPdfRep.Helpers;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
