@@ -62,7 +62,7 @@ namespace AppPdfGenAccountStatus.Helpers
             if (statement.VtcInfoEstCtaTHResult.InfoTran != null && statement.VtcInfoEstCtaTHResult.InfoTran.IsError)
             {
                 Console.WriteLine(statement.VtcInfoEstCtaTHResult.InfoTran.ReturnMessage);
-                throw new Exception("Error al obtener el estado de cuenta para el cliente " + data.codeClient, new Exception(statement.VtcInfoEstCtaTHResult.InfoTran.ReturnMessage));
+                throw new Exception("Error al obtener el estado de cuenta para el cliente " + data.codeClient +" Msg Versatec -> "+ statement.VtcInfoEstCtaTHResult.InfoTran.ErrorLog, new Exception(statement.VtcInfoEstCtaTHResult.InfoTran.ReturnMessage));
             }
 
             // Validar que vtcMovimientosMes y su resultado no sean null antes de acceder
@@ -75,6 +75,9 @@ namespace AppPdfGenAccountStatus.Helpers
 			string month = new DateTime(data.Year, data.Month, day).ToString("MMMM");
 			char reference = char.ToUpper(month[0]);
 			month = string.Concat(new ReadOnlySpan<char>(ref reference), month.Substring(1));
+			
+			
+			//inf creando pdf
 			PdfDocument document = new PdfDocument();
 			document.Info.Title = "Estado de Cuenta";
 			double startX = 48.0;
@@ -82,6 +85,8 @@ namespace AppPdfGenAccountStatus.Helpers
 			double marginBottom = 80.0;
 			PdfPage page = document.AddPage();
 			XGraphics gfx = XGraphics.FromPdfPage(page);
+			
+			//size and type font
 			XFont fontTitle = new XFont("Arial", 13.0, XFontStyleEx.Bold);
 			XFont fontSubtitle = new XFont("Arial", 10.0, XFontStyleEx.Bold);
 			XFont fontRegular = new XFont("Arial", 10.0, XFontStyleEx.Regular);
@@ -89,8 +94,12 @@ namespace AppPdfGenAccountStatus.Helpers
 			XFont fontRegularMin = new XFont("Arial", 8.0, XFontStyleEx.Regular);
 			XFont fontTitleBox = new XFont("Arial", 6.0, XFontStyleEx.Bold);
 			XFont fontFooter = new XFont("Arial", 6.0, XFontStyleEx.Regular);
+			
+			//get logo path
 			string logoPath = Path.Combine(_env.ContentRootPath, "Statics", "logo.png");
 			XImage logo = XImage.FromFile(logoPath);
+			
+			//header of the pdf content
 			gfx.DrawImage(logo, page.Width.Point - 240.0, startY, 180.0, 50.0);
 			gfx.DrawString("ESTADO DE CUENTA", fontSubtitle, XBrushes.Gray, new XRect(startX, startY, 100.0, 20.0), XStringFormats.TopLeft);
 			gfx.DrawString("TC Visa Platinum Empleados", fontTitle, XBrushes.Black, new XRect(startX + 110.0, startY, 200.0, 20.0), XStringFormats.TopLeft);
@@ -108,6 +117,8 @@ namespace AppPdfGenAccountStatus.Helpers
 			double padding = 2.0;
 			DrawLabelBox(gfx, startX, startY, boxWidth + 130.0, boxHeight + 96.5, fillColor: false);
 			DrawLabelBox(gfx, startX, startY, boxWidth + 130.0, boxHeight - 14.5, fillColor: true);
+			
+			// Resumen de la cuenta
 			gfx.DrawString("Informacion de la cuenta", fontRegularBold, XBrushes.White, new XRect(startX + 7.0, startY + 3.0, 5.0, 10.0), XStringFormats.TopLeft);
 			gfx.DrawString("Q", fontRegularBold, XBrushes.White, new XRect(startX + 135.0, startY + 3.0, 5.0, 10.0), XStringFormats.TopLeft);
 			gfx.DrawString("US$", fontRegularBold, XBrushes.White, new XRect(startX + 175.0, startY + 3.0, 5.0, 10.0), XStringFormats.TopLeft);
@@ -140,6 +151,8 @@ namespace AppPdfGenAccountStatus.Helpers
 				num3 = statement.VtcInfoEstCtaTHResult.Model.CreditosMesME;
 			}
 			num2 = num3;
+			
+			// Draw part 1 of contet header info
 			xGraphics2.DrawString(num2.ToString("F2"), fontRegularMin, XBrushes.Black, new XRect(startX + 200.0, startY + 33.0, 5.0, 10.0), XStringFormats.TopRight);
 			gfx.DrawString("Compras y retiros", fontRegularMin, XBrushes.Black, new XRect(startX + 7.0, startY + 46.0, 5.0, 10.0), XStringFormats.TopLeft);
 			gfx.DrawString(statement?.VtcInfoEstCtaTHResult?.Model?.ConsumoMesML.ToString("F2") ?? "0.00", fontRegularMin, XBrushes.Black, new XRect(startX + 155.0, startY + 46.0, 5.0, 10.0), XStringFormats.TopRight);
@@ -159,6 +172,8 @@ namespace AppPdfGenAccountStatus.Helpers
 			gfx.DrawString("Pago vencido", fontRegularMin, XBrushes.Black, new XRect(startX + 7.0, startY + 111.0, 5.0, 10.0), XStringFormats.TopLeft);
 			gfx.DrawString(statement?.VtcInfoEstCtaTHResult?.Model.SaldoMoraML.ToString() ?? "0.00", fontRegularMin, XBrushes.Black, new XRect(startX + 155.0, startY + 111.0, 5.0, 10.0), XStringFormats.TopRight);
 			gfx.DrawString(statement?.VtcInfoEstCtaTHResult?.Model.SaldoMoraME.ToString() ?? "0.00", fontRegularMin, XBrushes.Black, new XRect(startX + 200.0, startY + 111.0, 5.0, 10.0), XStringFormats.TopRight);
+			
+			//Draw part 2 of content header info
 			XBrush subTitleBoxColor = new XSolidBrush(XColor.FromCmyk(1.0, 0.68, 0.0, 0.12));
 			gfx.DrawString("Pago de contado", fontTitleBox, subTitleBoxColor, new XRect(startX + 220.0 + 20.0, startY - 7.0, boxWidth, 20.0), XStringFormats.TopLeft);
 			DrawLabelBox(gfx, startX + 220.0, startY, boxWidth - 2.0, boxHeight, fillColor: false);
@@ -166,21 +181,25 @@ namespace AppPdfGenAccountStatus.Helpers
 			gfx.DrawString("US$", fontRegularBold, XBrushes.Black, new XRect(startX + 225.0, startY + 15.0, 5.0, 10.0), XStringFormats.TopLeft);
 			gfx.DrawString(statement?.VtcInfoEstCtaTHResult?.Model?.PagocontadoML.ToString("F2") ?? "0.00", fontRegularMin, XBrushes.Black, new XRect(startX + 230.0 + 63.0, startY + 5.0, 5.0, 10.0), XStringFormats.TopRight);
 			gfx.DrawString(statement?.VtcInfoEstCtaTHResult?.Model?.PagocontadoME.ToString("F2") ?? "0.00", fontRegularMin, XBrushes.Black, new XRect(startX + 230.0 + 63.0, startY + 15.0, 5.0, 10.0), XStringFormats.TopRight);
+			
 			gfx.DrawString("Pago mínimo", fontTitleBox, subTitleBoxColor, new XRect(startX + 220.0 + 20.0 + boxWidth + 5.0, startY - 7.0, boxWidth, 20.0), XStringFormats.TopLeft);
 			DrawLabelBox(gfx, startX + 220.0 + boxWidth, startY, boxWidth - 2.0, boxHeight, fillColor: false);
 			gfx.DrawString("Q", fontRegularBold, XBrushes.Black, new XRect(startX + 310.0, startY + 5.0, 5.0, 10.0), XStringFormats.TopLeft);
 			gfx.DrawString("US$", fontRegularBold, XBrushes.Black, new XRect(startX + 310.0, startY + 15.0, 5.0, 10.0), XStringFormats.TopLeft);
 			gfx.DrawString(statement?.VtcInfoEstCtaTHResult?.Model?.PagoMinimoML.ToString("F2") ?? "0.00", fontRegularMin, XBrushes.Black, new XRect(startX + 377.0, startY + 5.0, 5.0, 10.0), XStringFormats.TopRight);
 			gfx.DrawString(statement?.VtcInfoEstCtaTHResult?.Model?.PagoMinimoME.ToString("F2") ?? "0.00", fontRegularMin, XBrushes.Black, new XRect(startX + 377.0, startY + 15.0, 5.0, 10.0), XStringFormats.TopRight);
+			
 			gfx.DrawString("Fecha de corte", fontTitleBox, subTitleBoxColor, new XRect(startX + 220.0 + boxWidth * 2.0 + 5.0, startY - 7.0, boxWidth, 20.0), XStringFormats.TopLeft);
 			DrawLabelBox(gfx, startX + 220.0 + boxWidth * 2.0, startY, boxWidth - 35.0, boxHeight, fillColor: false);
 			gfx.DrawString(statement?.VtcInfoEstCtaTHResult?.Model?.FechaCorte ?? "", fontRegularMin, XBrushes.Black, new XRect(startX + 410.0, startY + 10.0, 5.0, 10.0), XStringFormats.Center);
 			gfx.DrawString("Fecha", fontTitleBox, subTitleBoxColor, new XRect(startX + 220.0 + padding * 6.0 + boxWidth * 2.0 + 5.0 + (boxWidth - 35.0), startY - 14.0, boxWidth, 20.0), XStringFormats.TopLeft);
+			
 			gfx.DrawString("máxima de pago", fontTitleBox, subTitleBoxColor, new XRect(startX + 220.0 + padding + boxWidth * 2.0 + (boxWidth - 35.0), startY - 7.0, boxWidth, 20.0), XStringFormats.TopLeft);
 			DrawLabelBox(gfx, startX + 220.0 + boxWidth * 2.0 + padding + (boxWidth - 35.0), startY, boxWidth - 35.0, boxHeight, fillColor: false);
 			gfx.DrawString(statement?.VtcInfoEstCtaTHResult?.Model?.FecMaxPago ?? "", fontRegularMin, XBrushes.Black, new XRect(startX + 460.0, startY + 10.0, 5.0, 10.0), XStringFormats.Center);
 			DrawLabelBox(gfx, startX + 220.0, startY + boxHeight + padding * 2.0 + 1.0, boxWidth * 2.0 - 35.5, boxHeight * 3.0 + 7.5, fillColor: false);
 			DrawLabelBox(gfx, startX + 220.0, startY + boxHeight + padding * 2.0 + 1.0, boxWidth * 2.0 - 35.5, boxHeight - 14.5, fillColor: true);
+			
 			gfx.DrawString("Programa de lealtad", fontRegularBold, XBrushes.White, new XRect(startX + 220.0 + 5.0, startY + boxHeight + padding * 3.0 + 1.0, boxWidth, 20.0), XStringFormats.TopLeft);
 			gfx.DrawString("Puntos anteriores", fontRegularMin, XBrushes.Black, new XRect(startX + 225.0, startY + boxHeight + padding * 11.0 + 1.0, boxWidth, 20.0), XStringFormats.TopLeft);
 			gfx.DrawString(statement?.VtcInfoEstCtaTHResult?.Model?.PuntosSaldoAnterior.ToString("F2") ?? "0.00", fontRegularMin, XBrushes.Black, new XRect(startX + 225.0 + 40.0, startY + boxHeight + padding * 11.0 + 1.0, boxWidth, 20.0), XStringFormats.TopRight);
@@ -192,6 +211,7 @@ namespace AppPdfGenAccountStatus.Helpers
 			gfx.DrawString(statement?.VtcInfoEstCtaTHResult?.Model?.PuntosSaldoActual.ToString("F2") ?? "0.00", fontRegularMin, XBrushes.Black, new XRect(startX + 225.0 + 40.0, startY + boxHeight + padding * 38.0 + 1.0, boxWidth, 20.0), XStringFormats.TopRight);
 			DrawLabelBox(gfx, startX + 220.0 + boxWidth * 2.0 - 35.5 + padding + 1.0, startY + boxHeight + padding * 2.0 + 1.0, boxWidth * 2.0 - 35.5, boxHeight * 2.0 - 3.5, fillColor: false);
 			DrawLabelBox(gfx, startX + 220.0 + boxWidth * 2.0 - 35.5 + padding + 1.0, startY + boxHeight + padding * 2.0 + 1.0, boxWidth * 2.0 - 35.5, boxHeight - 14.5, fillColor: true);
+			
 			gfx.DrawString("Tasa de interés", fontRegularBold, XBrushes.White, new XRect(startX + 220.0 + boxWidth * 2.0 - 35.5 + padding + 5.0, startY + boxHeight + padding * 3.0 + 1.0, boxWidth, 20.0), XStringFormats.TopLeft);
 			gfx.DrawString("Q(%)", fontRegularBold, XBrushes.White, new XRect(startX + 220.0 + boxWidth * 2.0 - 35.5 + padding + 5.0 + 72.0, startY + boxHeight + padding * 3.0 + 1.0, boxWidth, 20.0), XStringFormats.TopLeft);
 			gfx.DrawString("US$(%)", fontRegularBold, XBrushes.White, new XRect(startX + 220.0 + boxWidth * 2.0 - 35.5 + padding + 102.0, startY + boxHeight + padding * 3.0 + 1.0, boxWidth, 20.0), XStringFormats.TopLeft);
@@ -211,6 +231,8 @@ namespace AppPdfGenAccountStatus.Helpers
 			gfx.DrawString("Para compras", fontRegularMin, XBrushes.Black, new XRect(startX + 220.0 + boxWidth * 2.0 - 35.5 + padding + 5.0, startY + boxHeight * 3.0 + padding * 9.0, boxWidth, 20.0), XStringFormats.TopLeft);
 			gfx.DrawString("Para Visacuotas/Extrafin", fontRegularMin, XBrushes.Black, new XRect(startX + 220.0 + boxWidth * 2.0 - 35.5 + padding + 5.0, startY + boxHeight * 3.0 + padding * 14.0, boxWidth, 20.0), XStringFormats.TopLeft);
 			gfx.DrawString(statement?.VtcInfoEstCtaTHResult?.Model?.DisponibleML.ToString("F2") ?? "0.00", fontRegularMin, XBrushes.Black, new XRect(startX + 220.0 + boxWidth * 2.0 - 35.5 + padding + 5.0 + 42.0, startY + boxHeight * 3.0 + padding * 11.0, boxWidth, 20.0), XStringFormats.TopRight);
+						
+			//Pago Minimo tine que ser una lista
 			gfx.DrawString("Pago Minimo", fontRegularBold, XBrushes.Black, new XRect(startX, startY + 127.0, boxWidth, 10.0), XStringFormats.TopLeft);
 			DrawLabelBox(gfx, startX, startY + 137.0, 490.0, 18.5, fillColor: true);
 			gfx.DrawString("Capital", fontRegularMin, XBrushes.White, new XRect(startX + 26.0, startY + 142.0, boxWidth, 10.0), XStringFormats.TopLeft);
@@ -231,6 +253,7 @@ namespace AppPdfGenAccountStatus.Helpers
 			List<XGraphics> listgfx = new List<XGraphics>();
 			listgfx.Add(gfx);
 			DrawContent(startX, ref currentY, ref availableHeight, ref document, ref page, ref gfx, fontRegularMin, 12.0, 0, marginBottom, ref listgfx);
+			
 			startY = currentY + 11.0;
 			currentY = startY + 18.5;
 			DrawLabelBox(gfx, startX, startY, 490.0, 18.5, fillColor: true);
@@ -242,13 +265,14 @@ namespace AppPdfGenAccountStatus.Helpers
 			gfx.DrawString("Quetzales", fontRegularMin, XBrushes.White, new XRect(startX + 380.0, startY + 5.0, boxWidth, 10.0), XStringFormats.TopLeft);
 			gfx.DrawString("Dolares", fontRegularMin, XBrushes.White, new XRect(startX + 440.0, startY + 5.0, boxWidth, 10.0), XStringFormats.TopLeft);
 			DrawContentMain(startX, ref currentY, ref availableHeight, ref document, ref page, ref gfx, fontRegularMin, 12.0, vtcMovimientosMes, marginBottom, ref listgfx);
+			
 			gfx.DrawString("Informacion de visacuotas", fontRegularBold, XBrushes.Black, new XRect(startX, currentY, boxWidth, 10.0), XStringFormats.TopLeft);
 			startY = currentY + 10.0;
 			currentY = startY + 18.5;
 			DrawLabelBox(gfx, startX, startY, 490.0, 18.5, fillColor: true);
 			gfx.DrawString("Programa", fontRegularMin, XBrushes.White, new XRect(startX + 50.0, startY + 5.0, boxWidth, 10.0), XStringFormats.TopLeft);
 			gfx.DrawString("Moneda", fontRegularMin, XBrushes.White, new XRect(startX + 140.0, startY + 5.0, boxWidth, 10.0), XStringFormats.TopLeft);
-			gfx.DrawString("Fecha de Inicio", fontRegularMin, XBrushes.White, new XRect(startX + 210.0, startY + 5.0, boxWidth, 10.0), XStringFormats.TopLeft);
+			gfx.DrawString("Fecha de Inicio", fontRegularMin, XBrushes.White, new XRect(startX + 200.0, startY + 5.0, boxWidth, 10.0), XStringFormats.TopLeft);
 			gfx.DrawString("Monto", fontRegularMin, XBrushes.White, new XRect(startX + 293.0, startY + 3.0, boxWidth, 10.0), XStringFormats.TopLeft);
 			gfx.DrawString("Autotizado", fontRegularMin, XBrushes.White, new XRect(startX + 287.0, startY + 10.0, boxWidth, 10.0), XStringFormats.TopLeft);
 			gfx.DrawString("Plazo", fontRegularMin, XBrushes.White, new XRect(startX + 350.0, startY + 5.0, boxWidth, 10.0), XStringFormats.TopLeft);
@@ -256,6 +280,7 @@ namespace AppPdfGenAccountStatus.Helpers
 			gfx.DrawString("Interes", fontRegularMin, XBrushes.White, new XRect(startX + 390.0, startY + 10.0, boxWidth, 10.0), XStringFormats.TopLeft);
 			gfx.DrawString("Saldo", fontRegularMin, XBrushes.White, new XRect(startX + 450.0, startY + 5.0, boxWidth, 10.0), XStringFormats.TopLeft);
 			DrawContentVisaCuotas(startX, ref currentY, ref availableHeight, ref document, ref page, ref gfx, fontRegularMin, 12.0, vtcMovimientosMes, marginBottom, ref listgfx);
+			
 			gfx.DrawString("Informacion de convenio de pago", fontRegularBold, XBrushes.Black, new XRect(startX, currentY + 10.0, boxWidth, 10.0), XStringFormats.TopLeft);
 			startY = currentY + 20.0;
 			currentY = startY + 18.5;
@@ -273,6 +298,8 @@ namespace AppPdfGenAccountStatus.Helpers
 			gfx.DrawString("Interes", fontRegularMin, XBrushes.White, new XRect(startX + 390.0, startY + 9.0, boxWidth, 10.0), XStringFormats.TopLeft);
 			gfx.DrawString("Saldo", fontRegularMin, XBrushes.White, new XRect(startX + 450.0, startY + 5.0, boxWidth, 10.0), XStringFormats.TopLeft);
 			DrawContentPayConvent(startX, ref currentY, ref availableHeight, ref document, ref page, ref gfx, fontRegularMin, 12.0, 0, marginBottom, ref listgfx);
+			
+
 			gfx.DrawString("Resumen de Retiros de Efectivo", fontRegularBold, XBrushes.Black, new XRect(startX, currentY + 10.0, boxWidth, 10.0), XStringFormats.TopLeft);
 			startY = currentY + 21.0;
 			currentY = startY + 18.5;
@@ -300,6 +327,7 @@ namespace AppPdfGenAccountStatus.Helpers
 			gfx.DrawString("plazo para la cancelación de su deuda se extenderá, debido a que, con dicho pago, se cubren primero los intereses,", fontRegularMin, XBrushes.Black, new XRect(startX, currentY + 10.0, 490.0, 10.0), XStringFormats.TopLeft);
 			gfx.DrawString("comisiones y otros cargos y, por último, una parte mínima se amortiza a capital\"", fontRegularMin, XBrushes.Black, new XRect(startX, currentY + 20.0, 490.0, 10.0), XStringFormats.TopLeft);
 			DrawFooter(gfx, fontFooter, document, ref listgfx);
+			
 			document.Save(filePath);
 			document.Close();
 		}
@@ -495,7 +523,7 @@ namespace AppPdfGenAccountStatus.Helpers
 				}
 				gfx.DrawString(financiamiento[i]?.Programa ?? "", font, XBrushes.Black, new XRect(startX + 5.0, currentY + 5.0, 30.0, 10.0), XStringFormats.TopLeft);
 				gfx.DrawString(financiamiento[i]?.Moneda ?? "", font, XBrushes.Black, new XRect(startX + 140.0, currentY + 5.0, 30.0, 10.0), XStringFormats.TopLeft);
-				gfx.DrawString(financiamiento[i]?.FechaOrigen ?? "", font, XBrushes.Black, new XRect(startX + 213.0, currentY + 5.0, 30.0, 10.0), XStringFormats.TopLeft);
+				gfx.DrawString(financiamiento[i]?.FechaOrigen ?? "", font, XBrushes.Black, new XRect(startX + 195.0, currentY + 5.0, 30.0, 10.0), XStringFormats.TopLeft);
 				gfx.DrawString(financiamiento[i]?.MtoDesembolsado.ToString("F2") ?? "0.00", font, XBrushes.Black, new XRect(startX + 290.0, currentY + 5.0, 30.0, 10.0), XStringFormats.TopRight);
 				gfx.DrawString(financiamiento[i]?.Plazo ?? "", font, XBrushes.Black, new XRect(startX + 343.0, currentY + 5.0, 20.0, 10.0), XStringFormats.TopRight);
 				gfx.DrawString(financiamiento[i]?.TasaInteres.ToString("F2") ?? "0.00", font, XBrushes.Black, new XRect(startX + 390.0, currentY + 5.0, 25.0, 10.0), XStringFormats.TopRight);
