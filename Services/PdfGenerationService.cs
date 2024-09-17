@@ -43,26 +43,37 @@ namespace AppPdfGenAccountStatus.Services
             string directoryPath = GeneratePdfDirectory();
             try
             {
+                //var listCardAccounts = await _tarjetaService.ObtenerTarjetas();
                 List<Tarjeta> listCardAccounts = new List<Tarjeta>
-            {
-                new Tarjeta
                 {
-                    NumTarjeta = "4078563000003711",
-                },
-                new Tarjeta
-                {
-                    NumTarjeta = "4078560600012035",
-                },
-                new Tarjeta
-                {
-                    NumTarjeta = "4078563000006631",
-                },
-            };
+                    //Tarjetas de test proporcionadas por VSTEC
+                    new Tarjeta
+                    {
+                        NumTarjeta = "4078563000003711",
+                    },
+                    //Tarjetas de test proporcionadas por VSTEC estaban encriptadas
+                    new Tarjeta
+                    {
+                        NumTarjeta = "4078560600012035",
+                    },
+                    new Tarjeta
+                    {
+                        NumTarjeta = "4078563000006631",
+                    },
+                    //Tarjeta de test Vivibanco
+                    new Tarjeta 
+                    { 
+                        NumTarjeta = "4078560600013223",
+                    },
+                    new Tarjeta
+                    {
+                        NumTarjeta = "4078560600012423",
+                    },
+                };
                 await RequestToVstforAccountAsync(listCardAccounts, directoryPath, year, month, day);
             }
-            catch (Exception ex2)
+            catch (Exception ex)
             {
-                Exception ex = ex2;
                 throw new Exception("Error", ex);
             }
         }
@@ -89,6 +100,7 @@ namespace AppPdfGenAccountStatus.Services
                 try
                 {
                     string numCardEncripted = EncryptDecrypt_AES.EncryptStringToBytes_Aes(card.NumTarjeta);
+                    Console.WriteLine ($"{numCardEncripted}");
                     if (numCardEncripted == null)
                     {
                         throw new Exception("No se pudo encriptar el número de tarjeta " + dataInput.codeClient);
