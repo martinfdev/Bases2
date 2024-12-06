@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  mongo-server:
+    image: mongodb/mongodb-community-server
+    container_name: mongo-server
+    ports:
+      - "27017:27017"  # Exponiendo el puerto para conexiones externas
+    volumes:
+      - ./mongo-data:/data/db  # Volumen para persistir los datos
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin  # Usuario administrador
+      MONGO_INITDB_ROOT_PASSWORD: admin123  # Contraseña administrador
+    networks:
+      - mongo-network
+
+  mongo-client:
+    image: mongo:6.0
+    container_name: mongo-client
+    command: ["mongosh", "mongodb://admin:admin123@mongo-server:27017"]
+    networks:
+      - mongo-network
+
+networks:
+  mongo-network:
+    driver: bridge
