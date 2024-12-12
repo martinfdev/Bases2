@@ -7,7 +7,6 @@ const PrivateRoute = ({ children, roles }) => {
   const location = useLocation()
 
   if (loading) {
-    // Puedes reemplazar esto con un componente de carga personalizado
     return <div>Cargando...</div>
   }
 
