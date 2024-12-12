@@ -7,7 +7,7 @@ load_dotenv()
 #     try:
 #         # Conexión al servidor SQL con autenticación SQL
 #         connection_string = (
-#             f'DRIVER={{ODBC Driver 17 for SQL Server}};'
+#             f'DRIVER={os.getenv("DRIVER")};'
 #             f'SERVER={os.getenv("SERVER")};'
 #             f'DATABASE={os.getenv("DATABASE")};'
 #             f'UID={os.getenv("USERNAME")};'

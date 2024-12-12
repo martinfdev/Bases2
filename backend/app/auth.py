@@ -4,6 +4,7 @@ import bcrypt
 import pyodbc
 import jwt
 from app.connection import get_db_connection
+from app.decorators import token_required
 auth_bp = Blueprint('auth', __name__)
 
 email_regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
@@ -11,7 +12,7 @@ email_regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
 @auth_bp.route('/register', methods=['POST'])
 def register_user():
     data = request.get_json()
-    required_fields = ['nombres','apellidos','correo','contrasena','id_rol','telefono','dpi','direccion','fecha_ingreso','id_especialidad','fecha_vencimiento_colegiado','estado']
+    required_fields = ['nombres','apellidos','correo','contrasena','id_rol','telefono','dpi','genero','direccion','fecha_ingreso','id_especialidad','fecha_vencimiento_colegiado','estado']
     for field in required_fields:
         if field not in data:
             return jsonify({"error": f"Field {field} is required"}), 400
@@ -22,6 +23,7 @@ def register_user():
     id_rol = data['id_rol'] #maneja diversos tipos de usuarios: doc, enfermera, admin, programador
     telefono = data['telefono']
     dpi = data['dpi']
+    genero = data['genero']
     direccion = data['direccion']
     fecha_ingreso = data['fecha_ingreso']
     id_especialidad = data['id_especialidad']
@@ -46,9 +48,9 @@ def register_user():
             return jsonify({"Error": "El correo electronico/dpi ya existe"}), 409
         # Inserción de datos en la tabla Usuarios
         print(cursor)
-        cursor.execute(''' INSERT INTO Usuario (nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado)
-                        VALUES(?,?,?,?,?,?,?,?,?,?,?,?)
-                       ''',(nombres, apellidos, correo, hashed_password.decode('utf-8'), id_rol, telefono, dpi, direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado))
+        cursor.execute(''' INSERT INTO Usuario (nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, genero ,direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado)
+                        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)
+                       ''',(nombres, apellidos, correo, hashed_password.decode('utf-8'), id_rol, telefono, dpi, genero, direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado))
         conn.commit()
         cursor.close()
         conn.close()
@@ -88,3 +90,36 @@ def login_user():
         return jsonify({"message": "Login exitoso", "token": token}), 200
     else:
         return jsonify({"Error": "Correo/DPI o contraseña son inválidos"}), 401
+    
+
+@auth_bp.route('/me', methods=['GET'])
+@token_required
+def decoder(current_user):
+    id_user = current_user['id_usuario']
+    dpi = current_user['dpi']
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT id_usuario, nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, genero, direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado FROM Usuario 
+        WHERE id_usuario = ? OR dpi = ?
+    ''',(id_user, dpi))
+    userData = cursor.fetchone()
+    listData = list(userData)
+    conn.close()
+    dataUser= {
+        "id_usuario": listData[0],
+        "nombres": listData[1],
+        "apellidos": listData[2],
+        "correo": listData[3],
+        "contrasena": listData[4],
+        "id_rol": listData[5],
+        "telefono":listData[6],
+        "dpi": listData[7],
+        "genero": listData[8],
+        "direccion": listData[9],
+        "fecha_ingreso": listData[10],
+        "id_especialidad": listData[11],
+        "fecha_vencimiento_colegiado": listData[12],
+        "estado":listData[13]
+        }
+    return jsonify(dataUser), 200
