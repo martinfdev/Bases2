@@ -66,3 +66,11 @@ CREATE TABLE AreaUsuario(
 	FOREIGN KEY (id_area) REFERENCES Area(id_area),
 	FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
 );
+
+
+CREATE TABLE PacienteEnfermera(
+	id_paciente INT,
+	id_usuario INT,
+	FOREIGN KEY (id_paciente) REFERENCES Paciente(id_paciente),
+	FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
