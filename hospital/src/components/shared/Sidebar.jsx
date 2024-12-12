@@ -42,7 +42,7 @@ const Sidebar = ({ menuItems }) => {
             >
                 <div className="p-4">
                     <h1 className="text-2xl font-bold text-center">
-                        AYD - {user?.role.charAt(0).toUpperCase() + user?.role.slice(1)}
+                        Hospital - {user?.role.charAt(0).toUpperCase() + user?.role.slice(1)}
                     </h1>
                 </div>
                 <nav className="mt-10">
