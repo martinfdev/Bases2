@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
-//local imports
-import { loginUser } from '../../services/authService'
+import { loginUser } from '../../services/authUser'
 
 const LoginForm = () => {
   
