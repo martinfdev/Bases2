@@ -1,12 +1,13 @@
-import { useState } from 'react'
-
-import { loginUser } from '../../services/authUser'
+import { useState, useEffect } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { useAuth } from '../../hooks/useAuth'
 
 const LoginForm = () => {
-  
+  const { login, user } = useAuth()
+  const navigate = useNavigate()
   const [credentials, setCredentials] = useState({
-    email: '',
-    password: '',
+    identificador: '',
+    contrasena: '',
   })
 
   const [errors, setErrors] = useState({})
@@ -21,15 +22,15 @@ const LoginForm = () => {
 
   const validate = () => {
     let tempErrors = {}
-    if (!credentials.email) {
-      tempErrors.email = 'El correo electrónico es requerido.'
-    } else if (!/\S+@\S+\.\S+/.test(credentials.email)) {
-      tempErrors.email = 'El correo electrónico es inválido.'
+    if (!credentials.identificador) {
+      tempErrors.identificador = 'El correo electrónico es requerido.'
+    } else if (!/\S+@\S+\.\S+/.test(credentials.identificador)) {
+      tempErrors.identificador = 'El correo electrónico es inválido.'
     }
-    if (!credentials.password) {
-      tempErrors.password = 'La contraseña es requerida.'
-    } else if (credentials.password.length < 6) {
-      tempErrors.password = 'La contraseña debe tener al menos 6 caracteres.'
+    if (!credentials.contrasena) {
+      tempErrors.contrasena = 'La contraseña es requerida.'
+    } else if (credentials.contrasena.length < 6) {
+      tempErrors.contrasena = 'La contraseña debe tener al menos 6 caracteres.'
     }
     return tempErrors
   }
@@ -41,18 +42,25 @@ const LoginForm = () => {
     if (Object.keys(validationErrors).length === 0) {
       setIsSubmitting(true)
       try {
-        
-        console.log('Credenciales enviadas:', credentials)
-        await loginUser(credentials)
-        // Redirigir o realizar otras acciones tras el inicio de sesión exitoso
+        await login(credentials)
       } catch (error) {
         console.error('Error al iniciar sesión:', error)
-        // Manejar errores de inicio de sesión
+        setErrors({ submit: error.message })
       } finally {
         setIsSubmitting(false)
       }
     }
   }
+
+  useEffect(() => {
+    if (user) {
+      if (user.id_rol === 1) { // Supongamos 1 es admin
+        navigate('/admin')
+      } else {
+        navigate('/')
+      }
+    }
+  }, [user, navigate])
 
   return (
     <div className=" flex items-center justify-center bg-gray-100 p-4">
@@ -63,25 +71,24 @@ const LoginForm = () => {
         <form onSubmit={handleSubmit} noValidate>
           {/* Campo de Correo Electrónico */}
           <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-600 mb-2">
+            <label htmlFor="identificador" className="block text-gray-600 mb-2">
               Correo Electrónico
             </label>
             <input
-              type="email"
-              name="email"
-              id="email"
-              value={credentials.email}
+              type="identificador"
+              name="identificador"
+              id="identificador"
+              value={credentials.identificador}
               onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-                errors.email
+              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 ${errors.identificador
                   ? 'border-red-500 focus:ring-red-200'
                   : 'border-gray-300 focus:ring-blue-200'
-              }`}
+                }`}
               placeholder="tucorreo@ejemplo.com"
               required
             />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            {errors.identificador && (
+              <p className="text-red-500 text-sm mt-1">{errors.identificador}</p>
             )}
           </div>
 
@@ -91,41 +98,36 @@ const LoginForm = () => {
             </label>
             <input
               type="password"
-              name="password"
-              id="password"
-              value={credentials.password}
+              name="contrasena"
+              id="contrasena"
+              value={credentials.contrasena}
               onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-                errors.password
+              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 ${errors.contrasena
                   ? 'border-red-500 focus:ring-red-200'
                   : 'border-gray-300 focus:ring-blue-200'
-              }`}
+                }`}
               placeholder="********"
               required
             />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+            {errors.contrasena && (
+              <p className="text-red-500 text-sm mt-1">{errors.contrasena}</p>
             )}
           </div>
 
           <button
             type="submit"
-            className={`w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200 ${
-              isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            className={`w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             disabled={isSubmitting}
           >
             {isSubmitting ? 'Iniciando Sesión...' : 'Iniciar Sesión'}
           </button>
         </form>
 
-        <div className="mt-6 text-center">
-          <a
-            href="#"
-            className="text-blue-600 hover:underline text-sm"
-          >
+        <div className="mt-4 text-center">
+          <Link to="/forgot-password" className="text-blue-600 hover:underline">
             ¿Olvidaste tu contraseña?
-          </a>
+          </Link>
         </div>
       </div>
     </div>
