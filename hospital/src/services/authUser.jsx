@@ -11,7 +11,7 @@ import {dataLogin, dataUser} from '../test/testData' //this is just for testing 
 
 export async function loginUser(credentials) {
     try {
-        // const response = await fetch(`${API_BASE_URL}/login`, {
+        // const response = await fetch(`${API_URL}/auth/login`, {
         //   method: 'POST',
         //   headers: {
         //     'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export async function loginUser(credentials) {
 
 export async function getUserData() {
     try {
-        // const response = await fetch(`${API_BASE_URL}/me`, {
+        // const response = await fetch(`${API_URL}/me`, {
         //   headers: {
         //     Authorization: `Bearer ${localStorage.getItem('token')}`,
         //   },
@@ -63,3 +63,35 @@ export async function getUserData() {
         throw error
       }
 }
+
+/**
+ * User registration request to the server
+ * @param {*} user - object containing user data
+ * @returns a promise that resolves to the user data if the registration is successful
+ * @throws an error if the registration fails
+ */
+
+export async function registerUser(user) {
+    try {
+        // const response = await fetch(`${API_URL}/auth/register`, {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //   },
+        //   body: JSON.stringify(user),
+        // })
+    
+        // const data = await response.json()
+    
+        // if (!response.ok) {
+        //   throw new Error(response.error || 'Error en el registro de usuario.')
+        // }
+
+        const data = dataUser
+        return data
+      } catch (error) {
+        console.error('Error en el registro de usuario:', error)
+        throw error
+      }
+}
+ 
