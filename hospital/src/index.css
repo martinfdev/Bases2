@@ -2,28 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-@keyframes gradient-flow {
-    0% {
-      background-position: 0% 50%;
-    }
-    25% {
-      background-position: 50% 0%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    75% {
-      background-position: 50% 100%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+@keyframes subtle-flow {
+  0% {
+    background-position: 0% 0%;
   }
-  
-  .animate-gradient-blur {
-    background: linear-gradient(135deg, #6a1b9a, #283593, #1c1c1c, #1b5e20);
-    background-size: 300% 300%;
-    animation: gradient-flow 20s ease infinite;
-    filter: blur(8px);
+  50% {
+    background-position: 100% 100%;
   }
-  
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+.animate-gradient-bg {
+  background: linear-gradient(150deg, #1E293B, #6366F1, #3B82F6, #1E293B);
+  background-size: 300% 300%;
+  animation: subtle-flow 120s ease-in-out infinite;
+  filter: blur(10px);
+}
