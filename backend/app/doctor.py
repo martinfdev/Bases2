@@ -6,9 +6,9 @@ import pyodbc
 import re
 doctor_bp = Blueprint('doctor', __name__)
 
-@doctor_bp.route('/admin', methods=['GET']) #dashbord para el administrador
+@doctor_bp.route('/dashboard', methods=['GET']) #dashbord para el administrador
 @token_required
 @doctor_required
 def admin_route(current_user):
     print(current_user)
-    return jsonify({"message": f"Welcome doctor, user {current_user['nombre_usuario']}!"}), 200
+    return jsonify({"message": f"Welcome doctor, user {current_user['nombres']}!"}), 200
