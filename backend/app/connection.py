@@ -20,6 +20,8 @@ load_dotenv()
 #         return None
     
 
+load_dotenv()
+
 def get_db_connection():
     try:
         # Conexión al servidor SQL con autenticación de Windows

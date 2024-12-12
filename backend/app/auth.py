@@ -7,6 +7,7 @@ from app.connection import get_db_connection
 auth_bp = Blueprint('auth', __name__)
 
 email_regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+
 @auth_bp.route('/register', methods=['POST'])
 def register_user():
     data = request.get_json()
@@ -37,15 +38,17 @@ def register_user():
         return jsonify({"error": "Error al conectarse con la base de datos"}), 500
     cursor = conn.cursor()
     try:
-        # Verificar si el email ya exite
-        cursor.execute('SELECT * FROM Usuario WHERE correo = ?', (correo))
+        print("entro al try")
+        # Verificar si el email o dpi ya exite
+        cursor.execute('SELECT * FROM Usuario WHERE dpi = ? OR correo = ?', (dpi, correo))
         user_exists = cursor.fetchone()
         if user_exists:
-            return jsonify({"Error": "El correo electronico ya existe"}), 409
+            return jsonify({"Error": "El correo electronico/dpi ya existe"}), 409
         # Inserción de datos en la tabla Usuarios
+        print(cursor)
         cursor.execute(''' INSERT INTO Usuario (nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado)
                         VALUES(?,?,?,?,?,?,?,?,?,?,?,?)
-                       '''),(nombres, apellidos, correo, hashed_password.decode('utf-8'), id_rol, telefono, dpi, direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado)
+                       ''',(nombres, apellidos, correo, hashed_password.decode('utf-8'), id_rol, telefono, dpi, direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado))
         conn.commit()
         cursor.close()
         conn.close()
@@ -53,8 +56,7 @@ def register_user():
     except pyodbc.IntegrityError as e:
         return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
     except Exception as e:
-        # Manejar otros errores
-        return 500
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
     
 
 @auth_bp.route('/login', methods=['POST'])
@@ -69,7 +71,7 @@ def login_user():
     cursor.execute(''' 
         SELECT id_usuario, contrasena, id_rol, dpi, id_especialidad, estado 
         FROM Usuario
-        WHERE email = ? OR dpi = ?
+        WHERE correo = ? OR dpi = ?
     ''', (identificador, identificador))
     user = cursor.fetchone()
     if user and bcrypt.checkpw(contrasena.encode('utf-8'), user[1].encode('utf-8')):
