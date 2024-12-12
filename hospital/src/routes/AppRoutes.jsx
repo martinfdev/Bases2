@@ -13,17 +13,17 @@ const AppRouter = () => {
         <Route path="/login" element={<LoginPage />} />
           
         {/* Rutas Protegidas para Admin */}
-        {/* <Route path='/admin' element={<PrivateRoute roles={[1]} children={<AdminLayout />} />}>
+        { <Route path='admin/' element={ <PrivateRoute roles={[1]}><AdminLayout /></PrivateRoute>}>
           <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<Reports />} />
-          <Route path="users/create" element={<CreateUser />} />
-          <Route path="users/list" element={<ListUsers />} />
-          <Route path="users/inactive" element={<InactiveUsers />} />
-          <Route path="users/modify-space" element={<ModifySpace />} />
-          <Route path="notifications" element={<Notifications />} />
-          <Route path="requests" element={<ListRequest />} />
+          <Route path="dashboard" element={<NotFound />} />
+          <Route path="users/create" element={<NotFound />} />
+          <Route path="users/list" element={<NotFound />} />
+          <Route path="users/inactive" element={<NotFound />} />
+          <Route path="users/modify-space" element={<NotFound />} />
+          <Route path="notifications" element={<NotFound />} />
+          <Route path="requests" element={<NotFound />} />
           <Route path="*" element={<NotFound />} />
-        </Route> */}
+        </Route> }
   
   
         {/* Rutas Protegidas para Empleados y Clientes */}
