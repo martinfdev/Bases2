@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
-from app.connection import get_db_connection
-from app.decorators import token_required, doctor_required
+from CONFIG.connection import get_db_connection_SQLSERVER
+from CONFIG.decorators import token_required, doctor_required
 import bcrypt
 import pyodbc
 import re

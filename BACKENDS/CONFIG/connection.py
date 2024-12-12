@@ -22,10 +22,10 @@ load_dotenv()
 
 load_dotenv()
 
-def get_db_connection():
+def get_db_connection_SQLSERVER():
     try:
         # Conexión al servidor SQL con autenticación de Windows
-        conexion = pyodbc.connect(f'DRIVER={{SQL Server}};SERVER={os.getenv("SERVER")};DATABASE={os.getenv("DATABASE")};Trusted_Connection=yes;', autocommit=True)
+        conexion = pyodbc.connect(f'DRIVER={os.getenv("DRIVERSQL")};SERVER={os.getenv("SERVERSQL")};DATABASE={os.getenv("DATABASESQL")};Trusted_Connection=yes;', autocommit=True)
         return conexion
     except pyodbc.Error as e:
         print(f"Error al conectar a SQL Server: {e}")
