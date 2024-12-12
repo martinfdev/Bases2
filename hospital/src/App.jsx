@@ -1,12 +1,14 @@
-
-//local imports
-import LoginPage from './pages/LoginPage'
+import { BrowserRouter } from 'react-router'
+import AppRoutes from './routes/AppRoutes'
+import {AuthProvider} from './context/AuthContext'
 
 function App() {
   return (
-    <>
-      <LoginPage />
-    </>
+    <AuthProvider>
+      <BrowserRouter>
+        <AppRoutes/>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 
