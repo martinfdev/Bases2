@@ -1,7 +1,12 @@
-import { useState, useEffect } from 'react'
+import { createContext, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { getUserData, loginUser } from '../services/authService'
-import { AuthContext } from './AuthContext'
+import { getUserData, loginUser } from '../services/authUser'
+
+export const AuthContext = createContext({
+  user: null,
+  login: () => {},
+  logout: () => {},
+})
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
