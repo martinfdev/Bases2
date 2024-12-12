@@ -4,7 +4,7 @@ import { getUserData, loginUser } from '../services/authUser'
 
 export const AuthContext = createContext({
   user: null,
-  login: () => {},
+  login: () => Promise.resolve(),
   logout: () => {},
 })
 
@@ -30,7 +30,6 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       await loginUser(credentials)
-      // loginUser almacena el token en localStorage
       const userData = await getUserData()
       setUser(userData)
     } catch (error) {
@@ -40,7 +39,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   const logout = () => {
-    localStorage.removeItem('authToken')
+    localStorage.removeItem('token')
     setUser(null)
   }
 
