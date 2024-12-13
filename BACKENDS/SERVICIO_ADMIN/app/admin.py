@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from datetime import datetime
 import sys
 import os
 config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
@@ -235,6 +236,60 @@ def eliminacion_usuario(current_user):
         return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
     except Exception as e:
         #save_log_param("eliminacion", "ERROR", "eliminacion_usuario", "Admin_Controller", "Error inesperado")
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+
+@admin_bp.route('/consulta_usuario', methods=['POST'])
+@token_required
+@admin_required
+def consulta_usuario(current_user):
+    data = request.get_json()
+    field = 'dpi'
+    if field not in data:
+        #save_log_param("consulta", "ERROR", "consulta_usuario", "Admin_Controller", "f"Field {field} is required"")
+        return jsonify({"error": f"Field {field} is required"}), 400
+    dpi = data['dpi']
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        #save_log_param("consulta", "ERROR", "consulta_usuario", "Admin_Controller", "Error al conectarse con la base de datos")
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        # Verificar si dpi existe
+        cursor.execute('SELECT * FROM Usuario WHERE dpi = ?', (dpi))
+        user = cursor.fetchone()
+        if not user:
+            #save_log_param("consulta", "ERROR", "consulta_usuario", "Admin_Controller", "La Especialidad ya existe")
+            return jsonify({"Error": "El DPI no existe"}), 409
+        
+        cursor.execute('SELECT especialidad FROM Especialidad WHERE id_especialidad = ?', (user[11]))
+        especialidad = cursor.fetchone()[0]
+        # Inserción de datos en la tabla Especialidad
+        usuario_data = {
+            "nombres": user[1],
+            "apellidos": user[2],
+            "correo": user[3],
+            "rol": user[5],
+            "telefono": user[6],
+            "dpi": user[7],
+            "genero": user[8],
+            "direccion": user[9],
+            "fecha_ingreso": user[10],
+            "especialidad": especialidad,
+            "fecha_vencimiento_colegiado": user[12]
+        }
+        conn.commit()
+        cursor.close()
+        conn.close()
+        #save_log_param("consulta", "INFO", "consulta_usuario", "Admin_Controller", "Exito, Usuario Eliminado Correctamente")
+        return jsonify({
+            "message": "Usuario encontrado",
+            "user": usuario_data
+        }), 200
+    except pyodbc.IntegrityError as e:
+        #save_log_param("consulta", "ERROR", "consulta_usuario", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
+        return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
+    except Exception as e:
+        #save_log_param("consulta", "ERROR", "consulta_usuario", "Admin_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
 
 '''
