@@ -1,0 +1,2 @@
+-- Usuarios Desarrolladores
+INSERT INTO Usuario (nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, genero, direccion, fecha_ingreso, estado )VALUES('Eduardo Alexander', 'Reyes Gonzalez', 'eduardoalex2000@hotmail.com','Eduardo202010904', 4,'35958027','3013805890101','Masculino','Ciudad de Guatemala','2024/12/13',1);

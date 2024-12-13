@@ -31,6 +31,10 @@ CREATE TABLE Usuario (
 );
 
 
+INSERT INTO Usuario (nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, genero, direccion, fecha_ingreso, estado )VALUES
+("Eduardo Alexander", "Reyes Gonzalez", "eduardoalex2000@hotmail.com", 4,"35958027","3013805890101","Masculino","2024/12/13",1)
+
+
 
 CREATE TABLE ContactoEmergencia (
     id_contacto INT PRIMARY KEY IDENTITY(1,1),
