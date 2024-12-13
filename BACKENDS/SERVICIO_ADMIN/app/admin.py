@@ -199,6 +199,44 @@ def actualizar_usuario(current_user):
         #save_log_param("update", "ERROR", "actualizar_usuario", "Admin_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
 
+@admin_bp.route('/eliminacion_usuario', methods=['DELETE'])
+@token_required
+@admin_required
+def eliminacion_usuario(current_user):
+    data = request.get_json()
+    field = 'dpi'
+    if field not in data:
+        #save_log_param("eliminacion", "ERROR", "eliminacion_usuario", "Admin_Controller", "f"Field {field} is required"")
+        return jsonify({"error": f"Field {field} is required"}), 400
+    dpi = data['dpi']
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        #save_log_param("eliminacion", "ERROR", "eliminacion_usuario", "Admin_Controller", "Error al conectarse con la base de datos")
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        # Verificar si dpi existe
+        cursor.execute('SELECT * FROM Usuario WHERE dpi = ?', (dpi))
+        dpi_exists = cursor.fetchone()
+        if not dpi_exists:
+            #save_log_param("eliminacion", "ERROR", "eliminacion_usuario", "Admin_Controller", "La Especialidad ya existe")
+            return jsonify({"Error": "El DPI no existe"}), 409
+        # Inserción de datos en la tabla Especialidad
+        cursor.execute(''' DELETE FROM Usuario 
+                            WHERE dpi = ?
+                       ''',(dpi))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        #save_log_param("eliminacion", "INFO", "eliminacion_usuario", "Admin_Controller", "Exito, Usuario Eliminado Correctamente")
+        return jsonify({"message": "Usuario Eliminado Correctamente"}), 201
+    except pyodbc.IntegrityError as e:
+        #save_log_param("eliminacion", "ERROR", "eliminacion_usuario", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
+        return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
+    except Exception as e:
+        #save_log_param("eliminacion", "ERROR", "eliminacion_usuario", "Admin_Controller", "Error inesperado")
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+
 '''
 
 BAKEND
