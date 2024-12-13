@@ -1,10 +1,16 @@
 from flask import Blueprint, jsonify, request
+import sys
+import os
+config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
+sys.path.append(config_path)
 from CONFIG.connection import get_db_connection_SQLSERVER
 from CONFIG.decorators import token_required, admin_required
 import bcrypt
 import pyodbc
 import re
+from REDIS.logs import save_log_param
 admin_bp = Blueprint('admin', __name__)
+
 
 @admin_bp.route('/dashboard', methods=['GET']) #dashbord para el administrador
 @token_required
@@ -63,10 +69,13 @@ def register_user(current_user):
         conn.commit()
         cursor.close()
         conn.close()
+        #save_log_param("Insercion", "INFO", "register", "Admin_Controller", "Exito, Usuario registrado Correctamente")
         return jsonify({"message": "Usuario registrado correctamente"}), 201
     except pyodbc.IntegrityError as e:
+        #save_log_param("Insercion", "ERROR", "register", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
         return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
     except Exception as e:
+        #save_log_param("Insercion", "ERROR", "register", "Admin_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
     
 

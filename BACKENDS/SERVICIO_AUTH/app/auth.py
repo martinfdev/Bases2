@@ -3,8 +3,10 @@ import re
 import bcrypt
 import pyodbc
 import jwt
+
 from CONFIG.connection import get_db_connection_SQLSERVER
 from CONFIG.decorators import token_required
+from REDIS.logs import save_log_param
 auth_bp = Blueprint('auth', __name__)
    
 
@@ -34,8 +36,10 @@ def login_user():
             'id_rol': user[2],
             'dpi': user[3]
         }, current_app.config['SECRET_KEY'], algorithm='HS256')
+        #save_log_param("Login", "INFO", "Login", "Auth_Controller", "Exito. Login Exitoso")
         return jsonify({"message": "Login exitoso", "token": token}), 200
     else:
+        #save_log_param("Login", "ERROR", "Login", "Auth_Controller", "Error. Correo/DPI o contraseña son inválidos")
         return jsonify({"Error": "Correo/DPI o contraseña son inválidos"}), 401
     
 
