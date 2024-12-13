@@ -292,14 +292,43 @@ def consulta_usuario(current_user):
         #save_log_param("consulta", "ERROR", "consulta_usuario", "Admin_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
 
-'''
+@admin_bp.route('/insertar_area', methods=['POST'])
+@token_required
+@admin_required
+def insertar_area(current_user):
+    data = request.get_json()
+    required_fields = ['nombre_area','capacidad']
+    for field in required_fields:
+        if field not in data:
+            #save_log_param("Insercion", "ERROR", "insertar_area", "Admin_Controller", f"Field {field} is required")
+            return jsonify({"error": f"Field {field} is required"}), 400
+    nombre_area = data['nombre_area']
+    capacidad = data['capacidad']
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        #save_log_param("Insercion", "ERROR", "insertar_area", "Admin_Controller", "Error al conectarse con la base de datos")
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        # Verificar si area existe
+        cursor.execute('SELECT * FROM Area WHERE nombre_area = ?', (nombre_area))
+        nombre_exists = cursor.fetchone()
+        if nombre_exists:
+            #save_log_param("Insercion", "ERROR", "insertar_area", "Admin_Controller", "Area ya existe")
+            return jsonify({"Error": "Area ya existe"}), 409
+        # Inserción de datos en la tabla Especialidad
+        cursor.execute(''' INSERT INTO Area (nombre_area, capacidad)
+                        VALUES(?,?)
+                       ''',(nombre_area, capacidad))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        #save_log_param("Insercion", "INFO", "insertar_area", "Admin_Controller", "Exito, Area registrada Correctamente")
+        return jsonify({"message": "Especialidad registrada Correctamente"}), 201
+    except pyodbc.IntegrityError as e:
+        #save_log_param("Insercion", "ERROR", "insertar_area", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
+        return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
+    except Exception as e:
+        #save_log_param("Insercion", "ERROR", "insertar_area", "Admin_Controller", "Error inesperado")
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
 
-BAKEND
----SERVICIO_AUTH
----SERVICIO_REDIS
----SERVICIO_ADMIN
----SERVICIO_DOCTOR
----SERVICIO_ENFERMERA
-
-
-'''
