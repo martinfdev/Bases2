@@ -80,8 +80,40 @@ def register_user(current_user):
     
 
 
-
-
+@admin_bp.route('/insertar_especialidad', methods=['POST'])
+@token_required
+@admin_required
+def insertar_especialidad(current_user):
+    data = request.get_json()
+    field = 'especialidad'
+    if field not in data:
+        return jsonify({"error": f"Field {field} is required"}), 400
+    especialidad = data['especialidad']
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        # Verificar si especialidad existe
+        cursor.execute('SELECT * FROM Especialidad WHERE especialidad = ?', (especialidad))
+        especialidad_exists = cursor.fetchone()
+        if especialidad_exists:
+            return jsonify({"Error": "La Especialidad ya existe"}), 409
+        # Inserción de datos en la tabla Especialidad
+        cursor.execute(''' INSERT INTO Especialidad (especialidad)
+                        VALUES(?)
+                       ''',(especialidad))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        #save_log_param("Insercion", "INFO", "insertar_especialidad", "Admin_Controller", "Exito, Especialidad registrada Correctamente")
+        return jsonify({"message": "Especialidad registrada Correctamente"}), 201
+    except pyodbc.IntegrityError as e:
+        #save_log_param("Insercion", "ERROR", "insertar_especialidad", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
+        return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
+    except Exception as e:
+        #save_log_param("Insercion", "ERROR", "insertar_especialidad", "Admin_Controller", "Error inesperado")
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
 
 '''
 
