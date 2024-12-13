@@ -280,7 +280,7 @@ def consulta_usuario(current_user):
         conn.commit()
         cursor.close()
         conn.close()
-        #save_log_param("consulta", "INFO", "consulta_usuario", "Admin_Controller", "Exito, Usuario Eliminado Correctamente")
+        #save_log_param("consulta", "INFO", "consulta_usuario", "Admin_Controller", "Exito, Consulta Realizada")
         return jsonify({
             "message": "Usuario encontrado",
             "user": usuario_data
