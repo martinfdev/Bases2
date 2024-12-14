@@ -123,6 +123,45 @@ def insertar_especialidad(current_user):
         #save_log_param("Insercion", "ERROR", "insertar_especialidad", "Admin_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
 
+@admin_bp.route('/obtener_especialidades', methods=['GET'])
+@token_required
+@admin_required
+def obtener_especialidades(current_user):
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        #save_log_param("Consulta", "ERROR", "obtener_especialidades", "Admin_Controller", "Error al conectarse con la base de datos")
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        # Verificar si especialidad existe
+        cursor.execute('SELECT * FROM Especialidad')
+        especialidades = cursor.fetchall()
+        print(especialidades)
+        if not especialidades:
+            #save_log_param("Consulta", "INFO", "obtener_especialidades", "Admin_Controller", "No hay Especialidades")
+            return jsonify({"message": "No hay Especialidades"}), 409
+        
+
+        cursor.close()
+        conn.close()
+        
+        especialidades_json = [
+            {
+                "especialidad": row[1]
+            } for row in especialidades
+        ]
+        
+        #save_log_param("Consulta", "INFO", "obtener_especialidades", "Admin_Controller", "consulta realizada con exito")
+        return jsonify({"message": especialidades_json}), 201
+        
+
+    except pyodbc.IntegrityError as e:
+        #save_log_param("Insercion", "ERROR", "insertar_especialidad", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
+        return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
+    except Exception as e:
+        #save_log_param("Insercion", "ERROR", "insertar_especialidad", "Admin_Controller", "Error inesperado")
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+
 
 @admin_bp.route('/actualizar_usuario', methods=['PUT'])
 @token_required
