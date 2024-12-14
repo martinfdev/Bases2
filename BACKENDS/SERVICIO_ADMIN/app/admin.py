@@ -356,7 +356,7 @@ def insertar_area(current_user):
         if nombre_exists:
             #save_log_param("Insercion", "ERROR", "insertar_area", "Admin_Controller", "Area ya existe")
             return jsonify({"Error": "Area ya existe"}), 409
-        # Inserción de datos en la tabla Especialidad
+        # Inserción de datos en la tabla Area
         cursor.execute(''' INSERT INTO Area (nombre_area, capacidad)
                         VALUES(?,?)
                        ''',(nombre_area, capacidad))
@@ -364,7 +364,7 @@ def insertar_area(current_user):
         cursor.close()
         conn.close()
         #save_log_param("Insercion", "INFO", "insertar_area", "Admin_Controller", "Exito, Area registrada Correctamente")
-        return jsonify({"message": "Especialidad registrada Correctamente"}), 201
+        return jsonify({"message": "Area registrada Correctamente"}), 201
     except pyodbc.IntegrityError as e:
         #save_log_param("Insercion", "ERROR", "insertar_area", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
         return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
@@ -372,3 +372,129 @@ def insertar_area(current_user):
         #save_log_param("Insercion", "ERROR", "insertar_area", "Admin_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
 
+@admin_bp.route('/editar_area', methods=['PUT'])
+@token_required
+@admin_required
+def editar_area(current_user):
+    data = request.get_json()
+    required_fields = ['nombre_area','capacidad', 'nuevo_nombre_area']
+    for field in required_fields:
+        if field not in data:
+            #save_log_param("update", "ERROR", "editar_area", "Admin_Controller", f"Field {field} is required")
+            return jsonify({"error": f"Field {field} is required"}), 400
+    nombre_area = data['nombre_area']
+    capacidad = data['capacidad']
+    nuevo_nombre_area = data['nuevo_nombre_area']
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        #save_log_param("update", "ERROR", "editar_area", "Admin_Controller", "Error al conectarse con la base de datos")
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        # Verificar si area existe
+        cursor.execute('SELECT * FROM Area WHERE nombre_area = ?', (nombre_area))
+        nombre_exists = cursor.fetchone()
+        if not nombre_exists:
+            #save_log_param("update", "ERROR", "editar_area", "Admin_Controller", "Area no existe")
+            return jsonify({"Error": "Area no existe"}), 409
+        # Inserción de datos en la tabla Especialidad
+        cursor.execute(''' UPDATE Area 
+                        SET
+                            nombre_area = ?,
+                            capacidad = ?
+                        WHERE nombre_area = ?
+                       ''',(nuevo_nombre_area, capacidad, nombre_area))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        #save_log_param("Insercion", "INFO", "insertar_area", "Admin_Controller", "Exito, Area registrada Correctamente")
+        return jsonify({"message": "Area editada Correctamente"}), 201
+    except pyodbc.IntegrityError as e:
+        #save_log_param("Insercion", "ERROR", "insertar_area", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
+        return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
+    except Exception as e:
+        #save_log_param("Insercion", "ERROR", "insertar_area", "Admin_Controller", "Error inesperado")
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+
+@admin_bp.route('/eliminar_area', methods=['DELETE'])
+@token_required
+@admin_required
+def eliminar_area(current_user):
+    data = request.get_json()
+    field = 'nombre_area'
+    if field not in data:
+        #save_log_param("eliminacion", "ERROR", "eliminar_area", "Admin_Controller", "f"Field {field} is required"")
+        return jsonify({"error": f"Field {field} is required"}), 400
+    nombre_area = data['nombre_area']
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        #save_log_param("eliminacion", "ERROR", "eliminar_area", "Admin_Controller", "Error al conectarse con la base de datos")
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        # Verificar si area existe
+        cursor.execute('SELECT * FROM Area WHERE nombre_area = ?', (nombre_area))
+        nombre_exists = cursor.fetchone()
+        if not nombre_exists:
+            #save_log_param("eliminacion", "ERROR", "eliminar_area", "Admin_Controller", "Area no existe")
+            return jsonify({"Error": "Area no existe"}), 409
+        # Inserción de datos en la tabla Especialidad
+        cursor.execute(''' DELETE FROM Area 
+                        WHERE nombre_area = ?
+                       ''',(nombre_area))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        #save_log_param("eliminacion", "INFO", "eliminar_area", "Admin_Controller", "Exito, Area Eliminada Correctamente")
+        return jsonify({"message": "Area Eliminada Correctamente"}), 201
+    except pyodbc.IntegrityError as e:
+        #save_log_param("eliminacion", "ERROR", "eliminar_area", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
+        return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
+    except Exception as e:
+        #save_log_param("eliminacion", "ERROR", "eliminar_area", "Admin_Controller", "Error inesperado")
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+
+@admin_bp.route('/consultar_area', methods=['POST'])
+@token_required
+@admin_required
+def consultar_area(current_user):
+    data = request.get_json()
+    field = 'nombre_area'
+    if field not in data:
+        #save_log_param("eliminacion", "ERROR", "eliminar_area", "Admin_Controller", "f"Field {field} is required"")
+        return jsonify({"error": f"Field {field} is required"}), 400
+    nombre_area = data['nombre_area']
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        #save_log_param("eliminacion", "ERROR", "eliminar_area", "Admin_Controller", "Error al conectarse con la base de datos")
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        # Verificar si area existe
+        cursor.execute('SELECT * FROM Area WHERE nombre_area = ?', (nombre_area))
+        area = cursor.fetchone()
+        if not area:
+            #save_log_param("eliminacion", "ERROR", "eliminar_area", "Admin_Controller", "Area no existe")
+            return jsonify({"Error": "Area no existe"}), 409
+
+        area_data = {
+            "nombre_area": area[1],
+            "capacidad": area[2]
+        }
+
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        #save_log_param("consulta", "INFO", "consulta_usuario", "Admin_Controller", "Exito, Consulta Realizada")
+        return jsonify(area_data), 200
+    
+        #save_log_param("eliminacion", "INFO", "eliminar_area", "Admin_Controller", "Exito, Area Eliminada Correctamente")
+        return jsonify({"message": "Area Eliminada Correctamente"}), 201
+    except pyodbc.IntegrityError as e:
+        #save_log_param("eliminacion", "ERROR", "eliminar_area", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
+        return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
+    except Exception as e:
+        #save_log_param("eliminacion", "ERROR", "eliminar_area", "Admin_Controller", "Error inesperado")
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
