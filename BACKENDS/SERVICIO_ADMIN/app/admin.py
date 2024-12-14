@@ -152,7 +152,7 @@ def obtener_especialidades(current_user):
         ]
         
         #save_log_param("Consulta", "INFO", "obtener_especialidades", "Admin_Controller", "consulta realizada con exito")
-        return jsonify({"message": especialidades_json}), 201
+        return jsonify({"especialidades": especialidades_json}), 201
         
 
     except pyodbc.IntegrityError as e:
@@ -195,7 +195,14 @@ def actualizar_usuario(current_user):
         return jsonify({"error": "Error al conectarse con la base de datos"}), 500
     cursor = conn.cursor()
     try:
-        print("entro al try")
+
+        #validacion existe correo
+        cursor.execute('SELECT * FROM Usuario WHERE dpi = ? ', (dpi))
+        user_exists = cursor.fetchone()
+        if not user_exists:
+            #save_log_param("update", "ERROR", "actualizar_usuario", "Admin_Controller", "El dpi  existe")
+            return jsonify({"Error": "El dpi no existe"}), 409
+        
         # Verificar si el email ya exite (para no insertar uno de otro usuario)
         cursor.execute('SELECT * FROM Usuario WHERE correo = ? AND dpi <> ?', (correo, dpi))
         user_exists = cursor.fetchone()
@@ -203,13 +210,7 @@ def actualizar_usuario(current_user):
             #save_log_param("update", "ERROR", "actualizar_usuario", "Admin_Controller", "El correo electronico ya existe")
             return jsonify({"Error": "El correo electronico ya existe"}), 409
         
-        #validacion existe correo
-        cursor.execute('SELECT * FROM Usuario WHERE dpi = ? ', (dpi))
-        user_exists = cursor.fetchone()
-        if not user_exists:
-            #save_log_param("update", "ERROR", "actualizar_usuario", "Admin_Controller", "El dpi  existe")
-            return jsonify({"Error": "El dpi  existe"}), 409 
-        
+        #validar si existe la especialidad
         cursor.execute('SELECT * FROM especialidad WHERE id_especialidad = ? ', (id_especialidad))
         especialidad_exist = cursor.fetchone()
         if not especialidad_exist:
