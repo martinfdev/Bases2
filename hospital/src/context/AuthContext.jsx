@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const initializeUser = async () => {
-      const token = localStorage.getItem('authToken')
+      const token = localStorage.getItem('token')
       if (token) {
         try {
           const userData = await getUserData()
