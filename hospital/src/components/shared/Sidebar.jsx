@@ -29,7 +29,6 @@ const Sidebar = ({ menuItems }) => {
 
     return (
         <>
-            {/* Botón para abrir el Sidebar en pantallas pequeñas */}
             <button
                 className="md:hidden p-4 focus:outline-none"
                 onClick={() => setIsOpen(!isOpen)}
@@ -37,7 +36,7 @@ const Sidebar = ({ menuItems }) => {
                 <FaBars size={24} />
             </button>
             <aside
-                className={`fixed top-0 left-0 h-full w-64 bg-white shadow-md transform ${isOpen ? 'translate-x-0' : '-translate-x-full'
+                className={` top-0 left-0 h-full w-64 bg-white shadow-md transform ${isOpen ? 'translate-x-0' : '-translate-x-full'
                     } transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:shadow-none`}
             >
                 <div className="p-4">
