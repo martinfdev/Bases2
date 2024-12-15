@@ -51,18 +51,18 @@ const AdminLayout = () => {
   
   
     return (
-      <div className="flex h-screen relative">
-        <Sidebar menuItems={menuItems} />
-        <div className="flex-1 flex flex-col">
-          {/* <Header panelName='Panel de Administración'/> */}
-          <main className="flex-1 p-6 bg-gray-100 overflow-auto">
-            <Outlet />
-          </main>
-          <div className='absolute bottom-0 left-0 w-full z-20'> 
-          {/* <Footer  /> */}
-          </div>
-        </div>
-      </div>
+      <div className="flex h-screen">
+  <Sidebar menuItems={menuItems} />
+  <div className="flex-1 flex flex-col">
+    <main className="flex-1 p-6 bg-gray-100 overflow-auto">
+      <Outlet />
+    </main>
+    <footer className="w-full">
+      {/* <Footer /> */}
+    </footer>
+  </div>
+</div>
+
     )
   }
   
