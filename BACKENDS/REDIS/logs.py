@@ -63,7 +63,7 @@ def delete_log():
     except Exception as e:
         return json.dumps({"error": str(e)})
 
-delete_log()
+
 #EJEMPLO DE USO OBTENER LOGS
 '''algo = get_log()
 algo_dict = json.loads(algo)

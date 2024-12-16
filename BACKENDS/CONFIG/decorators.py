@@ -48,3 +48,11 @@ def enfermera_required(f):
             return jsonify({'message': 'No tienes permiso para acceder a este recurso'}), 403
         return f(current_user, *args, **kwargs)
     return decorated
+
+def desarrollador_required(f):
+    @wraps(f)
+    def decorated(current_user, *args, **kwargs):
+        if current_user['id_rol'] != 4:
+            return jsonify({'message': 'No tienes permiso para acceder a este recurso'}), 403
+        return f(current_user, *args, **kwargs)
+    return decorated
