@@ -311,10 +311,11 @@ def eliminacion_usuario(current_user):
         if not dpi_exists:
             #save_log_param("eliminacion", "ERROR", "eliminacion_usuario", "Admin_Controller", "La Especialidad ya existe")
             return jsonify({"Error": "El DPI no existe"}), 409
-        # Inserción de datos en la tabla Especialidad
-        cursor.execute(''' DELETE FROM Usuario 
-                            WHERE dpi = ?
-                       ''',(dpi))
+        
+        cursor.execute(''' UPDATE Usuario 
+                        SET estado = ?
+                       WHERE dpi = ?
+                       ''',(0, dpi))
         conn.commit()
         cursor.close()
         conn.close()
