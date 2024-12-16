@@ -147,6 +147,7 @@ def obtener_especialidades(current_user):
         
         especialidades_json = [
             {
+                "id_especialidad": row[0],
                 "especialidad": row[1]
             } for row in especialidades
         ]
