@@ -6,8 +6,8 @@ const SidebarLink = ({ to, icon, label }) => {
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 ${
-          isActive ? 'bg-gray-200' : ''
+        `flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-200 ${
+          isActive ? 'bg-gray-300' : ''
         }`
       }
     >
