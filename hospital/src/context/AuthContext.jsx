@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { getUserData, loginUser } from '../services/authUser'
+import { getUserData, loginUser } from '../services/authUserService'
 
 export const AuthContext = createContext({
   user: null,
