@@ -9,11 +9,12 @@ from CONFIG.decorators import token_required, desarrollador_required
 import bcrypt
 import pyodbc
 import re
-from REDIS.logs import save_log_param
+from REDIS.logs import save_log_param, get_log
+import json
 desarrollador_bp = Blueprint('desarrolaldor', __name__)
 
 
-@desarrollador_bp.route('/dashboard', methods=['GET']) #dashbord para el administrador
+@desarrollador_bp.route('/dashboard', methods=['GET']) #dashbord para el desarrollador
 @token_required
 @desarrollador_required
 def admin_route(current_user):
@@ -81,3 +82,20 @@ def register_user(current_user):
     except Exception as e:
         #save_log_param("Insercion", "ERROR", "register", "Desarrollador_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+
+@desarrollador_bp.route('/logs', methods=['GET']) 
+@token_required
+@desarrollador_required
+def logs(current_user):
+    data = get_log()
+    print(data)
+    try:
+        data_dict = json.loads(data) 
+        lista_logs = data_dict.get("logs", []) 
+        if "error" in data_dict:
+            return jsonify({"error": "No se pudo conectar a la base de datos"}), 500
+        if "message" in data_dict:
+            return jsonify({"message": data_dict["message"]}), 404
+    except json.JSONDecodeError as e:
+        return jsonify({"error": "Error al obtener logs", "message": str(e)}), 400
+    return jsonify({"logs": lista_logs}), 200

@@ -22,4 +22,4 @@ app.register_blueprint(base_mongo, url_prefix='/mongo')
 
 if __name__ == '__main__':
     #app.run(debug=True)
-    app.run(port=os.getenv("BACKEND_ENFERMERA"), debug=True)
+    app.run(port=os.getenv("BACKEND_MONGO"), debug=True)
