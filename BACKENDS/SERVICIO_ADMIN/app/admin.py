@@ -357,14 +357,16 @@ def consulta_usuario(current_user):
             "nombres": user[1],
             "apellidos": user[2],
             "correo": user[3],
-            "rol": user[5],
+            "id_rol": user[5],
             "telefono": user[6],
             "dpi": user[7],
             "genero": user[8],
             "direccion": user[9],
             "fecha_ingreso": user[10],
+            "id_especialidad": user[11],
             "especialidad": especialidad,
-            "fecha_vencimiento_colegiado": user[12]
+            "fecha_vencimiento_colegiado": user[12],
+            "estado": user[13]
         }
         conn.commit()
         cursor.close()
