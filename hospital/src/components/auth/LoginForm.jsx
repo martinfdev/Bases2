@@ -23,10 +23,10 @@ const LoginForm = () => {
   const validate = () => {
     let tempErrors = {}
     if (!credentials.identificador) {
-      tempErrors.identificador = 'El correo electrónico es requerido.'
-    } else if (!/\S+@\S+\.\S+/.test(credentials.identificador)) {
-      tempErrors.identificador = 'El correo electrónico es inválido.'
-    }
+      tempErrors.identificador = 'El identificador es requerido.';
+    } else if (!/^\d{13}$/.test(credentials.identificador) && !/^\S+@\S+\.\S+$/.test(credentials.identificador)) {
+      tempErrors.identificador = 'El identificador debe ser un correo electrónico válido o un número CUI valido 13 dígitos.';
+    }    
     if (!credentials.contrasena) {
       tempErrors.contrasena = 'La contraseña es requerida.'
     } else if (credentials.contrasena.length < 6) {
@@ -54,9 +54,15 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (user) {
-      if (user.id_rol === 1) { // Supongamos 1 es admin
+      if (user.id_rol === 1) {
         navigate('/admin')
-      } else {
+      } else if (user.id_rol === 2) {
+        navigate('/doctor')
+      } else if (user.id_rol === 3) {
+        navigate('/nurse')
+      } else if (user.id_rol === 4) {
+        navigate('/developer')
+      }      else {
         navigate('/')
       }
     }
