@@ -112,8 +112,9 @@ def lista_usuario(current_user):
                 "genero": row[8],
                 "direccion": row[9],
                 "fecha_ingreso": row[10],
-                "fecha_vencimiento_colegiado": row[11],
-                "estado": row[12]
+                "id_especialidad":row[11],
+                "fecha_vencimiento_colegiado": row[12],
+                "estado": row[13]
             } for row in user
         ]
         conn.commit()
