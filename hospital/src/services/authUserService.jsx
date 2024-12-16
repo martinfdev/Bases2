@@ -27,7 +27,6 @@ export async function loginUser(credentials) {
 
         const data = dataLogin
         const { token, message } = data
-        // Almacenar el token en localStorage para futuras peticiones
         localStorage.setItem('token', token)
         return { message }
       } catch (error) {
@@ -55,7 +54,7 @@ export async function getUserData() {
         // if (!response.ok) {
         //   throw new Error(data.error || 'Error al obtener datos del usuario.')
         // }
-
+        
         const data = dataUser
         return data
       } catch (error) {
@@ -64,34 +63,5 @@ export async function getUserData() {
       }
 }
 
-/**
- * User registration request to the server
- * @param {*} user - object containing user data
- * @returns a promise that resolves to the user data if the registration is successful
- * @throws an error if the registration fails
- */
 
-export async function registerUser(user) {
-    try {
-        // const response = await fetch(`${API_URL}/auth/register`, {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify(user),
-        // })
-    
-        // const data = await response.json()
-    
-        // if (!response.ok) {
-        //   throw new Error(response.error || 'Error en el registro de usuario.')
-        // }
-
-        const data = dataUser
-        return data
-      } catch (error) {
-        console.error('Error en el registro de usuario:', error)
-        throw error
-      }
-}
  
