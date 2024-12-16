@@ -83,6 +83,53 @@ def register_user(current_user):
         #save_log_param("Insercion", "ERROR", "register", "Admin_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
     
+@admin_bp.route('/lista_usuarios', methods=['GET'])
+@token_required
+@admin_required
+def lista_usuario(current_user):
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        #save_log_param("consulta", "ERROR", "lista_usuarios", "Admin_Controller", "Error al conectarse con la base de datos")
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        # Verificar si dpi existe
+        cursor.execute('SELECT * FROM Usuario')
+        user = cursor.fetchall()
+        if not user:
+            #save_log_param("consulta", "ERROR", "lista_usuarios", "Admin_Controller", "No hay usuarios disponibles")
+            return jsonify({"Error": "No hay usuarios disponibles"}), 409
+        #print(user)
+        lista_usuarios = [
+            {
+                "id_usuario": row[0],
+                "nombres": row[1],
+                "apellidos": row[2],
+                "correo": row[3],
+                "id_rol": row[5],
+                "telefono": row[6],
+                "dpi":  row[7],
+                "genero": row[8],
+                "direccion": row[9],
+                "fecha_ingreso": row[10],
+                "fecha_vencimiento_colegiado": row[11],
+                "estado": row[12]
+            } for row in user
+        ]
+        conn.commit()
+        cursor.close()
+        conn.close()
+        #save_log_param("consulta", "INFO", "lista_usuarios", "Admin_Controller", "Exito, Consulta Realizada")
+        return jsonify({
+            "message": "Usuario encontrado",
+            "user": lista_usuarios
+        }), 200
+    except pyodbc.IntegrityError as e:
+        #save_log_param("consulta", "ERROR", "lista_usuarios", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
+        return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
+    except Exception as e:
+        #save_log_param("consulta", "ERROR", "lista_usuarios", "Admin_Controller", "Error inesperado")
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
 
 
 @admin_bp.route('/insertar_especialidad', methods=['POST'])
