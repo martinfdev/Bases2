@@ -9,15 +9,26 @@ const Sidebar = ({ menuItems }) => {
     const { user, logout } = useAuth()
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false)
-
     const handleLogout = () => {
         logout()
         navigate('/login')
     }
+    const nameRol = (id_rol) => {  
+        if (id_rol === 0) {
+            return 'Desarrollador'
+        }
+        else if (id_rol === 1) {
+            return 'Admin'
+        } else if (id_rol === 2) {
+            return 'Doctor'
+        } else if (id_rol === 3) {
+            return 'Enfermera'
+        } else {
+            return 'Developer'
+        }
+    }
 
     const filteredMenuItems = menuItems
-
-    // Agrupar los elementos por sección
     const groupedMenuItems = filteredMenuItems.reduce((acc, item) => {
         const section = item.section || 'default'
         if (!acc[section]) {
@@ -41,14 +52,14 @@ const Sidebar = ({ menuItems }) => {
             >
                 <div className="p-4">
                     <h1 className="text-2xl font-bold text-center">
-                        Hospital - {user?.role.charAt(0).toUpperCase() + user?.role.slice(1)}
+                        {nameRol(user.id_rol)}
                     </h1>
                 </div>
                 <nav className="mt-10">
                     {Object.entries(groupedMenuItems).map(([section, items]) => (
                         <div key={section}>
                             {section !== 'default' && (
-                                <div className="mt-4 px-4 text-gray-600 font-semibold">
+                                <div className="mt-4 px-4 text-gray-700  font-semibold">
                                     {section}
                                 </div>
                             )}
@@ -65,7 +76,7 @@ const Sidebar = ({ menuItems }) => {
                     <div className="mt-10">
                         <button
                             onClick={handleLogout}
-                            className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 w-full"
+                            className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-200 w-full"
                         >
                             <FaSignOutAlt className="mr-3" />
                             Cerrar Sesión
