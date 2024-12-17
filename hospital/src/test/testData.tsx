@@ -9,7 +9,7 @@ export const dataUser =
     "apellidos": "Pérez",
     "correo": "juan.perez@example.com",
     "contrasena": "123",
-    "id_rol": 4,
+    "id_rol": 2,
     "telefono": "55555555",
     "dpi": "1234567890123",
     "genero": "masculino",
