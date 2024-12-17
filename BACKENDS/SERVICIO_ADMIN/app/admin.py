@@ -59,6 +59,7 @@ def register_user(current_user):
         return jsonify({"error": "Error al conectarse con la base de datos"}), 500
     cursor = conn.cursor()
     try:
+        conn.autocommit = False
         #print("entro al try")
         # Verificar si el email o dpi ya exite
         cursor.execute('SELECT * FROM Usuario WHERE dpi = ? OR correo = ?', (dpi, correo))
@@ -83,8 +84,6 @@ def register_user(current_user):
                        WHERE dpi = ?
                        ''',(nombres, apellidos, correo, hashed_password.decode('utf-8'),id_rol, telefono, dpi, genero, direccion,fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, dpi))
                 conn.commit()
-                cursor.close()
-                conn.close()
                 #save_log_param("Insercion", "INFO", "register", "Admin_Controller", "Exito, Usuario registrado Correctamente")
                 return jsonify({"message": "Usuario registrado correctamente"}), 201
 
@@ -97,16 +96,19 @@ def register_user(current_user):
                         VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)
                        ''',(nombres, apellidos, correo, hashed_password.decode('utf-8'), id_rol, telefono, dpi, genero, direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado))
         conn.commit()
-        cursor.close()
-        conn.close()
         #save_log_param("Insercion", "INFO", "register", "Admin_Controller", "Exito, Usuario registrado Correctamente")
         return jsonify({"message": "Usuario registrado correctamente"}), 201
     except pyodbc.IntegrityError as e:
+        conn.rollback()
         #save_log_param("Insercion", "ERROR", "register", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
         return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
     except Exception as e:
+        conn.rollback()
         #save_log_param("Insercion", "ERROR", "register", "Admin_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+    finally:
+        cursor.close()
+        conn.close()
     
 @admin_bp.route('/lista_usuarios', methods=['GET'])
 @token_required
@@ -173,6 +175,7 @@ def insertar_especialidad(current_user):
         return jsonify({"error": "Error al conectarse con la base de datos"}), 500
     cursor = conn.cursor()
     try:
+        conn.autocommit = False
         # Verificar si especialidad existe
         cursor.execute('SELECT * FROM Especialidad WHERE especialidad = ?', (especialidad))
         especialidad_exists = cursor.fetchone()
@@ -184,16 +187,19 @@ def insertar_especialidad(current_user):
                         VALUES(?)
                        ''',(especialidad))
         conn.commit()
-        cursor.close()
-        conn.close()
         #save_log_param("Insercion", "INFO", "insertar_especialidad", "Admin_Controller", "Exito, Especialidad registrada Correctamente")
         return jsonify({"message": "Especialidad registrada Correctamente"}), 201
     except pyodbc.IntegrityError as e:
+        conn.rollback()
         #save_log_param("Insercion", "ERROR", "insertar_especialidad", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
         return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
     except Exception as e:
+        conn.rollback()
         #save_log_param("Insercion", "ERROR", "insertar_especialidad", "Admin_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+    finally:
+            cursor.close()
+            conn.close()
 
 @admin_bp.route('/obtener_especialidades', methods=['GET'])
 @token_required
@@ -425,6 +431,7 @@ def insertar_area(current_user):
         return jsonify({"error": "Error al conectarse con la base de datos"}), 500
     cursor = conn.cursor()
     try:
+        conn.autocommit = False
         # Verificar si area existe
         cursor.execute('SELECT * FROM Area WHERE nombre_area = ?', (nombre_area))
         nombre_exists = cursor.fetchone()
@@ -436,16 +443,19 @@ def insertar_area(current_user):
                         VALUES(?,?)
                        ''',(nombre_area, capacidad))
         conn.commit()
-        cursor.close()
-        conn.close()
         #save_log_param("Insercion", "INFO", "insertar_area", "Admin_Controller", "Exito, Area registrada Correctamente")
         return jsonify({"message": "Area registrada Correctamente"}), 201
     except pyodbc.IntegrityError as e:
+        conn.rollback()
         #save_log_param("Insercion", "ERROR", "insertar_area", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
         return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
     except Exception as e:
+        conn.rollback()
         #save_log_param("Insercion", "ERROR", "insertar_area", "Admin_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
 @admin_bp.route('/editar_area', methods=['PUT'])
 @token_required
@@ -601,6 +611,7 @@ def register_patient(current_user):
         return jsonify({"error": "Error al conectarse con la base de datos"}), 500
     cursor = conn.cursor()
     try:
+        conn.autocommit = False #INICIAR UNA TRANSACCION
         # Verificar si el email o dpi ya exite
         cursor.execute('SELECT * FROM Paciente WHERE dpi = ?', (dpi))
         patient_exists = cursor.fetchone()
@@ -620,8 +631,6 @@ def register_patient(current_user):
                        WHERE dpi = ?
                        ''',(nombre, apellido, dpi, genero,fecha_nacimiento, telefono, direccion, id_area, dpi))
                 conn.commit()
-                cursor.close()
-                conn.close()
                 #save_log_param("Insercion", "INFO", "crear_paciente", "Admin_Controller", "Exito, Paciente registrado Correctamente")
                 return jsonify({"message": "Paciente registrado correctamente"}), 201
             
@@ -633,16 +642,20 @@ def register_patient(current_user):
                         VALUES(?,?,?,?,?,?,?,?,?)
                        ''',(nombre, apellido, dpi, genero, fecha_nacimiento, telefono, direccion, id_area, estado))
         conn.commit()
-        cursor.close()
-        conn.close()
         #save_log_param("Insercion", "INFO", "crear_paciente", "Admin_Controller", "Exito, Paciente registrado Correctamente")
         return jsonify({"message": "Paciente registrado correctamente"}), 201
     except pyodbc.IntegrityError as e:
+        conn.rollback()
         #save_log_param("Insercion", "ERROR", "crear_paciente", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
         return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
     except Exception as e:
+        conn.rollback()
         #save_log_param("Insercion", "ERROR", "crear_paciente", "Admin_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+    finally:
+        # Asegurarse de cerrar el cursor y la conexión
+        cursor.close()
+        conn.close()
   
 @admin_bp.route('/lista_pacientes', methods=['GET'])
 @token_required
