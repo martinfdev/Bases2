@@ -65,7 +65,7 @@ def register_user(current_user):
         user_exists = cursor.fetchone()
         if user_exists: #EL USUARIO EXISTE
             #VALIDAR QUE EL USURIO TENGA ESTADO 0 PARA MODIFICARLO
-            if user_exists[13] == 0:
+            if int(user_exists[13]) == 0:
                 cursor.execute(''' UPDATE Usuario 
                         SET nombres = ?,
                             apellidos = ?,
@@ -605,7 +605,8 @@ def register_patient(current_user):
         cursor.execute('SELECT * FROM Paciente WHERE dpi = ?', (dpi))
         patient_exists = cursor.fetchone()
         if patient_exists:  #PACIENTE EXISTE
-            if patient_exists[9] == 0:
+            #print(patient_exists[9])
+            if int(patient_exists[9]) == 0:
                 cursor.execute(''' UPDATE Paciente 
                         SET nombre = ?,
                             apellido = ?,
