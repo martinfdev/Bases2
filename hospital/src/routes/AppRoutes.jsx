@@ -7,6 +7,7 @@ import UsersView from '../pages/admin/UserView'
 import DeveloperLayout from '../layouts/DeveloperLayout'
 import LogVitacore from '../components/dev/LogVitacore'
 import DoctorLayout from '../layouts/DoctorLayout'
+import PatientRecordPage from '../pages/PatientRecordPage'
 import NurseLayout from '../layouts/NurseLayout'
 import NewUserForm from '../components/admin/NewUserForm'
 import NotFound from '../pages/NotFound'
@@ -55,7 +56,7 @@ const AppRouter = () => {
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<NotFound />} />
         <Route path="records/view" element={<NotFound />} />
-        <Route path="records/create" element={<NotFound />} />
+        <Route path="records/create" element={<PatientRecordPage />} />
         <Route path="records/edit" element={<NotFound />} />
         <Route path="areas" element={<NotFound />} />
         <Route path="areas/assign" element={<NotFound />} />
