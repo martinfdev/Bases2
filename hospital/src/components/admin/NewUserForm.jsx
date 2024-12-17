@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react"
+import PropTypes from "prop-types"
 import { registerUser } from "../../services/userServices"
 import { getSpecialties } from "../../services/adminServices"
 
-const NewUserForm = () => {
+const NewUserForm = ({ currentUserRole }) => {
     const [form, setForm] = useState({
         nombres: '',
         apellidos: '',
@@ -45,6 +46,25 @@ const NewUserForm = () => {
         }
         fetchSpecialties()
     }, [])
+
+    const roles = [
+        { id: 1, name: 'Administrador' },
+        { id: 2, name: 'Doctor' },
+        { id: 3, name: 'Enfermera' },
+        { id: 4, name: 'Desarrollador' }
+    ]
+
+    const getAvailableRoles = () => {
+        if (currentUserRole === 1) {
+            console.log('current user role:', currentUserRole)
+            return roles.filter(role => role.id === 2 || role.id === 3)
+        } else if (currentUserRole === 4) {
+            return roles
+        }
+        return []
+    }
+
+    const availableRoles = getAvailableRoles()
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
@@ -105,10 +125,11 @@ const NewUserForm = () => {
                             className="mt-1 w-full border rounded px-3 py-2 bg-white focus:outline-none focus:ring focus:border-blue-300"
                         >
                             <option value="">Seleccione un rol</option>
-                            <option value={1}>Administrador</option>
-                            <option value={2}>Doctor</option>
-                            <option value={3}>Enfermera</option>
-                            <option value={4}>Desarrollador</option>
+                            {availableRoles.map(role => (
+                                <option key={role.id} value={role.id}>
+                                    {role.name}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className="mb-4">
@@ -220,6 +241,10 @@ const NewUserForm = () => {
             </div>
         </div>
     )
+}
+
+NewUserForm.propTypes = {
+    currentUserRole: PropTypes.number
 }
 
 export default NewUserForm
