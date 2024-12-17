@@ -9,7 +9,7 @@ export const dataUser =
     "apellidos": "Pérez",
     "correo": "juan.perez@example.com",
     "contrasena": "123",
-    "id_rol": 1,
+    "id_rol": 4,
     "telefono": "55555555",
     "dpi": "1234567890123",
     "genero": "masculino",
@@ -58,7 +58,7 @@ export const listUsers =
             "correo": "eduardoalex2000@hotmail.com",
             "direccion": "Ciudad de Guatemala",
             "dpi": "3013805890101",
-            "estado": null,
+            "estado": 1,
             "fecha_ingreso": "Fri, 13 Dec 2024 00:00:00 GMT",
             "fecha_vencimiento_colegiado": null,
             "genero": "Masculino",
@@ -73,7 +73,7 @@ export const listUsers =
             "correo": "eduardoalex2000@hotmail.com",
             "direccion": "Ciudad de Guatemala",
             "dpi": "3013805890102",
-            "estado": null,
+            "estado": 1,
             "fecha_ingreso": "Fri, 13 Dec 2024 00:00:00 GMT",
             "fecha_vencimiento_colegiado": null,
             "genero": "Masculino",
@@ -128,6 +128,91 @@ export const listUsers =
             "id_especialidad": 1,
         }
     ]
+}
+
+export const listLogs = {
+	"logs": [
+		{
+			"controlador": "Auth_Controller",
+			"descripcion": "Exito. Login Exitoso",
+			"function": "Login",
+			"log_id": "20241216102053",
+			"status": "INFO",
+			"tipo": "Consulta"
+		},
+		{
+			"controlador": "Auth_Controller",
+			"descripcion": "Error. Correo/DPI o contraseña son inválidos",
+			"function": "Login",
+			"log_id": "20241216102050",
+			"status": "ERROR",
+			"tipo": "Consulta"
+		},
+		{
+			"controlador": "Auth_Controller",
+			"descripcion": "Exito. Login Exitoso",
+			"function": "Login",
+			"log_id": "20241216102041",
+			"status": "INFO",
+			"tipo": "Consulta"
+		},
+        {
+			"controlador": "Auth_Controller",
+			"descripcion": "Exito. Login Exitoso",
+			"function": "Login",
+			"log_id": "20241216102042",
+			"status": "INFO",
+			"tipo": "Consulta"
+		},
+        {
+			"controlador": "Auth_Controller",
+			"descripcion": "Exito. Login Exitoso",
+			"function": "Login",
+			"log_id": "20241216102043",
+			"status": "INFO",
+			"tipo": "Consulta"
+		},
+        {
+			"controlador": "Auth_Controller",
+			"descripcion": "Exito. Login Exitoso",
+			"function": "Login",
+			"log_id": "20241216102044",
+			"status": "INFO",
+			"tipo": "Consulta"
+		},
+        {
+			"controlador": "Auth_Controller",
+			"descripcion": "Exito. Login Exitoso",
+			"function": "Login",
+			"log_id": "20241216102045",
+			"status": "INFO",
+			"tipo": "Consulta"
+		},
+        {
+			"controlador": "Auth_Controller",
+			"descripcion": "Exito. Login Exitoso",
+			"function": "Login",
+			"log_id": "20241216102046",
+			"status": "INFO",
+			"tipo": "Consulta"
+		},
+        {
+			"controlador": "Auth_Controller",
+			"descripcion": "Exito. Login Exitoso",
+			"function": "Login",
+			"log_id": "20241216102047",
+			"status": "INFO",
+			"tipo": "Consulta"
+		},
+        {
+			"controlador": "Auth_Controller",
+			"descripcion": "Exito. Login Exitoso",
+			"function": "Login",
+			"log_id": "20241216102048",
+			"status": "INFO",
+			"tipo": "Consulta"
+		}
+	]
 }
 
 export const adminUsers = [
