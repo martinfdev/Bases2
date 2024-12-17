@@ -112,7 +112,7 @@ Utilizamos una arquitectura orientada a servicios (SOA) donde la capa de usuario
 - El sistema debe ser fácil de mantener y actualizar, permitiendo agregar nuevas funcionalidades y corregir errores sin interrumpir su funcionamiento.
 - Debe contar con documentación detallada para facilitar el trabajo del equipo de desarrollo y del equipo de soporte técnico.
 
-<h1> Microservicios principales </h1>
+<h1> Estructura del Backend </h1>
 
 - Este microservicio es el encargado de gestionar el inicio de sesión, la autenticación de usuarios y la autorización de acceso al sistema. Maneja el registro de usuarios, la generación de tokens JWT para mantener las sesiones, y verifica los permisos de los usuarios.
 - Se comunica con todos los demás microservicios para validar si el usuario tiene los permisos necesarios para realizar ciertas acciones
@@ -146,10 +146,1096 @@ Utilizamos una arquitectura orientada a servicios (SOA) donde la capa de usuario
 - Se comunica con otros microservicios para almacenar o consultar información relacionada con el sistema de salud, como logs de eventos o información adicional de pacientes.
 - MongoDB para almacenamiento de datos NoSQL.
 
-<h2> Comunicación entre Microservicios </h2>
+<h2> Endpoints de la API </h2>
 
-- Un API Gateway se utilizará como punto único de entrada para todas las solicitudes al sistema. El API Gateway manejará la distribución de solicitudes a los microservicios correspondientes, proporcionando un punto centralizado de seguridad, control y logging.
+## register_user
+**URL (dirección):**  
+`http://localhost:5001/admin/register`
 
+**Método HTTP:**  
+`POST`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**
+```json
+{
+  "nombres": "Juan",
+  "apellidos": "Pérez",
+  "correo": "juan.perez@example.com",
+  "contrasena": "123",
+  "id_rol": 1,
+  "telefono": "55555555",
+  "dpi": "1234567890123",
+  "genero": "masculino",
+  "direccion": "Calle Principal 123",
+  "fecha_ingreso": "2023-11-11",
+  "id_especialidad": 1,
+  "fecha_vencimiento_colegiado": "2024-12-31",
+  "estado": 1
+}
+```
+Respuestas
+
+- Código HTTP 201
+```json
+{
+  "message": "Usuario registrado correctamente"
+}
+```
+- Código HTTP 400
+```json
+{
+  "Error": "Error en la integridad de la base de datos"
+}
+```
+- Código HTTP 409
+```json
+{
+  "Error": "El nombre de usuario o correo ya existen"
+}
+```
+
+## login_user
+
+**URL (dirección):**  
+`http://localhost:5000/auth/login`
+
+**Método HTTP:**  
+`POST`
+
+**Cabecera de Petición:**  
+`Content-Type: application/json`
+
+**Cuerpo (PAYLOAD):**
+```json
+{
+  "identificador": "maria.lopez@example.com",
+  "contrasena": "mypass456"
+}
+```
+Respuestas
+
+- Código HTTP 201
+```json
+{
+  "message": "Login exitoso",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxMSwiaWRfcm9sIjoxLCJub21icmVfdXN1YXJpbyI6Im5vb29vbyJ9.0inzZBQLd5dFF41vdZwsituroIBv7ITOR2a_XAJTBe8"
+}
+```
+- Código HTTP 401
+```json
+{
+  "error": "Correo/DPI o contraseña son inválidos"
+}
+```
+- Código HTTP 403
+```json
+{
+  "error": "Estado desactivado. Usted ya no tiene permitido ingresar al sistema"
+}
+```
+
+## dashboard para administrador
+
+**URL (dirección):**  
+`http://localhost:5000/admin/dashboard`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+```json
+{
+    "message": "Welcome admin, user #numero usuario"
+}
+```
+
+## dashboard para desarrollador
+
+**URL (dirección):**  
+`http://localhost:5000/desarrollador/dashboard`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+```json
+{
+    "message": "Welcome desarrollador, user #numero usuario"
+}
+```
+
+## Regresa los datos del usuario que se loguea actualmente
+
+**URL (dirección):**  
+`http://localhost:5000/auth/me`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+```json
+{
+  "apellidos": "Pérez",
+  "contrasena": "$2b$12$blNuKcn9hueP6xgGuKbNqeOtVdNOGBCEwqFj/APhPhAYmkGnj6Ks2",
+  "correo": "juan.perez@example.com",
+  "direccion": "Calle Principal 123",
+  "dpi": "1234567890123",
+  "estado": 1,
+  "fecha_ingreso": "2023-11-11",
+  "fecha_vencimiento_colegiado": "2024-12-31",
+  "genero": "masculino",
+  "id_especialidad": 1,
+  "id_rol": 1,
+  "id_usuario": 2,
+  "nombres": "Juan",
+  "telefono": "55555555"
+}
+```
+
+## insertar_especialidad
+**URL (dirección):**  
+`http://localhost:5001/admin/insertar_especialidad`
+
+**Método HTTP:**  
+`POST`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+	"especialidad": "Anestesiologia"
+}
+```
+Respuestas
+- Código HTTP 200
+```json
+{
+    "message": "Especialidad registrada Correctamente"
+}
+```
+## obtener_especialidades
+**URL (dirección):**  
+`http://localhost:5001/admin/obtener_especialidades`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+
+- Código HTTP 200
+```json
+{
+	"especialidades": [
+		{
+			"especialidad": "Cardiologia",
+			"id_especialidad": 1
+		},
+		{
+			"especialidad": "Anestesiologia",
+			"id_especialidad": 2
+		}
+	]
+}
+```
+## actualizar_usuario
+**URL (dirección):**  
+`http://localhost:5001/admin/insertar_especialidad`
+
+**Método HTTP:**  
+`PUT`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+  "nombres": "MariaMODIFICADO",
+  "apellidos": "LopézMODIFICADO",
+  "correo": "maria.lopez@example.com",
+  "contrasena": "12345",
+  "telefono": "66666666",
+  "dpi": "9876567890123",
+  "direccion": "Calle Principal 123",
+  "id_especialidad": 1,
+  "fecha_vencimiento_colegiado": "2024-12-31"
+}
+```
+Respuestas 
+
+- Código HTTP 200
+```json
+{
+	"message": "Usuario modificado correctamente"
+}
+```
+- Código HTTP 409
+```json
+{
+	"Error": "El correo electronico ya existe"
+}
+
+{
+	"Error": "El dpi no existe"
+}
+```
+
+## eliminacion_usuario
+**URL (dirección):**  
+`http://localhost:5001/admin/eliminacion_usuario`
+
+**Método HTTP:**  
+`DELETE`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+	"dpi": "9876567890222"
+}
+```
+Respuestas 
+
+- Código HTTP 200
+```json
+{
+	"message": "Usuario Eliminado Correctamente"
+}
+```
+- Código HTTP 409
+```json
+{
+	"Error": "El DPI no existe"
+}
+```
+
+## consulta_usuario
+**URL (dirección):**  
+`http://localhost:5001/admin/consulta_usuario`
+
+**Método HTTP:**  
+`POST`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+	"dpi": "9876567890123"
+}
+```
+Respuestas 
+
+- Código HTTP 200
+```json
+{
+	"message": "Usuario encontrado",
+	"user": {
+		"apellidos": "LopézMODIFICADO",
+		"correo": "maria.lopez@example.com",
+		"direccion": "Calle Principal 123",
+		"dpi": "9876567890123",
+		"especialidad": "Cardiologia",
+		"fecha_ingreso": "Sat, 11 Nov 2023 00:00:00 GMT",
+		"fecha_vencimiento_colegiado": "Tue, 31 Dec 2024 00:00:00 GMT",
+		"genero": "Femenino",
+		"nombres": "MariaMODIFICADO",
+		"rol": 2,
+		"telefono": "66666666"
+	}
+}
+```
+- Código HTTP 409
+```json
+{
+	"Error": "El DPI no existe"
+}
+```
+
+## insertar_area
+**URL (dirección):**  
+`http://localhost:5001/admin/insertar_area`
+
+**Método HTTP:**  
+`POST`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+	"nombre_area": "Cardiologia",
+	"capacidad": 50
+}
+```
+Respuestas 
+
+- Código HTTP 200
+```json
+{
+	"message": "Especialidad registrada Correctamente"
+}
+```
+- Código HTTP 409
+```json
+{
+	"Error": "Area ya existe"
+}
+```
+
+## editar_area
+**URL (dirección):**  
+`http://localhost:5001/admin/editar_area`
+
+**Método HTTP:**  
+`PUT`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+	"nombre_area": "Vacunacion",
+	"capacidad": 25,
+	"nuevo_nombre_area" : "Pinchado"
+}
+```
+Respuestas 
+
+- Código HTTP 200
+```json
+{
+	"message": "Area editada Correctamente"
+}
+```
+- Código HTTP 409
+```json
+{
+	"Error": "Area no existe"
+}
+```
+## editar_area
+**URL (dirección):**  
+`http://localhost:5001/admin/eliminar_area`
+
+**Método HTTP:**  
+`DELETE`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+	"nombre_area": "vacunacion"
+}
+```
+Respuestas 
+
+- Código HTTP 200
+```json
+{
+	"message": "Area Eliminada Correctamente"
+}
+```
+- Código HTTP 409
+```json
+{
+	"Error": "Area no existe"
+}
+```
+
+## consultar_area
+**URL (dirección):**  
+`http://localhost:5001/admin/consultar_area`
+
+**Método HTTP:**  
+`DELETE`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+	"nombre_area": "Maternidad"
+}
+```
+Respuestas 
+
+- Código HTTP 200
+```json
+{
+	"capacidad": 20,
+	"nombre_area": "Maternidad"
+}
+```
+- Código HTTP 409
+```json
+{
+	"Error": "Area no existe"
+}
+```
+
+## lista_usuarios
+**URL (dirección):**  
+`http://localhost:5001/admin/lista_usuarios`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas 
+
+- Código HTTP 200
+```json
+{
+	"message": "Usuario encontrado",
+	"user": [
+		{
+			"apellidos": "Reyes Gonzalez",
+			"correo": "eduardoalex2000@hotmail.com",
+			"direccion": "Ciudad de Guatemala",
+			"dpi": "3013805890101",
+			"estado": 1,
+			"fecha_ingreso": "Fri, 13 Dec 2024 00:00:00 GMT",
+			"fecha_vencimiento_colegiado": null,
+			"genero": "Masculino",
+			"id_especialidad": null,
+			"id_rol": 4,
+			"id_usuario": 1,
+			"nombres": "Eduardo Alexander",
+			"telefono": "35958027"
+
+		}
+	]
+}
+```
+
+## logs
+**URL (dirección):**  
+`http://localhost:5005/desarrollador/logs`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas 
+
+- Código HTTP 200
+```json
+{
+	"logs": [
+		{
+			"controlador": "Auth_Controller",
+			"descripcion": "Exito. Login Exitoso",
+			"function": "Login",
+			"log_id": "20241216102053",
+			"status": "INFO",
+			"tipo": "Consulta"
+		},
+		{
+			"controlador": "Auth_Controller",
+			"descripcion": "Error. Correo/DPI o contraseña son inválidos",
+			"function": "Login",
+			"log_id": "20241216102050",
+			"status": "ERROR",
+			"tipo": "Consulta"
+		},
+		{
+			"controlador": "Auth_Controller",
+			"descripcion": "Exito. Login Exitoso",
+			"function": "Login",
+			"log_id": "20241216102041",
+			"status": "INFO",
+			"tipo": "Consulta"
+		}
+	]
+}
+```
+- Código HTTP 404
+```json
+{
+	"message": "No hay logs almacenados"
+}
+```
+- Código HTTP 500
+```json
+{
+	"error": "No se pudo conectar a la base de datos"
+}
+```
+
+## crear_expediente
+**URL (dirección):**  
+`http://localhost:5004/mongo/crear_expediente`
+
+**Método HTTP:**  
+`POST`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+    "_id": "1234567890101",
+    "Datos paciente": {
+        "Fecha nacimiento": "15-01-2000",
+        "Edad": 24,
+        "Estado civil": "Soltero",
+        "Ocupación u oficio": "Estudiante",
+        "Profesión": "Estudiante",
+        "Religion": "Evangelico",
+        "Grupo sanguíneo": "O+",
+        "Tipo de sangre": "O",
+        "Grupo étnico": "Ladino",
+        "Alfabeto": "Si",
+        "Escolaridad": "Universitaria",
+        "Procedencia": "Domicilio",
+        "Contacto de emergencia": [
+            {
+                "Nombre": "Carlos Pérez",
+                "Relación": "Hermano",
+                "Teléfono": "555-8765"
+            },
+            {
+                "Nombre": "Ana López",
+                "Relación": "Madre",
+                "Teléfono": "555-4321"
+            }
+        ]
+
+    },
+    "Antecedentes": {
+        "Personales patológicos": {
+            "Médicos": "Diabetes tipo 2 controlada con metformina.",
+            "Quirúrgicos": "Cirugía de rodilla en 2016 debido a lesión deportiva.",
+            "Traumáticos": "Fractura de pierna derecha en accidente de tráfico en 2020. Recibió tratamiento quirúrgico y rehabilitación.",
+            "Alérgicos": "Alérgico al polen. Requiere antihistamínicos durante la temporada de alergias.",
+            "Toxicomanías": "Fumador durante 10 años, dejó de fumar hace 2 años.",
+            "Psiquiátricos": "Diagnóstico de depresión en 2017, tratada con terapia psicológica y medicación (antidepresivos).",
+            "Transfusiones": "Recibió transfusión sanguínea después de una cirugía en 2016.",
+            "Ginecológicos": "n/a",
+            "Obstétricos": "n/a"
+        },
+        "Familiares patológicos": "Padre con hipertensión y diabetes tipo 2, madre con cáncer de mama diagnosticado a los 50 años.",
+        "Personales no patológicos": {
+            "Prenatal": "n/a",
+            "Natal": "n/a",
+            "Neonatal o postnatal": "n/a",
+            "Crecimiento": "Crecimiento normal para su edad",
+            "Desarrollo": "Comenzó a caminar a los 12 meses",
+            "Inmunizaciones": "Vacunas completas según el calendario infantil.",
+            "Alimentación": "Alimentación variada, en su mayoría equilibrada, consume poca comida rápida.",
+            "Hábitos": "Hace ejercicio 3 veces a la semana, no consume alcohol ni drogas recreativas.",
+            "Gineco-obstétricos": {
+                "Menarquia": "Menarquia a los 12 años.",
+                "Ciclos menstruales": "Ciclos regulares de 28 días.",
+                "Última menstruación": "Última menstruación el 10 de diciembre de 2023.",
+                "Edad y nombre de anticonceptivos/terapia hormonal": "No usa anticonceptivos, métodos naturales.",
+                "Gestas": "0 gestas.",
+                "Partos": "0 partos.",
+                "Cesáreas": "0 cesáreas.",
+                "Abortos": "0 abortos.",
+                "Hijos vivos": "0 hijos vivos."
+            }
+        },
+        "socio-personales": "Paciente vive con sus padres, en su tiempo libre disfruta de actividades al aire libre y leer."
+    },
+    "Historial de ingresos":[]	
+}
+```
+Respuestas 
+
+- Código HTTP 200
+```json
+{
+	"message": "Documento insertado con ID: 1234567890101"
+}
+```
+- Código HTTP 400
+```json
+{
+	"error": "Ya existe un expediente del paciente con DPI: 2234567890101."
+}
+```
+
+## nuevo_ingreso
+**URL (dirección):**  
+`http://127.0.0.1:5004/mongo/nuevo_ingreso`
+
+**Método HTTP:**  
+`POST`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+    "_id":"1234567890101",
+    "contenido":{
+        "FechaDeLaVisita": "2024-11-05",
+        "MotivoDeLaVisita": "Dolor abdominal",
+        "HistoriaDeLaVisitaActual": "Estaba jugando pelota, cuando le dio un dolor fuerte en la zona abdominal",
+        "TipoDeVisita": "Consulta externa",
+        "RevisionPorOrganosAparatosYSistemas": {
+            "SintomasGenerales": "DolorAbdominal",
+            "Piel": "Sin alteraciones",
+            "Faneras": "Cabello sin alteraciones",
+            "Cabeza": "Sin signos de trauma o alteracion",
+            "Ojos": "No presenta alteraciones",
+            "Oidos": "Sin signos de infeccion",
+            "Nariz": "No presenta secreciones",
+            "Boca": "Higiene adecuada, sin lesiones",
+            "Garganta": "Sin signos de inflamacion",
+            "Cuello": "Sin adenopatias",
+            "Respiratorio": "Sin dificultad respiratoria",
+            "Cardiovascular": "Ritmo regular, sin soplos",
+            "Digestivo": "Dolor abdominal localizado en la region epigastrica",
+            "Reproductor": "No relevante",
+            "Genitourinario": "Sin alteraciones",
+            "Endocrino": "Sin signos de alteracion",
+            "MusculoEsqueletico": "Dolor en la zona abdominal",
+            "Nervioso": "Sin deficit neurologico",
+            "Linfatico": "Sin adenopatias palpables",
+            "Hematopoyetico": "Sin signos de anemia",
+            "PsiquiatricoAfecto": "Afecto adecuado"
+        },
+        "ExamenFisico": {
+            "SignosVitales": {
+                "TemperaturaEnC": "36.8",
+                "RegionAnatomica": "Abdomen",
+                "FrecuenciaRespiratoria": "16 respiraciones por minuto",
+                "FrecuenciaCardiaca": "78 latidos por minuto",
+                "FrecuenciaDePulso": "74 pulsaciones por minuto",
+                "Perifericos": {
+                    "Carotideo": "Normal",
+                    "Radial": "Normal",
+                    "Femoral": "Normal"
+                },
+                "PresionArterial": {
+                    "BrazoDerecho": "120/80 mm/Hg",
+                    "Posicion": "Sentado",
+                    "BrazoIzquierdo": "118/78 mm/Hg",
+                    "Posicion": "Sentado"
+                },
+                "Antropometria": {
+                    "Peso": {
+                        "Libras": "154",
+                        "KG": "70"
+                    },
+                    "Talla": "1.72 m",
+                    "CircunferenciaCefalica": "Normal",
+                    "CircunferenciaAbdominal": "80 cm",
+                    "IndiceMasaCorporal": "23.7"
+                }
+            },
+            "InspeccionGeneral": "Paciente en buen estado general",
+            "Piel": "Sin alteraciones, hidratada",
+            "Faneras": "Cabello sano, unas sin alteraciones",
+            "Cabeza": "Sin deformidades",
+            "Ojos": {
+                "AgudezaVisual": {
+                    "ConLentes": {
+                        "OjoDerecho": "20/20",
+                        "OjoIzquierdo": "20/20",
+                        "AmbosOjos": "20/20"
+                    },
+                    "SinLentes": {
+                        "OjoDerecho": "20/25",
+                        "OjoIzquierdo": "20/25",
+                        "AmbosOjos": "20/25"
+                    }
+                }
+            },
+            "Oidos": "Sin secreciones, audicion normal",
+            "Nariz": "No presenta secreciones o congestion",
+            "Boca": "Mucosa bucal sana, sin lesiones",
+            "Orofaringe": "Normal",
+            "Cuello": "Sin adenopatias, libre de masas",
+            "Linfaticos": "No se palpan adenopatias",
+            "Torax": {
+                "Anterior": "Simetrico, sin alteraciones",
+                "Lateral": "Normal",
+                "Posterior": "Normal"
+            },
+            "Mamas": "No se palpan masas",
+            "Abdomen": "Dolor a la palpacion en la region epigastrica, sin signos de defensa",
+            "GenitalesExternos": "Normales",
+            "ExtremidadesSuperiores": "Sin edema, pulsos normales",
+            "ExtremidadesInferiores": "Sin edema, pulsos normales",
+            "RegionLumbosacra": "Sin alteraciones",
+            "RegionPelvica": "Normal",
+            "TactoRectal": "No realizado",
+            "ExamenGinecologico": "No realizado",
+            "ExamenNeurologico": "Reflejos normales, sin deficit motor o sensitivo",
+            "ExamenMental": "Orientado en tiempo, espacio y persona"
+        },
+        "ListaInicialDeProblemas": {
+            "Numero1": "Dolor abdominal agudo",
+            "Numero2": "Posible lesion musculo-esqueletica",
+            "Numero3": "Posible dispepsia",
+            "Numero4": "Ninguno"
+        },
+        "DesarrolloDeProblemas": {
+            "Fecha": "15-12-2024",
+            "Hora": "10:00 AM",
+            "NumeroYNombreDeCadaProblema": {
+                "1": "Dolor abdominal agudo",
+                "2": "Lesion musculo-esqueletica"
+            }
+        },
+        "EvolucionDeProblemas": {
+            "Fecha": "15-12-2024",
+            "Hora": "10:00 AM",
+            "NumeroYNombreDeCadaProblema": {
+                "1": "Dolor abdominal controlado",
+                "2": "Recuperacion parcial de la lesion"
+            }
+        },
+        "Diagnostico": "Dolor abdominal agudo, probable distension muscular",
+        "ProcedimientosRealizados": "Radiografia de abdomen, examen fisico, analisis de sangre",
+        "TratamientoOPrescripcion": "Ibuprofeno 400mg cada 8 horas en caso de dolor, reposo relativo",
+        "ResultadoDeLaVisita": "Dolor controlado con medicacion, sin signos de complicaciones",
+        "MedicoResponsable": "Dr. Laura Gomez",
+        "EspecialidadMedica": "Medicina General",
+        "SeguimientoRecomendado": "Consulta de seguimiento en 1 semana",
+        "ObservacionesAdicionales": "Evitar actividades fisicas intensas hasta la proxima consulta, seguir dieta ligera"
+    }
+}
+```
+Respuestas 
+
+- Código HTTP 200
+```json
+{
+	"message": "Ingreso insertado con exito"
+}
+```
+- Código HTTP 409
+```json
+{
+	"error": "No existe un expediente del paciente con DPI: 234567890101."
+}
+```
+
+## crear_paciente
+**URL (dirección):**  
+`http://localhost:5001/admin/lista_pacientes`
+
+`http://localhost:5003/enfermera/lista_pacientes`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+```json
+{
+	"message": "Pacientes encontrados",
+	"paciente": [
+		{
+			"apellido": "Lopéz",
+			"direccion": "Calle Principal 123",
+			"dpi": "9777578880222",
+			"estado": "1",
+			"fecha_nacimiento": "Sat, 11 Nov 2000 00:00:00 GMT",
+			"genero": "Masculino",
+			"id_area": 1,
+			"id_paciente": 1,
+			"nombre": "juana",
+			"telefono": "66666666"
+		}
+	]
+}
+```
+- Código HTTP 409
+```json
+{
+	"Error": "Paciente no existe"
+}
+```
+
+## obtener_expediente
+**URL (dirección):**  
+`http://localhost:5004/mongo/obtener_expediente`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Content-Type: application/json`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+    "dpi": "7234567890101"
+}
+```
+Respuestas
+- Código HTTP 200
+```json
+{
+	"expediente": {
+		"_id": "7234567890101",
+		"antecedentes": {
+			"familiaresPatologicos": "Padre con hipertension y diabetes tipo 2, madre con cancer de mama diagnosticado a los 50 anos.",
+			"personalesNoPatologicos": {
+				"alimentacion": "Alimentacion variada, en su mayoria equilibrada, consume poca comida rapida.",
+				"crecimiento": "Crecimiento normal para su edad",
+				"desarrollo": "Comenzo a caminar a los 12 meses",
+				"ginecoObstetricos": {
+					"abortos": "0 abortos.",
+					"anticonceptivos": "No usa anticonceptivos, metodos naturales.",
+					"cesareas": "0 cesareas.",
+					"ciclosMenstruales": "Ciclos regulares de 28 dias.",
+					"gestas": "0 gestas.",
+					"hijosVivos": "0 hijos vivos.",
+					"menarquia": "Menarquia a los 12 anos.",
+					"partos": "0 partos.",
+					"ultimaMenstruacion": "Ultima menstruacion el 10 de diciembre de 2023."
+				},
+				"habitos": "Hace ejercicio 3 veces a la semana, no consume alcohol ni drogas recreativas.",
+				"inmunizaciones": "Vacunas completas segun el calendario infantil.",
+				"natal": "n/a",
+				"neonatalPostnatal": "n/a",
+				"prenatal": "n/a"
+			},
+			"personalesPatologicos": {
+				"alergicos": "Alergico al polen. Requiere antihistaminicos durante la temporada de alergias.",
+				"ginecologicos": "n/a",
+				"medicos": "Diabetes tipo 2 controlada con metformina.",
+				"obstetricos": "n/a",
+				"psychiatricos": "Diagnostico de depresion en 2017, tratada con terapia psicologica y medicacion (antidepresivos).",
+				"quirurgicos": "Cirugia de rodilla en 2016 debido a lesion deportiva.",
+				"toxicomanias": "Fumador durante 10 anos, dejo de fumar hace 2 anos.",
+				"transfusiones": "Recibio transfusion sanguinea despues de una cirugia en 2016.",
+				"traumaticos": "Fractura de pierna derecha en accidente de trafico en 2020. Recibio tratamiento quirurgico y rehabilitacion."
+			},
+			"socioPersonales": "Paciente vive con sus padres, en su tiempo libre disfruta de actividades al aire libre y leer."
+		},
+		"contactoEmergencia": [
+			{
+				"nombre": "Carlos Perez",
+				"relacion": "Hermano",
+				"telefono": "555-8765"
+			},
+			{
+				"nombre": "Ana Lopez",
+				"relacion": "Madre",
+				"telefono": "555-4321"
+			}
+		],
+		"datosPaciente": {
+			"alfabeto": "Si",
+			"edad": 24,
+			"escolaridad": "Universitaria",
+			"estadoCivil": "Soltero",
+			"fechaNacimiento": "15-01-2000",
+			"grupoEtnico": "Ladino",
+			"grupoSanguineo": "O+",
+			"ocupacion": "Estudiante",
+			"procedencia": "Domicilio",
+			"profesion": "Estudiante",
+			"religion": "Evangelico",
+			"tipoSangre": "O"
+		},
+		"historialIngresos": [
+			{
+				"DesarrolloDeProblemas": {
+					"Fecha": "15-12-2024",
+					"Hora": "10:00 AM",
+					"NumeroYNombreDeCadaProblema": {
+						"1": "Dolor abdominal agudo",
+						"2": "Lesion musculo-esqueletica"
+					}
+				},
+				"Diagnostico": "Dolor abdominal agudo, probable distension muscular",
+				"EspecialidadMedica": "Medicina General",
+				"EvolucionDeProblemas": {
+					"Fecha": "15-12-2024",
+					"Hora": "10:00 AM",
+					"NumeroYNombreDeCadaProblema": {
+						"1": "Dolor abdominal controlado",
+						"2": "Recuperacion parcial de la lesion"
+					}
+				},
+				"ExamenFisico": {
+					"Abdomen": "Dolor a la palpacion en la region epigastrica, sin signos de defensa",
+					"Boca": "Mucosa bucal sana, sin lesiones",
+					"Cabeza": "Sin deformidades",
+					"Cuello": "Sin adenopatias, libre de masas",
+					"ExamenGinecologico": "No realizado",
+					"ExamenMental": "Orientado en tiempo, espacio y persona",
+					"ExamenNeurologico": "Reflejos normales, sin deficit motor o sensitivo",
+					"ExtremidadesInferiores": "Sin edema, pulsos normales",
+					"ExtremidadesSuperiores": "Sin edema, pulsos normales",
+					"Faneras": "Cabello sano, unas sin alteraciones",
+					"GenitalesExternos": "Normales",
+					"InspeccionGeneral": "Paciente en buen estado general",
+					"Linfaticos": "No se palpan adenopatias",
+					"Mamas": "No se palpan masas",
+					"Nariz": "No presenta secreciones o congestion",
+					"Oidos": "Sin secreciones, audicion normal",
+					"Ojos": {
+						"AgudezaVisual": {
+							"ConLentes": {
+								"AmbosOjos": "20/20",
+								"OjoDerecho": "20/20",
+								"OjoIzquierdo": "20/20"
+							},
+							"SinLentes": {
+								"AmbosOjos": "20/25",
+								"OjoDerecho": "20/25",
+								"OjoIzquierdo": "20/25"
+							}
+						}
+					},
+					"Orofaringe": "Normal",
+					"Piel": "Sin alteraciones, hidratada",
+					"RegionLumbosacra": "Sin alteraciones",
+					"RegionPelvica": "Normal",
+					"SignosVitales": {
+						"Antropometria": {
+							"CircunferenciaAbdominal": "80 cm",
+							"CircunferenciaCefalica": "Normal",
+							"IndiceMasaCorporal": "23.7",
+							"Peso": {
+								"KG": "70",
+								"Libras": "154"
+							},
+							"Talla": "1.72 m"
+						},
+						"FrecuenciaCardiaca": "78 latidos por minuto",
+						"FrecuenciaDePulso": "74 pulsaciones por minuto",
+						"FrecuenciaRespiratoria": "16 respiraciones por minuto",
+						"Perifericos": {
+							"Carotideo": "Normal",
+							"Femoral": "Normal",
+							"Radial": "Normal"
+						},
+						"PresionArterial": {
+							"BrazoDerecho": "120/80 mm/Hg",
+							"BrazoIzquierdo": "118/78 mm/Hg",
+							"Posicion": "Sentado"
+						},
+						"RegionAnatomica": "Abdomen",
+						"TemperaturaEnC": "36.8"
+					},
+					"TactoRectal": "No realizado",
+					"Torax": {
+						"Anterior": "Simetrico, sin alteraciones",
+						"Lateral": "Normal",
+						"Posterior": "Normal"
+					}
+				},
+				"FechaDeLaVisita": "2024-11-05",
+				"HistoriaDeLaVisitaActual": "Estaba jugando pelota, cuando le dio un dolor fuerte en la zona abdominal",
+				"ListaInicialDeProblemas": {
+					"Numero1": "Dolor abdominal agudo",
+					"Numero2": "Posible lesion musculo-esqueletica",
+					"Numero3": "Posible dispepsia",
+					"Numero4": "Ninguno"
+				},
+				"MedicoResponsable": "Dr. Laura Gomez",
+				"MotivoDeLaVisita": "Dolor abdominal",
+				"ObservacionesAdicionales": "Evitar actividades fisicas intensas hasta la proxima consulta, seguir dieta ligera",
+				"ProcedimientosRealizados": "Radiografia de abdomen, examen fisico, analisis de sangre",
+				"ResultadoDeLaVisita": "Dolor controlado con medicacion, sin signos de complicaciones",
+				"RevisionPorOrganosAparatosYSistemas": {
+					"Boca": "Higiene adecuada, sin lesiones",
+					"Cabeza": "Sin signos de trauma o alteracion",
+					"Cardiovascular": "Ritmo regular, sin soplos",
+					"Cuello": "Sin adenopatias",
+					"Digestivo": "Dolor abdominal localizado en la region epigastrica",
+					"Endocrino": "Sin signos de alteracion",
+					"Faneras": "Cabello sin alteraciones",
+					"Garganta": "Sin signos de inflamacion",
+					"Genitourinario": "Sin alteraciones",
+					"Hematopoyetico": "Sin signos de anemia",
+					"Linfatico": "Sin adenopatias palpables",
+					"MusculoEsqueletico": "Dolor en la zona abdominal",
+					"Nariz": "No presenta secreciones",
+					"Nervioso": "Sin deficit neurologico",
+					"Oidos": "Sin signos de infeccion",
+					"Ojos": "No presenta alteraciones",
+					"Piel": "Sin alteraciones",
+					"PsiquiatricoAfecto": "Afecto adecuado",
+					"Reproductor": "No relevante",
+					"Respiratorio": "Sin dificultad respiratoria",
+					"SintomasGenerales": "DolorAbdominal"
+				},
+				"SeguimientoRecomendado": "Consulta de seguimiento en 1 semana",
+				"TipoDeVisita": "Consulta externa",
+				"TratamientoOPrescripcion": "Ibuprofeno 400mg cada 8 horas en caso de dolor, reposo relativo"
+			}
+		]
+	},
+	"message": "Expediente Obtenido"
+}
+```
+Código HTTP 409
+```json
+{
+	"error": "No existe un expediente del paciente con DPI: 72345678S90101."
+}
+
+```
 <h2> Diagrama de Arquitectura del Backend </h2>
 
 ![Imagen microservicios Backend](img_manual/servicios.png)
