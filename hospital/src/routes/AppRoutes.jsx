@@ -5,6 +5,7 @@ import AdminLayout from '../layouts/AdminLayout'
 import PageAdminDashboard from '../pages/admin/PageAdminDashboard'
 import UsersView from '../pages/admin/UserView'
 import DeveloperLayout from '../layouts/DeveloperLayout'
+import LogVitacore from '../components/dev/LogVitacore'
 import DoctorLayout from '../layouts/DoctorLayout'
 import NurseLayout from '../layouts/NurseLayout'
 import NewUserForm from '../components/admin/NewUserForm'
@@ -23,7 +24,7 @@ const AppRouter = () => {
       {<Route path='admin/' element={<PrivateRoute roles={[1]}><AdminLayout /></PrivateRoute>}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<PageAdminDashboard />} />
-        <Route path="users/create" element={<NewUserForm />} />
+        <Route path="users/create" element={<NewUserForm currentUserRole={1} />} />
         <Route path="users/list" element={<UsersView />} />
         <Route path="users/inactive" element={<NotFound />} />
         <Route path="areas/create" element={<NotFound />} />
@@ -41,8 +42,8 @@ const AppRouter = () => {
         <Route path='developer/' element={<PrivateRoute roles={[4]}><DeveloperLayout /></PrivateRoute>}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<NotFound />} />
-        <Route path="logs" element={<NotFound />} />
-        <Route path="users/create" element={<NotFound />} />
+        <Route path="logs" element={<LogVitacore />} />
+        <Route path="users/create" element={<NewUserForm currentUserRole={4} />} />
         <Route path="records/view" element={<NotFound />} />
         <Route path="records/edit" element={<NotFound />} />
         <Route path="settings" element={<NotFound />} />
