@@ -31,7 +31,7 @@ def lista_pacientes(current_user):
         user = cursor.fetchall()
         if not user:
             #save_log_param("consulta", "ERROR", "lista_pacientes", "Admin_Controller", "No hay usuarios disponibles")
-            return jsonify({"Error": "No hay usuarios disponibles"}), 409
+            return jsonify({"Error": "No hay Pacientes disponibles"}), 409
         #print(user)
         lista_usuarios = [
             {
