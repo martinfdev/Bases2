@@ -23,14 +23,14 @@ email_regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
 def lista_pacientes(current_user):
     conn = get_db_connection_SQLSERVER()
     if conn is None:
-        #save_log_param("consulta", "ERROR", "lista_pacientes", "Admin_Controller", "Error al conectarse con la base de datos")
+        #save_log_param("consulta", "ERROR", "lista_pacientes", "Enfermera_Controller", "Error al conectarse con la base de datos")
         return jsonify({"error": "Error al conectarse con la base de datos"}), 500
     cursor = conn.cursor()
     try:
         cursor.execute('SELECT * FROM Paciente')
         user = cursor.fetchall()
         if not user:
-            #save_log_param("consulta", "ERROR", "lista_pacientes", "Admin_Controller", "No hay usuarios disponibles")
+            #save_log_param("consulta", "ERROR", "lista_pacientes", "Enfermera_Controller", "No hay usuarios disponibles")
             return jsonify({"Error": "No hay Pacientes disponibles"}), 409
         #print(user)
         lista_usuarios = [
@@ -50,14 +50,14 @@ def lista_pacientes(current_user):
         conn.commit()
         cursor.close()
         conn.close()
-        #save_log_param("consulta", "INFO", "lista_pacientes", "Admin_Controller", "Exito, Consulta Realizada")
+        #save_log_param("consulta", "INFO", "lista_pacientes", "Enfermera_Controller", "Exito, Consulta Realizada")
         return jsonify({
             "message": "Pacientes encontrados",
             "paciente": lista_usuarios
         }), 200
     except pyodbc.IntegrityError as e:
-        #save_log_param("consulta", "ERROR", "lista_pacientes", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
+        #save_log_param("consulta", "ERROR", "lista_pacientes", "Enfermera_Controller", "Error en la integridad de la base de datos: " + str(e))
         return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
     except Exception as e:
-        #save_log_param("consulta", "ERROR", "lista_pacientes", "Admin_Controller", "Error inesperado")
+        #save_log_param("consulta", "ERROR", "lista_pacientes", "Enfermera_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
