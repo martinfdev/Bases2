@@ -1,7 +1,6 @@
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.BASE_ADMIN_URL
 
-import {dashboardAdmin, listSpecialty, listUsers, listPatients} from '../test/testData' //this is just for testing purposes in development mode
-
+// import {dashboardAdmin, listSpecialty, listUsers, listPatients} from '../test/testData' //this is just for testing purposes in development mode
 
 /**
  * get dashboard data from the server for the admin user
@@ -10,17 +9,17 @@ import {dashboardAdmin, listSpecialty, listUsers, listPatients} from '../test/te
  */
 export const getDashboardData = async () => {
     try {
-        // const response = await fetch(`${API_URL}/admin/dashboard`, {
-        //     method: 'GET', 
-        //     headers: {
-        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
-        //     },
-        // })
-        // if (!response.ok) {
-        //     throw new Error('Error al obtener datos del dashboard')
-        // }
-        // const data = await response.json()
-        const data = dashboardAdmin
+        const response = await fetch(`${API_URL}/admin/dashboard`, {
+            method: 'GET', 
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        })
+        if (!response.ok) {
+            throw new Error('Error al obtener datos del dashboard')
+        }
+        const data = await response.json()
+        // const data = dashboardAdmin
         return data
     } catch (error) {
         console.error('Error al obtener datos del dashboard:', error)
@@ -35,17 +34,17 @@ export const getDashboardData = async () => {
  */
 export const getSpecialties = async () => {
     try {
-        // const response = await fetch(`${API_URL}/admin/obtener_especialidades`, {
-        //     method: 'GET', 
-        //     headers: {
-        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
-        //     },
-        // })
-        // if (!response.ok) {
-        //     throw new Error('Error al obtener datos de especialidades')
-        // }
-        // const data = await response.json()
-        const data = listSpecialty
+        const response = await fetch(`${API_URL}/admin/obtener_especialidades`, {
+            method: 'GET', 
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        })
+        if (!response.ok) {
+            throw new Error('Error al obtener datos de especialidades')
+        }
+        const data = await response.json()
+        // const data = listSpecialty
         return data
     } catch (error) {
         console.error('Error al obtener datos de especialidades:', error)
@@ -61,18 +60,18 @@ export const getSpecialties = async () => {
  */
 export const createSpecialty = async (specialtyData) => {
     try {
-        // const response = await fetch(`${API_URL}/admin/insertar_especialidad`, {
-        //     method: 'POST',
-        //     headers: {
-        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(specialtyData),
-        // })
+        const response = await fetch(`${API_URL}/admin/insertar_especialidad`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(specialtyData),
+        })
         // const data = await response.json()
-        // if (!response.ok) {
-        //     throw new Error(data.error || 'Error en la creación de la especialidad.')
-        // }
+        if (!response.ok) {
+            throw new Error(data.error || 'Error en la creación de la especialidad.')
+        }
         await new Promise(resolve => setTimeout(resolve, 1000))
         console.log('specialtyData to send:', specialtyData)
         const data = {message: 'Especialidad creada correctamente'}
@@ -91,17 +90,17 @@ export const createSpecialty = async (specialtyData) => {
 
 export const getUsers = async () => {
     try {
-        // const response = await fetch(`${API_URL}/admin/lista_usuarios`, {
-        //     method: 'GET', 
-        //     headers: {
-        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
-        //     },
-        // })
-        // if (!response.ok) {
-        //     throw new Error('Error al obtener datos de usuarios')
-        // }
-        // const data = await response.json()
-        const data = listUsers
+        const response = await fetch(`${API_URL}/admin/lista_usuarios`, {
+            method: 'GET', 
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        })
+        if (!response.ok) {
+            throw new Error('Error al obtener datos de usuarios')
+        }
+        const data = await response.json()
+        // const data = listUsers
         return data
     } catch (error) {
         console.error('Error al obtener datos de usuarios:', error)
@@ -118,18 +117,18 @@ export const getUsers = async () => {
 
 export const getUser = async (userId) => {
     try {
-        // const response = await fetch(`${API_URL}/admin/consulta_usuario`, {
-        //     method: 'GET', 
-        //     headers: {
-        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
-        //     },
-        //     body: JSON.stringify({dpi: userId}),
-        // })
-        // if (!response.ok) {
-        //     throw new Error('Error al obtener datos del usuario')
-        // }
-        // const data = await response.json()
-        const data = listUsers.find(u => u.id === userId)
+        const response = await fetch(`${API_URL}/admin/consulta_usuario`, {
+            method: 'GET', 
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify({dpi: userId}),
+        })
+        if (!response.ok) {
+            throw new Error('Error al obtener datos del usuario')
+        }
+        const data = await response.json()
+        // const data = listUsers.find(u => u.id === userId)
         return data
     } catch (error) {
         console.error('Error al obtener datos del usuario:', error)
@@ -146,19 +145,19 @@ export const getUser = async (userId) => {
 
 export const deleteUser = async (userId) => {
     try {
-        // const response = await fetch(`${API_URL}/admin/eliminacion_usuario`, {
-        //     method: 'DELETE', 
-        //     headers: {
-        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
-        //     },
-        //     body: JSON.stringify({dpi: userId}),
-        // })
-        // const data = await response.json()
-        // if (!response.ok) {
-        //     throw new Error(data.error || 'Error en la eliminación del usuario.')
-        // }
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        const data = {message: 'Usuario eliminado correctamente'}
+        const response = await fetch(`${API_URL}/admin/eliminacion_usuario`, {
+            method: 'DELETE', 
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify({dpi: userId}),
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            throw new Error(data.error || 'Error en la eliminación del usuario.')
+        }
+        // await new Promise(resolve => setTimeout(resolve, 1000))
+        // const data = {message: 'Usuario eliminado correctamente'}
         return data
     } catch (error) {
         console.error('Error en eliminación de usuario:', error)
@@ -174,21 +173,21 @@ export const deleteUser = async (userId) => {
  */
 export const updateUser = async (userData) => {
     try {
-        // const response = await fetch(`${API_URL}/admin/actualizar_usuario`, {
-        //     method: 'PUT',
-        //     headers: {
-        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(userData),
-        // })
-        // const data = await response.json()
-        // if (!response.ok) {
-        //     throw new Error(data.Error || 'Error en la actualización del usuario.')
-        // }
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        console.log('userData to send:', userData)
-        const data = {message: 'Usuario actualizado correctamente'}
+        const response = await fetch(`${API_URL}/admin/actualizar_usuario`, {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            throw new Error(data.Error || 'Error en la actualización del usuario.')
+        }
+        // await new Promise(resolve => setTimeout(resolve, 1000))
+        // console.log('userData to send:', userData)
+        // const data = {message: 'Usuario actualizado correctamente'}
         return data
     } catch (error) {
         console.error('Error en actualización de usuario:', error)
@@ -205,21 +204,21 @@ export const updateUser = async (userData) => {
 
 export const createPatient = async (patientData) => {
     try {
-        // const response = await fetch(`${API_URL}/admin/crear_paciente`, {
-        //     method: 'POST',
-        //     headers: {
-        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(patientData),
-        // })
-        // const data = await response.json()
-        // if (!response.ok) {
-        //     throw new Error(data.error || 'Error en la creación del paciente.')
-        // }
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        console.log('patientData to send:', patientData)
-        const data = {message: 'Paciente creado correctamente'}
+        const response = await fetch(`${API_URL}/admin/crear_paciente`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(patientData),
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            throw new Error(data.error || 'Error en la creación del paciente.')
+        }
+        // await new Promise(resolve => setTimeout(resolve, 1000))
+        // console.log('patientData to send:', patientData)
+        // const data = {message: 'Paciente creado correctamente'}
         return data
     } catch (error) {
         console.error('Error en creación de paciente:', error)
@@ -235,18 +234,18 @@ export const createPatient = async (patientData) => {
 
 export const getPatients = async () => {
     try {
-        // const response = await fetch(`${API_URL}/admin/lista_pacientes`, {
-        //     method: 'GET',
-        //     headers: {
-        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
-        //     },
-        // })
-        // if (!response.ok) {
-        //     throw new Error('Error al obtener datos de pacientes')
-        // }
-        // const data = await response.json()
-        await new Promise(resolve => setTimeout(resolve, 5000))
-        const data = listPatients
+        const response = await fetch(`${API_URL}/admin/lista_pacientes`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        })
+        if (!response.ok) {
+            throw new Error('Error al obtener datos de pacientes')
+        }
+        const data = await response.json()
+        // await new Promise(resolve => setTimeout(resolve, 5000))
+        // const data = listPatients
         return data
     }
     catch (error) {
@@ -264,19 +263,19 @@ export const getPatients = async () => {
 
 export const deletePatient = async (patientId) => {
     try {
-        // const response = await fetch(`${API_URL}/admin/eliminar_paciente`, {
-        //     method: 'DELETE',
-        //     headers: {
-        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
-        //     },
-        //     body: JSON.stringify({dpi: patientId}),
-        // })
-        // const data = await response.json()
-        // if (!response.ok) {
-        //     throw new Error(data.error || 'Error en la eliminación del paciente.')   
-        // }
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        const data = {message: 'Paciente eliminado correctamente'}
+        const response = await fetch(`${API_URL}/admin/eliminar_paciente`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify({dpi: patientId}),
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            throw new Error(data.error || 'Error en la eliminación del paciente.')   
+        }
+        // await new Promise(resolve => setTimeout(resolve, 1000))
+        // const data = {message: 'Paciente eliminado correctamente'}
         return data
     }
     catch (error) {
