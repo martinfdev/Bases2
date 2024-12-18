@@ -1,6 +1,6 @@
-const API_URL_MONGO = import.meta.env.VITE_API_URL
+const API_BASE_URL = import.meta.env.BASE_MONGODB_URL
 
-import {  } from '../test/testData' //this is just for testing purposes in development mode
+// import {  } from '../test/testData' //this is just for testing purposes in development mode
 
 /**
  * create a new record for a patient
@@ -11,7 +11,7 @@ import {  } from '../test/testData' //this is just for testing purposes in devel
 export async function createRecordPatient(recordData) {
     try {
         console.log(recordData)
-        const response = await fetch(`${API_URL_MONGO}/mongo/crear_expediente`, {
+        const response = await fetch(`${API_BASE_URL}/mongo/crear_expediente`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -25,7 +25,6 @@ export async function createRecordPatient(recordData) {
         if (!response.ok) {
             throw new Error(data.error || 'Error en la creación del registro.')
         }
-
         return data
     } catch (error) {
         console.error('Error en creación de registro:', error)

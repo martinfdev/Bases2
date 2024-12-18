@@ -1,6 +1,6 @@
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.BASE_AUTH_URL
 
-import {dataLogin, dataUser} from '../test/testData' //this is just for testing purposes in development mode
+// import {dataLogin, dataUser} from '../test/testData' //this is just for testing purposes in development mode
 
 /**
  * Initiate a login request to the server
@@ -11,24 +11,23 @@ import {dataLogin, dataUser} from '../test/testData' //this is just for testing 
 
 export async function loginUser(credentials) {
     try {
-        // const response = await fetch(`${API_URL}/auth/login`, {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify(credentials),
-        // })
+        const response = await fetch(`${API_URL}/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(credentials),
+        })
     
-        // const data = await response.json()
+        const data = await response.json()
     
-        // if (!response.ok) {
-        //   throw new Error(data.error || 'Error en el inicio de sesión.')
-        // }
-
-        const data = dataLogin
-        const { token, message } = data
-        localStorage.setItem('token', token)
-        return { message }
+        if (!response.ok) {
+          throw new Error(data.error || 'Error en el inicio de sesión.')
+        }
+        // const data = dataLogin
+        // const { token, message } = data
+        // localStorage.setItem('token', token)
+        return data
       } catch (error) {
         console.error('Error en login:', error)
         throw error
@@ -43,19 +42,19 @@ export async function loginUser(credentials) {
 
 export async function getUserData() {
     try {
-        // const response = await fetch(`${API_URL}/me`, {
-        //   headers: {
-        //     Authorization: `Bearer ${localStorage.getItem('token')}`,
-        //   },
-        // })
+        const response = await fetch(`${API_URL}/me`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        })
     
-        // const data = await response.json()
+        const data = await response.json()
     
-        // if (!response.ok) {
-        //   throw new Error(data.error || 'Error al obtener datos del usuario.')
-        // }
+        if (!response.ok) {
+          throw new Error(data.error || 'Error al obtener datos del usuario.')
+        }
         
-        const data = dataUser
+        // const data = dataUser
         return data
       } catch (error) {
         console.error('Error al obtener datos del usuario:', error)
