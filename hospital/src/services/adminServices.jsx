@@ -1,6 +1,6 @@
 const API_URL = import.meta.env.VITE_API_URL
 
-import {dashboardAdmin, listSpecialty, listUsers} from '../test/testData' //this is just for testing purposes in development mode
+import {dashboardAdmin, listSpecialty, listUsers, listPatients} from '../test/testData' //this is just for testing purposes in development mode
 
 
 /**
@@ -192,6 +192,95 @@ export const updateUser = async (userData) => {
         return data
     } catch (error) {
         console.error('Error en actualización de usuario:', error)
+        throw error
+    }
+}
+
+/**
+ * create a new patient in the system
+ * @param patientData - object containing the user data
+ * @returns a promise that resolves to the user data if the creation is successful
+ * @throws an error if the creation fails
+ */
+
+export const createPatient = async (patientData) => {
+    try {
+        // const response = await fetch(`${API_URL}/admin/crear_paciente`, {
+        //     method: 'POST',
+        //     headers: {
+        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(patientData),
+        // })
+        // const data = await response.json()
+        // if (!response.ok) {
+        //     throw new Error(data.error || 'Error en la creación del paciente.')
+        // }
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        console.log('patientData to send:', patientData)
+        const data = {message: 'Paciente creado correctamente'}
+        return data
+    } catch (error) {
+        console.error('Error en creación de paciente:', error)
+        throw error
+    }
+}
+
+/**
+ * get the list of patients from the server
+ * @returns a promise that resolves to the list of patients
+ * @throws an error if the request fails
+ */
+
+export const getPatients = async () => {
+    try {
+        // const response = await fetch(`${API_URL}/admin/lista_pacientes`, {
+        //     method: 'GET',
+        //     headers: {
+        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
+        //     },
+        // })
+        // if (!response.ok) {
+        //     throw new Error('Error al obtener datos de pacientes')
+        // }
+        // const data = await response.json()
+        await new Promise(resolve => setTimeout(resolve, 5000))
+        const data = listPatients
+        return data
+    }
+    catch (error) {
+        console.error('Error al obtener datos de pacientes:', error)
+        throw error
+    }
+}
+
+/**
+ * delete a patient from the system
+ * @param patientDPI - the id of the patient to delete
+ * @returns a promise that resolves to a message if the deletion is successful
+ * @throws an error if the deletion fails
+ */
+
+export const deletePatient = async (patientId) => {
+    try {
+        // const response = await fetch(`${API_URL}/admin/eliminar_paciente`, {
+        //     method: 'DELETE',
+        //     headers: {
+        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
+        //     },
+        //     body: JSON.stringify({dpi: patientId}),
+        // })
+        // const data = await response.json()
+        // if (!response.ok) {
+        //     throw new Error(data.error || 'Error en la eliminación del paciente.')   
+        // }
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const data = {message: 'Paciente eliminado correctamente'}
+        return data
+    }
+    catch (error) {
+        console.error('Error en eliminación de paciente:', error)
         throw error
     }
 }
