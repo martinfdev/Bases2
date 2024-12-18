@@ -1,0 +1,6 @@
+ALTER TABLE Usuario
+ALTER COLUMN direccion NVARCHAR(MAX);
+
+ALTER TABLE Paciente
+ALTER COLUMN direccion NVARCHAR(MAX);
+
