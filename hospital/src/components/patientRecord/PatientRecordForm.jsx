@@ -6,7 +6,7 @@ import { createRecordPatient } from '../../services/mongoServices'
 
 const PatientRecordForm = () => {
     const [formData, setFormData] = useState({
-        dpi: '',
+        _id: '',
         datosPaciente: {
             fechaNacimiento: '',
             edad: '',
@@ -75,7 +75,6 @@ const PatientRecordForm = () => {
                 current = current[keys[i]]
             }
             current[keys[keys.length - 1]] = value
-            console.log(updated)
             return updated
         })
     }
@@ -106,9 +105,9 @@ const PatientRecordForm = () => {
                 <section>
                     <Input
                         label="DPI"
-                        name="dpi"
-                        type="text"
-                        value={formData.dpi}
+                        name="_id"
+                        type="number"
+                        value={formData._id}
                         onChange={handleChange}
                     />
                 </section>
