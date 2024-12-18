@@ -9,7 +9,7 @@ export const dataUser =
     "apellidos": "Pérez",
     "correo": "juan.perez@example.com",
     "contrasena": "123",
-    "id_rol": 2,
+    "id_rol": 1,
     "telefono": "55555555",
     "dpi": "1234567890123",
     "genero": "masculino",
@@ -212,6 +212,72 @@ export const listLogs = {
 			"status": "INFO",
 			"tipo": "Consulta"
 		}
+	]
+}
+
+export const listPatients = {
+	"message": "Pacientes encontrados",
+	"paciente": [
+		{
+			"apellido": "Lopéz",
+			"direccion": "Calle Principal 123",
+			"dpi": "9777578880222",
+			"estado": "1",
+			"fecha_nacimiento": "Sat, 11 Nov 2000 00:00:00 GMT",
+			"genero": "Masculino",
+			"id_area": 1,
+			"id_paciente": 1,
+			"nombre": "juana",
+			"telefono": "66666666"
+		},
+        {
+            "apellido": "Lopéz",
+            "direccion": "Calle Principal 123",
+            "dpi": "9777578880223",
+            "estado": "1",
+            "fecha_nacimiento": "Sat, 11 Nov 2000 00:00:00 GMT",
+            "genero": "Masculino",
+            "id_area": 1,
+            "id_paciente": 2,
+            "nombre": "juana",
+            "telefono": "66666666"
+        },
+        {
+            "apellido": "Lopéz",
+            "direccion": "Calle Principal 123",
+            "dpi": "9777578880224",
+            "estado": "1",
+            "fecha_nacimiento": "Sat, 11 Nov 2000 00:00:00 GMT",
+            "genero": "Masculino",
+            "id_area": 1,
+            "id_paciente": 3,
+            "nombre": "juana",
+            "telefono": "66666666"
+        },
+        {
+            "apellido": "Lopéz",
+            "direccion": "Calle Principal 123",
+            "dpi": "9777578880225",
+            "estado": "1",
+            "fecha_nacimiento": "Sat, 11 Nov 2000 00:00:00 GMT",
+            "genero": "Masculino",
+            "id_area": 1,
+            "id_paciente": 4,
+            "nombre": "juana",
+            "telefono": "66666666"
+        },
+        {
+            "apellido": "Lopéz",
+            "direccion": "Calle Principal 123",
+            "dpi": "9777578880226",
+            "estado": "1",
+            "fecha_nacimiento": "Sat, 11 Nov 2000 00:00:00 GMT",
+            "genero": "Masculino",
+            "id_area": 1,
+            "id_paciente": 5,
+            "nombre": "juana",
+            "telefono": "66666666"
+        }
 	]
 }
 
