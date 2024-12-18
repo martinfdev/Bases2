@@ -24,8 +24,9 @@ const UserTable = ({ users, onEdit, onDelete, onView }) => {
     }
 
     return (
+        <div className="max-w-7xl mx-auto p-6 bg-white shadow-lg rounded-lg">
         <table className="min-w-full bg-white rounded-lg overflow-hidden shadow">
-            <thead className="bg-gray-800 text-white">
+            <thead className="bg-gray-900 text-gray-100">
                 <tr>
                     <th className="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Nombres</th>
                     <th className="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Apellidos</th>
@@ -81,6 +82,7 @@ const UserTable = ({ users, onEdit, onDelete, onView }) => {
                 ))}
             </tbody>
         </table>
+    </div>
     )
 }
 
