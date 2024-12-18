@@ -9,7 +9,8 @@ const API_URL = import.meta.env.VITE_BASE_ADMIN_URL
  * @throws an error if the registration fails
  */
 export async function registerUser(userData) {
-    try {
+  console.log(userData)  
+  try {
         const response = await fetch(`${API_URL}/admin/register`, {
           method: 'POST',
           headers: {

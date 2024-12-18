@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import PropTypes from "prop-types"
+import PropTypes, { number } from "prop-types"
 import { registerUser } from "../../services/userServices"
 import { getSpecialties } from "../../services/adminServices"
 
@@ -15,9 +15,9 @@ const NewUserForm = ({ currentUserRole }) => {
         genero: '',
         direccion: '',
         fecha_ingreso: '',
-        id_especialidad: '',
+        id_especialidad: 0,
         fecha_vencimiento_colegiado: '',
-        estado: ''
+        estado: 0
     })
 
     const handleChange = e => {
@@ -30,7 +30,7 @@ const NewUserForm = ({ currentUserRole }) => {
             await registerUser(form)
             alert('Usuario creado exitosamente')
             setForm({
-                nombres: '', apellidos: '', correo: '', contrasena: '', id_rol: '', telefono: '', dpi: '', genero: '', direccion: '', fecha_ingreso: '', id_especialidad: '', fecha_vencimiento_colegiado: '', estado: ''
+                nombres: '', apellidos: '', correo: '', contrasena: '', id_rol: 0, telefono: '', dpi: '', genero: '', direccion: '', fecha_ingreso: '', id_especialidad: 0, fecha_vencimiento_colegiado: '', estado: 0
             })
         } catch (error) {
             console.log(error)
@@ -118,6 +118,7 @@ const NewUserForm = ({ currentUserRole }) => {
                     <div className="mb-4">
                         <label className="block text-gray-700">Rol</label>
                         <select
+                            type="number"
                             name="id_rol"
                             value={form.id_rol}
                             onChange={handleChange}
@@ -192,6 +193,7 @@ const NewUserForm = ({ currentUserRole }) => {
                     <div className="mb-4">
                         <label className="block text-gray-700">ID Especialidad</label>
                         <select
+                            type="number"
                             name="id_especialidad"
                             value={form.id_especialidad}
                             onChange={handleChange}
@@ -220,6 +222,7 @@ const NewUserForm = ({ currentUserRole }) => {
                     <div className="mb-6">
                         <label className="block text-gray-700">Estado</label>
                         <select
+                            type="number"
                             name="estado"
                             value={form.estado}
                             onChange={handleChange}
