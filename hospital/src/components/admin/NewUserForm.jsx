@@ -27,6 +27,12 @@ const NewUserForm = ({ currentUserRole }) => {
     const handleSubmit = async e => {
         e.preventDefault()
         try {
+            const dataToSend = {
+                ...form,
+                id_rol: parseInt(form.id_rol, 10),
+                id_especialidad: form.id_especialidad ? parseInt(form.id_especialidad, 10) : null,
+                estado: form.estado ? parseInt(form.estado, 10) : null
+            }
             await registerUser(form)
             alert('Usuario creado exitosamente')
             setForm({
