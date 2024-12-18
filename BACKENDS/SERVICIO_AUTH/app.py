@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app)
 load_config(app)
 app.register_blueprint(auth_bp, url_prefix='/auth')
 

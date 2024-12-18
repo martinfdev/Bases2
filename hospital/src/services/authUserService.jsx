@@ -26,8 +26,8 @@ export async function loginUser(credentials) {
           throw new Error(data.error || 'Error en el inicio de sesión.')
         }
         // const data = dataLogin
-        // const { token, message } = data
-        // localStorage.setItem('token', token)
+        const { token, message } = data
+        localStorage.setItem('token', token)
         return data
       } catch (error) {
         console.error('Error en login:', error)
@@ -43,7 +43,7 @@ export async function loginUser(credentials) {
 
 export async function getUserData() {
     try {
-        const response = await fetch(`${API_URL}/me`, {
+        const response = await fetch(`${API_URL}/auth/me`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
