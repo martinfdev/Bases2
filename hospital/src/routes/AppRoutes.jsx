@@ -4,6 +4,8 @@ import LoginPage from '../pages/LoginPage'
 import AdminLayout from '../layouts/AdminLayout'
 import PageAdminDashboard from '../pages/admin/PageAdminDashboard'
 import UsersView from '../pages/admin/UserView'
+import NewPatientPage from '../pages/admin/NewPatientPage'
+import PatientView from '../pages/admin/PatientView'
 import DeveloperLayout from '../layouts/DeveloperLayout'
 import LogVitacore from '../components/dev/LogVitacore'
 import DoctorLayout from '../layouts/DoctorLayout'
@@ -28,10 +30,12 @@ const AppRouter = () => {
         <Route path="users/create" element={<NewUserForm currentUserRole={1} />} />
         <Route path="users/list" element={<UsersView />} />
         <Route path="users/inactive" element={<NotFound />} />
+        <Route path="patients/create" element={<NewPatientPage />} />
+        <Route path="patients/list" element={<PatientView />} />
         <Route path="areas/create" element={<NotFound />} />
         <Route path="areas/list" element={<NotFound />} />
         <Route path="areas/assign" element={<NotFound />} />
-        <Route path="logs" element={<NotFound />} />
+        <Route path="logs" element={<LogVitacore />} />
         <Route path="reports" element={<NotFound />} />
         <Route path="statistics" element={<NotFound />} />
         <Route path="notifications/send" element={<NotFound />} />
