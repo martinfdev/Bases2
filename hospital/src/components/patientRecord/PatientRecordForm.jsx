@@ -92,11 +92,74 @@ const PatientRecordForm = () => {
         e.preventDefault()
         try {
             await createRecordPatient(formData)
+            alert('Expediente creado exitosamente')
+            handleReset()
         } catch (error) {
             console.error('Error al crear expediente:', error)
         }
     }
 
+    const handleReset = () => {
+        setFormData({
+            _id: '',
+            datosPaciente: {
+                fechaNacimiento: '',
+                edad: '',
+                estadoCivil: '',
+                ocupacion: '',
+                profesion: '',
+                religion: '',
+                grupoSanguineo: '',
+                tipoSangre: '',
+                grupoEtnico: '',
+                alfabeto: '',
+                escolaridad: '',
+                procedencia: '',
+            },
+            contactoEmergencia: [
+                { nombre: '', relacion: '', telefono: '' },
+                { nombre: '', relacion: '', telefono: '' },
+            ],
+            antecedentes: {
+                personalesPatologicos: {
+                    medicos: '',
+                    quirurgicos: '',
+                    traumaticos: '',
+                    alergicos: '',
+                    toxicomanias: '',
+                    psychiatricos: '',
+                    transfusiones: '',
+                    ginecologicos: '',
+                    obstetricos: '',
+                },
+                familiaresPatologicos: '',
+                personalesNoPatologicos: {
+                    prenatal: '',
+                    natal: '',
+                    neonatalPostnatal: '',
+                    crecimiento: '',
+                    desarrollo: '',
+                    inmunizaciones: '',
+                    alimentacion: '',
+                    habitos: '',
+                    ginecoObstetricos: {
+                        menarquia: '',
+                        ciclosMenstruales: '',
+                        ultimaMenstruacion: '',
+                        anticonceptivos: '',
+                        gestas: '',
+                        partos: '',
+                        cesareas: '',
+                        abortos: '',
+                        hijosVivos: '',
+                    },
+                },
+                socioPersonales: '',
+            },
+            historialIngresos: [],
+        })
+    }
+    
     return (
         <div className="max-w-5xl mx-auto p-6 bg-white shadow-lg rounded-lg">
             <h2 className="text-3xl font-semibold mb-6">Expediente de Nuevo Paciente</h2>
