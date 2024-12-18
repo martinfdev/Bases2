@@ -6,7 +6,7 @@ import jwt
 
 from CONFIG.connection import get_db_connection_SQLSERVER
 from CONFIG.decorators import token_required
-from REDIS.logs import save_log_param
+#from REDIS.logs import save_log_param
 auth_bp = Blueprint('auth', __name__)
    
 

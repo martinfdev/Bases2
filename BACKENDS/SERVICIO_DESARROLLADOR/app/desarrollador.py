@@ -9,9 +9,9 @@ from CONFIG.decorators import token_required, desarrollador_required
 import bcrypt
 import pyodbc
 import re
-from REDIS.logs import save_log_param, get_log
+#from REDIS.logs import save_log_param, get_log
 import json
-desarrollador_bp = Blueprint('desarrolaldor', __name__)
+desarrollador_bp = Blueprint('desarrollador', __name__)
 
 
 @desarrollador_bp.route('/dashboard', methods=['GET']) #dashbord para el desarrollador

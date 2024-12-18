@@ -9,7 +9,7 @@ from CONFIG.decorators import token_required, admin_required
 import bcrypt
 import pyodbc
 import re
-from REDIS.logs import save_log_param
+#from REDIS.logs import save_log_param
 admin_bp = Blueprint('admin', __name__)
 
 

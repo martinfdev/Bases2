@@ -1,5 +1,7 @@
 -- Usuarios Desarrolladores
-INSERT INTO Usuario (nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, genero, direccion, fecha_ingreso, estado )VALUES('Eduardo Alexander', 'Reyes Gonzalez', 'eduardoalex2000@hotmail.com','$2b$12$oTGp1oyyP0cCxlUXVWvjE.1PblEKiz9x.pu4jQVozxBSHr7NrTLKO', 4,'35958027','3013805890101','Masculino','Ciudad de Guatemala','2024/12/13',1);
+INSERT INTO Usuario (nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, genero, direccion, fecha_ingreso, estado )VALUES('Eduardo Alexander', 'Reyes Gonzalez', 'eduardoalex2000@hotmail.com','$2b$12$316P9qvSrcvHJejM4tjHKedxjvI/BhKNDlMXku/6EXt6RR6774t.m', 4,'35958027','3013805890101','Masculino','Ciudad de Guatemala','2024/12/13',1);
+INSERT INTO Usuario (nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, genero, direccion, fecha_ingreso, estado )VALUES('Pedro', 'Martin Francisco', 'pedromartinf07@gmail.com','$2b$12$iCn0k7sdOArKQe.icXJ8GOuBrRQEtN9D33dA0Q.dtCqoDrWqprcPS', 4,'46664955','2574151141308','Masculino','Ciudad de Guatemala','2024/12/13',1);
+INSERT INTO Usuario (nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, genero, direccion, fecha_ingreso, estado )VALUES('Luis Antonio', 'Cutzal Chalí', 'cutzalluis@gmail.com','$2b$12$OeIaQQxUcsY1q7FlblBmmOnZQ3URT5WOSs/wIVBad8mRAfa6nbWWO', 4,'41201792','2842258270404','Masculino','Ciudad de Guatemala','2024/12/13',1);
 
 -- Usuarios Administradores password Admin456
 INSERT INTO Usuario (nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, genero, direccion, fecha_ingreso, estado )VALUES('Juan', 'Perez', 'juan.perez@example.com','$2b$12$Psv1QmDE1bQGbXBrCjTSaur/qEeODYDxp.DkKcptmtgWxD7TwSCa.', 1,'55555555','1234567890101','Masculino','Ciudad de Guatemala','2024/12/13',1);
