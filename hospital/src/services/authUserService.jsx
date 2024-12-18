@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.BASE_AUTH_URL
+const API_URL = import.meta.env.VITE_BASE_AUTH_URL
 
 // import {dataLogin, dataUser} from '../test/testData' //this is just for testing purposes in development mode
 
@@ -10,6 +10,7 @@ const API_URL = import.meta.env.BASE_AUTH_URL
  */
 
 export async function loginUser(credentials) {
+    console.log(API_URL)
     try {
         const response = await fetch(`${API_URL}/auth/login`, {
           method: 'POST',

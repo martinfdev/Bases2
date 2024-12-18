@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.BASE_ADMIN_URL
+const API_URL = import.meta.env.VITE_BASE_ADMIN_URL
 
 // import {dashboardAdmin, listSpecialty, listUsers, listPatients} from '../test/testData' //this is just for testing purposes in development mode
 

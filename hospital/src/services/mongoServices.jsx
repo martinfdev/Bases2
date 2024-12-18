@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.BASE_MONGODB_URL
+const API_BASE_URL = import.meta.env.VITE_BASE_MONGODB_URL
 
 // import {  } from '../test/testData' //this is just for testing purposes in development mode
 

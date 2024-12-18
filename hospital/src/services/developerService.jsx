@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.BASE_DEV_URL
+const API_URL = import.meta.env.VITE_BASE_DEV_URL
 
 // import {listLogs} from '../test/testData' //this is just for testing purposes in development mode
 
