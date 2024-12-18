@@ -1,7 +1,8 @@
 import {
   FaTachometerAlt, FaUserCog, FaUserFriends, FaUserSlash,
   FaMapMarkedAlt, FaMap, FaUserTag, FaClipboardList,
-  FaFileExport, FaChartPie, FaEnvelopeOpenText, FaInbox
+  FaFileExport, FaChartPie, FaEnvelopeOpenText, FaInbox,
+  FaUserPlus
 } from 'react-icons/fa'
 import  Layout  from '../layouts/Layout'
 
@@ -32,6 +33,19 @@ const AdminLayout = () => {
           path: '/admin/users/inactive',
           icon: <FaUserSlash />
       },
+      {
+          section: 'Gestión de Pacientes',
+          label: 'Crear Paciente',
+          path: '/admin/patients/create',
+          icon: <FaUserPlus />
+      },
+      {
+          section: 'Gestión de Pacientes',
+          label: 'Listar Pacientes',
+          path: '/admin/patients/list',
+          icon: <FaUserFriends />
+      },
+      
       {
           section: 'Gestión de Áreas',
           label: 'Crear Área',
