@@ -21,13 +21,14 @@ def admin_route(current_user):
     return jsonify({"message": f"Welcome admin, user {current_user['id_usuario']}!"}), 200
 
 
-email_regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+email_regex = r'^[a-zA-Z0-9]+[\._]?[a-zA-Z0-9]+[@]\w+[.]\w{2,3}$'
 
 @admin_bp.route('/register', methods=['POST'])
 @token_required
 @admin_required
 def register_user(current_user):
     data = request.get_json()
+    print(data)
     required_fields = ['nombres','apellidos','correo','contrasena','id_rol','telefono','dpi','genero','direccion','fecha_ingreso','id_especialidad','fecha_vencimiento_colegiado','estado']
     for field in required_fields:
         if field not in data:
@@ -49,6 +50,7 @@ def register_user(current_user):
     # Validación de formato de email
     if not re.match(email_regex, correo):
         save_log_param("Insercion", "ERROR", "register", "Admin_Controller", "El correo no tiene el formato adecuado")
+        print("no")
         return jsonify({"Error": "El correo no tiene el formato adecuado"}), 400
     # Encriptar la contraseña
     hashed_password = bcrypt.hashpw(contrasena.encode('utf-8'), bcrypt.gensalt())
@@ -89,6 +91,7 @@ def register_user(current_user):
 
 
             save_log_param("Insercion", "ERROR", "register", "Admin_Controller", "El correo electronico/dpi ya existe")
+            print(e)
             return jsonify({"Error": "El correo electronico/dpi ya existe"}), 409
         # Inserción de datos en la tabla Usuarios
         print(cursor)
@@ -101,6 +104,7 @@ def register_user(current_user):
     except pyodbc.IntegrityError as e:
         conn.rollback()
         save_log_param("Insercion", "ERROR", "register", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
+        print(e)
         return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
     except Exception as e:
         conn.rollback()

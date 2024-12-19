@@ -33,7 +33,7 @@ const NewUserForm = ({ currentUserRole }) => {
                 id_especialidad: form.id_especialidad ? parseInt(form.id_especialidad, 10) : null,
                 estado: form.estado ? parseInt(form.estado, 10) : null
             }
-            await registerUser(form)
+            await registerUser(dataToSend)
             alert('Usuario creado exitosamente')
             setForm({
                 nombres: '', apellidos: '', correo: '', contrasena: '', id_rol: 0, telefono: '', dpi: '', genero: '', direccion: '', fecha_ingreso: '', id_especialidad: 0, fecha_vencimiento_colegiado: '', estado: 0
