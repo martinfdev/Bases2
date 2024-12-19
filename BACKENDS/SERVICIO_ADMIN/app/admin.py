@@ -50,7 +50,6 @@ def register_user(current_user):
     # Validación de formato de email
     if not re.match(email_regex, correo):
         #save_log_param("Insercion", "ERROR", "register", "Admin_Controller", "El correo no tiene el formato adecuado")
-        print("no")
         return jsonify({"Error": "El correo no tiene el formato adecuado"}), 400
     # Encriptar la contraseña
     hashed_password = bcrypt.hashpw(contrasena.encode('utf-8'), bcrypt.gensalt())
@@ -91,7 +90,6 @@ def register_user(current_user):
 
 
             #save_log_param("Insercion", "ERROR", "register", "Admin_Controller", "El correo electronico/dpi ya existe")
-            print(e)
             return jsonify({"Error": "El correo electronico/dpi ya existe"}), 409
         # Inserción de datos en la tabla Usuarios
         print(cursor)
@@ -250,7 +248,7 @@ def obtener_especialidades(current_user):
 @admin_required
 def actualizar_usuario(current_user):
     data = request.get_json()
-    required_fields = ['nombres','apellidos','correo','contrasena','telefono','dpi','direccion','id_especialidad','fecha_vencimiento_colegiado']
+    required_fields = ['nombres','apellidos','correo','contrasena','telefono','dpi','direccion','id_especialidad','id_rol','fecha_vencimiento_colegiado']
     for field in required_fields:
         if field not in data:
             #save_log_param("update", "ERROR", "actualizar_usuario", "Admin_Controller", f"Field {field} is required")
@@ -262,6 +260,7 @@ def actualizar_usuario(current_user):
     telefono = data['telefono']
     dpi = data['dpi']
     direccion = data['direccion']
+    id_rol = data['id_rol']
     id_especialidad = data['id_especialidad']
     fecha_vencimiento_colegiado = data['fecha_vencimiento_colegiado']
     # Validación de formato de email
@@ -292,24 +291,26 @@ def actualizar_usuario(current_user):
             #save_log_param("update", "ERROR", "actualizar_usuario", "Admin_Controller", "El correo electronico ya existe")
             return jsonify({"Error": "El correo electronico ya existe"}), 409
         
-        #validar si existe la especialidad
-        cursor.execute('SELECT * FROM especialidad WHERE id_especialidad = ? ', (id_especialidad))
-        especialidad_exist = cursor.fetchone()
-        if not especialidad_exist:
-            #save_log_param("update", "ERROR", "actualizar_usuario", "Admin_Controller", "La especialidad no existe")
-            return jsonify({"Error": "La especialidad no existe"}), 409   
+        #validar si existe la especialidad (SOLO DOCTOR)
+        if(id_rol ==2):
+            cursor.execute('SELECT * FROM especialidad WHERE id_especialidad = ? ', (id_especialidad))
+            especialidad_exist = cursor.fetchone()
+            if not especialidad_exist:
+                #save_log_param("update", "ERROR", "actualizar_usuario", "Admin_Controller", "La especialidad no existe")
+                return jsonify({"Error": "La especialidad no existe"}), 409   
         # modificacion de datos en la tabla Usuarios
         cursor.execute(''' UPDATE Usuario 
                         SET nombres = ?,
                             apellidos = ?,
                             correo = ?,
+                            id_rol = ?,
                             contrasena = ?,
                             telefono = ?,
                             direccion = ?, 
                             id_especialidad = ?,
                             fecha_vencimiento_colegiado = ?
                        WHERE dpi = ?
-                       ''',(nombres, apellidos, correo, hashed_password.decode('utf-8'), telefono, direccion, id_especialidad, fecha_vencimiento_colegiado, dpi))
+                       ''',(nombres, apellidos, correo,id_rol, hashed_password.decode('utf-8'), telefono, direccion, id_especialidad, fecha_vencimiento_colegiado, dpi))
         conn.commit()
         cursor.close()
         conn.close()
@@ -383,9 +384,11 @@ def consulta_usuario(current_user):
         if not user:
             #save_log_param("consulta", "ERROR", "consulta_usuario", "Admin_Controller", "La Especialidad ya existe")
             return jsonify({"Error": "El DPI no existe"}), 409
-        
-        cursor.execute('SELECT especialidad FROM Especialidad WHERE id_especialidad = ?', (user[11]))
-        especialidad = cursor.fetchone()[0]
+        especialidad = None
+        if(user[11] is not None):
+            cursor.execute('SELECT especialidad FROM Especialidad WHERE id_especialidad = ?', (user[11]))
+            especialidad = cursor.fetchone()[0]
+            
         # Inserción de datos en la tabla Especialidad
         usuario_data = {
             "nombres": user[1],
@@ -590,9 +593,6 @@ def consultar_area(current_user):
 
         #save_log_param("consulta", "INFO", "consulta_usuario", "Admin_Controller", "Exito, Consulta Realizada")
         return jsonify(area_data), 200
-    
-        #save_log_param("eliminacion", "INFO", "eliminar_area", "Admin_Controller", "Exito, Area Eliminada Correctamente")
-        return jsonify({"message": "Area Eliminada Correctamente"}), 201
     except pyodbc.IntegrityError as e:
         #save_log_param("eliminacion", "ERROR", "eliminar_area", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
         return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400

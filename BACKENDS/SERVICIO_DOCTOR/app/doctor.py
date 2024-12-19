@@ -13,6 +13,106 @@ def admin_route(current_user):
     print(current_user)
     return jsonify({"message": f"Welcome doctor, user {current_user['nombres']}!"}), 200
 
+@doctor_bp.route('/lista_area', methods=['GET'])
+@token_required
+@doctor_required
+def lista_area(current_user):
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        #save_log_paramm("consulta", "ERROR", "lista_area", "Doctor_Controller", "Error al conectarse con la base de datos")
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+                        SELECT 
+                            A.id_area,
+                            A.nombre_area,
+                            A.capacidad,
+                            COUNT(P.id_paciente) AS cantidad_pacientes
+                        FROM Area A
+                        LEFT JOIN Paciente P ON A.id_area = P.id_area
+                        GROUP BY A.id_area, A.nombre_area, A.capacidad''')
+        areas = cursor.fetchall()
+        if not areas:
+            #save_log_paramm("consulta", "ERROR", "lista_area", "Doctor_Controller", "No hay usuarios disponibles")
+            return jsonify({"Error": "No hay Areas disponibles"}), 409
+        #print(user)
+        lista_areas = [
+            {
+                "id_area": row[0],
+                "nombre_area": row[1],
+                "capacidad": row[2],
+                "cantidad_pacientes": row[3]
+            } for row in areas
+        ]
+        cursor.close()
+        conn.close()
+        #save_log_paramm("consulta", "INFO", "lista_area", "Doctor_Controller", "Exito, Consulta Realizada")
+        return jsonify({
+            "message": "Areas encontrados",
+            "paciente": lista_areas
+        }), 200
+    except pyodbc.IntegrityError as e:
+        #save_log_paramm("consulta", "ERROR", "lista_area", "Doctor_Controller", "Error en la integridad de la base de datos: " + str(e))
+        return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
+    except Exception as e:
+        #save_log_paramm("consulta", "ERROR", "lista_area", "Doctor_Controller", "Error inesperado")
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+
+@doctor_bp.route('/consultar_area', methods=['POST'])
+@token_required
+@doctor_required
+def consultar_area(current_user):
+    data = request.get_json()
+    field = 'nombre_area'
+    if field not in data:
+        #save_log_param("eliminacion", "ERROR", "eliminar_area", "Doctor_Controller", f"Field {field} is required")
+        return jsonify({"error": f"Field {field} is required"}), 400
+    nombre_area = data['nombre_area']
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        #save_log_param("eliminacion", "ERROR", "eliminar_area", "Doctor_Controller", "Error al conectarse con la base de datos")
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        # Verificar si area existe
+        #cursor.execute('SELECT * FROM Area WHERE nombre_area = ?', (nombre_area))
+        cursor.execute('''
+                        SELECT 
+                            A.id_area,
+                            A.nombre_area,
+                            A.capacidad,
+                            COUNT(P.id_paciente) AS cantidad_pacientes
+                        FROM Area A
+                        LEFT JOIN Paciente P ON A.id_area = P.id_area
+                        WHERE nombre_area = ?
+                        GROUP BY A.id_area, A.nombre_area, A.capacidad''', (nombre_area))
+        
+        area = cursor.fetchone()
+        if not area:
+            #save_log_param("eliminacion", "ERROR", "eliminar_area", "Doctor_Controller", "Area no existe")
+            return jsonify({"Error": "Area no existe"}), 409
+
+        area_data = {
+            "nombre_area": area[1],
+            "capacidad": area[2],
+            "cantidad_pacientes": area[3]
+        }
+
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        #save_log_param("consulta", "INFO", "consulta_usuario", "Doctor_Controller", "Exito, Consulta Realizada")
+        return jsonify(area_data), 200
+    except pyodbc.IntegrityError as e:
+        #save_log_param("eliminacion", "ERROR", "eliminar_area", "Doctor_Controller", "Error en la integridad de la base de datos: " + str(e))
+        return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
+    except Exception as e:
+        #save_log_param("eliminacion", "ERROR", "eliminar_area", "Doctor_Controller", "Error inesperado")
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+
 
 @doctor_bp.route('/lista_pacientes', methods=['GET'])
 @token_required
