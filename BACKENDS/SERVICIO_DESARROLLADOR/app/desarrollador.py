@@ -9,7 +9,7 @@ from CONFIG.decorators import token_required, desarrollador_required
 import bcrypt
 import pyodbc
 import re
-#from REDIS.logs import save_log_param, get_log
+from REDIS.logs import save_log_param, get_log
 import json
 desarrollador_bp = Blueprint('desarrollador', __name__)
 
@@ -31,7 +31,7 @@ def register_user(current_user):
     required_fields = ['nombres','apellidos','correo','contrasena','id_rol','telefono','dpi','genero','direccion','fecha_ingreso','id_especialidad','fecha_vencimiento_colegiado','estado']
     for field in required_fields:
         if field not in data:
-            #save_log_param("Insercion", "ERROR", "register", "Desarrollador_Controller", f"Field {field} is required")
+            save_log_param("Insercion", "ERROR", "register", "Desarrollador_Controller", f"Field {field} is required")
             return jsonify({"error": f"Field {field} is required"}), 400
     nombres = data['nombres']
     apellidos = data['apellidos']
@@ -48,14 +48,14 @@ def register_user(current_user):
     estado = data['estado']
     # Validación de formato de email
     if not re.match(email_regex, correo):
-        #save_log_param("Insercion", "ERROR", "register", "Desarrollador_Controller", "El correo no tiene el formato adecuado")
+        save_log_param("Insercion", "ERROR", "register", "Desarrollador_Controller", "El correo no tiene el formato adecuado")
         return jsonify({"Error": "El correo no tiene el formato adecuado"}), 400
     # Encriptar la contraseña
     hashed_password = bcrypt.hashpw(contrasena.encode('utf-8'), bcrypt.gensalt())
     #connection db
     conn = get_db_connection_SQLSERVER()
     if conn is None:
-        #save_log_param("Insercion", "ERROR", "register", "Desarrollador_Controller", "Error al conectarse con la base de datos")
+        save_log_param("Insercion", "ERROR", "register", "Desarrollador_Controller", "Error al conectarse con la base de datos")
         return jsonify({"error": "Error al conectarse con la base de datos"}), 500
     cursor = conn.cursor()
     try:
@@ -84,9 +84,9 @@ def register_user(current_user):
                        WHERE dpi = ?
                        ''',(nombres, apellidos, correo, hashed_password.decode('utf-8'),id_rol, telefono, dpi, genero, direccion,fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, dpi))
                 conn.commit()
-                #save_log_param("Insercion", "INFO", "register", "Desarrollador_Controller", "Exito, Usuario registrado Correctamente")
+                save_log_param("Insercion", "INFO", "register", "Desarrollador_Controller", "Exito, Usuario registrado Correctamente")
                 return jsonify({"message": "Usuario registrado correctamente"}), 201
-            #save_log_param("Insercion", "ERROR", "register", "Desarrollador_Controller", "El correo electronico/dpi ya existe")
+            save_log_param("Insercion", "ERROR", "register", "Desarrollador_Controller", "El correo electronico/dpi ya existe")
             return jsonify({"Error": "El correo electronico/dpi ya existe"}), 409
         # Inserción de datos en la tabla Usuarios
         print(cursor)
@@ -94,15 +94,15 @@ def register_user(current_user):
                         VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)
                        ''',(nombres, apellidos, correo, hashed_password.decode('utf-8'), id_rol, telefono, dpi, genero, direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado))
         conn.commit()
-        #save_log_param("Insercion", "INFO", "register", "Desarrollador_Controller", "Exito, Usuario registrado Correctamente")
+        save_log_param("Insercion", "INFO", "register", "Desarrollador_Controller", "Exito, Usuario registrado Correctamente")
         return jsonify({"message": "Usuario registrado correctamente"}), 201
     except pyodbc.IntegrityError as e:
         conn.rollback()
-        #save_log_param("Insercion", "ERROR", "register", "Desarrollador_Controller", "Error en la integridad de la base de datos: " + str(e))
+        save_log_param("Insercion", "ERROR", "register", "Desarrollador_Controller", "Error en la integridad de la base de datos: " + str(e))
         return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
     except Exception as e:
         conn.rollback()
-        #save_log_param("Insercion", "ERROR", "register", "Desarrollador_Controller", "Error inesperado")
+        save_log_param("Insercion", "ERROR", "register", "Desarrollador_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
     finally:
             cursor.close()

@@ -25,6 +25,7 @@ def save_log_json(json_data):
 
 
 
+
 def save_log_param(tipo, status, function, controlador, descripcion):
     try:
         log_id = datetime.now().strftime('%Y%m%d%H%M%S')
@@ -64,3 +65,5 @@ def delete_log():
         return json.dumps({"message": "Todos los logs han sido eliminados exitosamente"})
     except Exception as e:
         return json.dumps({"error": str(e)})
+
+save_log_param("CALIFICACION", "OK","CALIFICACION_FUNCION","CALIFICACION_CONTROLLER","TODO BIEN")

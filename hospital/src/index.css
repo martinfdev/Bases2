@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes subtle-flow {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+.animate-gradient-bg {
+  background: linear-gradient(150deg, #1E293B, #6366F1, #3B82F6, #1E293B);
+  background-size: 300% 300%;
+  animation: subtle-flow 120s ease-in-out infinite;
+  filter: blur(10px);
+}

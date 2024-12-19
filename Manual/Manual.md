@@ -112,6 +112,26 @@ Utilizamos una arquitectura orientada a servicios (SOA) donde la capa de usuario
 - El sistema debe ser fácil de mantener y actualizar, permitiendo agregar nuevas funcionalidades y corregir errores sin interrumpir su funcionamiento.
 - Debe contar con documentación detallada para facilitar el trabajo del equipo de desarrollo y del equipo de soporte técnico.
 
+<h2> Dependencias del sistema </h2>
+
+- bcrypt==4.2.1: Esta biblioteca se utiliza para encriptar contraseñas de forma segura. bcrypt genera un hash único y seguro de las contraseñas, lo que hace que sea mucho más difícil para los atacantes descifrar las contraseñas incluso si logran obtener acceso a la base de datos.
+
+- Flask-Cors==5.0.0: Esta biblioteca habilita CORS (Cross-Origin Resource Sharing) en tu aplicación Flask. Es útil cuando tu frontend (por ejemplo, React) está en un dominio diferente al de tu backend (Flask), permitiendo que ambos se comuniquen sin restricciones de origen cruzado.
+
+- pip==24.3.1 = pip es la herramienta de gestión de paquetes de Python. Te permite instalar y gestionar las bibliotecas que necesitas para tu proyecto.
+
+- PyJWT==2.10.1 = PyJWT se utiliza para trabajar con JSON Web Tokens (JWT), que son una forma segura de transmitir información entre sistemas.
+
+- pyodbc==5.2.0: Esta biblioteca te permite conectarte y trabajar con bases de datos que soportan ODBC (como SQL Server). Usar pyodbc facilita realizar consultas SQL desde tu aplicación Python de manera eficiente.
+
+- python-dotenv==1.0.1: python-dotenv se utiliza para gestionar variables de entorno de manera sencilla. Te permite almacenar información sensible, como claves de API o credenciales de base de datos, en un archivo .env que no se incluye en el control de versiones, manteniendo tus datos seguros.
+
+- Flask==3.1.0: Flask es un microframework para construir aplicaciones web en Python. Es ligero y flexible, permitiendo a los desarrolladores crear aplicaciones web desde simples hasta complejas, a menudo utilizado en proyectos de API y sitios web pequeños a medianos.
+
+- pymongo==4.10.1: pymongo es la biblioteca oficial para interactuar con MongoDB, una base de datos NoSQL. Esta herramienta te permite conectar tu aplicación Python a MongoDB, realizar consultas, insertar, actualizar y eliminar documentos en colecciones de forma sencilla y eficiente.
+
+- redis==5.2.1: Al integrar Redis con tu aplicación Python, puedes mejorar el rendimiento al almacenar datos en memoria para accesos rápidos, como sesiones de usuario o datos que requieren ser leídos y escritos con frecuencia.
+
 <h1> Estructura del Backend </h1>
 
 - Este microservicio es el encargado de gestionar el inicio de sesión, la autenticación de usuarios y la autorización de acceso al sistema. Maneja el registro de usuarios, la generación de tokens JWT para mantener las sesiones, y verifica los permisos de los usuarios.
@@ -1411,6 +1431,260 @@ C:.
 <h1> Modelo entidad relacion </h1>
 
 ![Imagen ER](img_manual/Captura%20de%20pantalla%202024-12-17%20154026.png)
+
+- Script de la base de datos.
+
+```sql
+CREATE DATABASE BD2_ProyectoG2;
+USE BD2_ProyectoG2;
+
+CREATE TABLE Especialidad (
+    id_especialidad INT PRIMARY KEY IDENTITY(1,1),
+    especialidad VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE rol(
+	id_rol INT PRIMARY KEY IDENTITY (1,1),
+	nombre VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Usuario (
+	id_usuario INT PRIMARY KEY IDENTITY(1,1),
+	nombres VARCHAR(100) NOT NULL,
+	apellidos VARCHAR(100) NOT NULL,
+	correo VARCHAR(150) UNIQUE NOT NULL,
+	contrasena VARCHAR(255) NOT NULL,
+	id_rol INT NOT NULL,
+	telefono VARCHAR(15) NULL,
+	dpi VARCHAR(13) UNIQUE NOT NULL,
+	genero VARCHAR(10) NOT NULL,
+	direccion TEXT NULL,
+	fecha_ingreso DATE NOT NULL,
+	id_especialidad INT NULL,
+	fecha_vencimiento_colegiado DATE NULL,
+	estado INT NOT NULL,
+	FOREIGN KEY (id_especialidad) REFERENCES Especialidad(id_especialidad),
+	FOREIGN KEY (id_rol) REFERENCES rol(id_rol)
+);
+
+CREATE TABLE ContactoEmergencia (
+    id_contacto INT PRIMARY KEY IDENTITY(1,1),
+    id_usuario INT NOT NULL FOREIGN KEY REFERENCES Usuario(id_usuario),
+    nombre VARCHAR(100) NOT NULL,
+    telefono VARCHAR(15) NOT NULL
+);
+
+CREATE TABLE Area(
+	id_area INT PRIMARY KEY IDENTITY(1,1),
+	nombre_area VARCHAR(150) UNIQUE NOT NULL,
+	capacidad INT NOT NULL
+);
+
+CREATE TABLE Paciente(
+	id_paciente INT PRIMARY KEY IDENTITY(1,1),
+	nombre VARCHAR(100) NOT NULL,
+	apellido VARCHAR(100) NOT NULL,
+	dpi VARCHAR(13) UNIQUE NOT NULL,
+	genero VARCHAR(10) NOT NULL,
+	fecha_nacimiento DATE NOT NULL,
+	telefono VARCHAR(15) NULL,
+	direccion TEXT NULL,
+	id_area INT NOT NULL,
+	estado VARCHAR(50) NOT NULL,
+	FOREIGN KEY (id_area) REFERENCES Area(id_area)
+);
+
+CREATE TABLE AreaUsuario(
+	id_area INT,
+	id_usuario INT,
+	FOREIGN KEY (id_area) REFERENCES Area(id_area),
+	FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+CREATE TABLE PacienteEnfermera(
+	id_paciente INT,
+	id_usuario INT,
+	FOREIGN KEY (id_paciente) REFERENCES Paciente(id_paciente),
+	FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+```
+
+- En el proceso de integrar triggers que registren automáticamente las operaciones de insert, update y delete en las tablas históricas UsuarioHistorico y PacienteHistorico, se identificó la necesidad de realizar modificaciones en las tablas principales Usuario y Paciente. Estas modificaciones fueron necesarias para garantizar el correcto funcionamiento y la coherencia de los triggers, respetando la integridad de los datos y el propósito del sistema.
+```sql
+ALTER TABLE Usuario
+ALTER COLUMN direccion NVARCHAR(MAX);
+
+ALTER TABLE Paciente
+ALTER COLUMN direccion NVARCHAR(MAX);
+```
+
+- Con el objetivo de garantizar un control riguroso y transparente sobre los datos, se han implementado tres nuevas tablas históricas en la base de datos: AreaHistorico, PacienteHistorico y UsuarioHistorico. Estas tablas están diseñadas para registrar cada operación de inserción, actualización o eliminación realizada en las tablas principales correspondientes.
+```sql
+CREATE TABLE AreaHistorico(
+	id_historico INT PRIMARY KEY IDENTITY(1,1),
+	tipo_modificacion VARCHAR(25) NOT NULL,
+	fecha_insercion DATETIME NOT NULL,
+	id_area INT ,
+	nombre_area VARCHAR(150) NOT NULL,
+	capacidad INT NOT NULL
+);
+
+CREATE TRIGGER trg_area_cambios
+ON Area
+AFTER INSERT, UPDATE, DELETE
+AS BEGIN
+    SET NOCOUNT ON;
+    
+    -- INSERT
+    IF EXISTS (SELECT * FROM inserted) AND NOT EXISTS (SELECT * FROM deleted)
+    BEGIN 
+        INSERT INTO AreaHistorico (tipo_modificacion, fecha_insercion, id_area, nombre_area, capacidad)
+        SELECT
+            'INSERT' AS tipo_modificacion,
+            GETDATE() AS fecha_insercion,
+            id_area, nombre_area, capacidad
+        FROM inserted;
+    END
+    
+    -- UPDATE
+    IF EXISTS (SELECT * FROM inserted) AND EXISTS (SELECT * FROM deleted)
+    BEGIN
+        INSERT INTO AreaHistorico (tipo_modificacion, fecha_insercion, id_area, nombre_area, capacidad)
+        SELECT
+            'UPDATE' AS tipo_modificacion, 
+            GETDATE() AS fecha_insercion,
+            id_area, nombre_area, capacidad
+        FROM inserted;
+    END
+
+    -- DELETE
+    IF NOT EXISTS (SELECT * FROM inserted) AND EXISTS (SELECT * FROM deleted)
+    BEGIN
+        INSERT INTO AreaHistorico (tipo_modificacion, fecha_insercion, id_area, nombre_area, capacidad)
+        SELECT
+            'DELETE' AS tipo_modificacion, 
+            GETDATE() AS fecha_insercion,
+            id_area, nombre_area, capacidad
+        FROM deleted;
+    END
+END;
+
+CREATE TABLE PacienteHistorico(
+    id_historico INT PRIMARY KEY IDENTITY(1,1),
+	tipo_modificacion VARCHAR(25) NOT NULL,
+	fecha_insercion DATETIME NOT NULL,
+	id_paciente INT ,
+	nombre VARCHAR(100) NOT NULL,
+	apellido VARCHAR(100) NOT NULL,
+	dpi VARCHAR(13)  NOT NULL,
+	genero VARCHAR(10) NOT NULL,
+	fecha_nacimiento DATE NOT NULL,
+	telefono VARCHAR(15) NULL,
+	direccion NVARCHAR(MAX) NULL,
+	id_area INT NOT NULL,
+	estado VARCHAR(50) NOT NULL,
+	FOREIGN KEY (id_area) REFERENCES Area(id_area)
+);
+CREATE TRIGGER trg_paciente_cambios
+ON Paciente
+AFTER INSERT, UPDATE, DELETE
+AS BEGIN
+    SET NOCOUNT ON;
+    
+    -- INSERT
+    IF EXISTS (SELECT * FROM inserted) AND NOT EXISTS (SELECT * FROM deleted)
+    BEGIN 
+        INSERT INTO PacienteHistorico (tipo_modificacion, fecha_insercion, id_paciente, nombre, apellido, dpi, genero, fecha_nacimiento, telefono, direccion, id_area, estado)
+        SELECT
+            'INSERT' AS tipo_modificacion,
+            GETDATE() AS fecha_insercion,
+            id_paciente, nombre, apellido, dpi, genero, fecha_nacimiento, telefono, direccion, id_area, estado
+        FROM inserted;
+    END
+    
+    -- UPDATE
+    IF EXISTS (SELECT * FROM inserted) AND EXISTS (SELECT * FROM deleted)
+    BEGIN
+        INSERT INTO PacienteHistorico (tipo_modificacion, fecha_insercion, id_paciente, nombre, apellido, dpi, genero, fecha_nacimiento, telefono, direccion, id_area, estado)
+        SELECT
+            'UPDATE' AS tipo_modificacion, 
+            GETDATE() AS fecha_insercion,
+            id_paciente, nombre, apellido, dpi, genero, fecha_nacimiento, telefono, direccion, id_area, estado
+        FROM inserted;
+    END
+
+    -- DELETE
+    IF NOT EXISTS (SELECT * FROM inserted) AND EXISTS (SELECT * FROM deleted)
+    BEGIN
+        INSERT INTO PacienteHistorico (tipo_modificacion, fecha_insercion, id_paciente, nombre, apellido, dpi, genero, fecha_nacimiento, telefono, direccion, id_area, estado)
+        SELECT
+            'DELETE' AS tipo_modificacion, 
+            GETDATE() AS fecha_insercion,
+            id_paciente, nombre, apellido, dpi, genero, fecha_nacimiento, telefono, direccion, id_area, estado
+        FROM deleted;
+    END
+END;
+
+CREATE TABLE UsuarioHistorico (
+	id_historico INT PRIMARY KEY IDENTITY(1,1),
+	tipo_modificacion VARCHAR(25) NOT NULL,
+	fecha_insercion DATETIME NOT NULL,
+	id_usuario INT,
+	nombres VARCHAR(100) NOT NULL,
+	apellidos VARCHAR(100) NOT NULL,
+	correo VARCHAR(150) NOT NULL,
+	contrasena VARCHAR(255) NOT NULL,
+	id_rol INT NOT NULL,
+	telefono VARCHAR(15) NULL,
+	dpi VARCHAR(13) NOT NULL,
+	genero VARCHAR(10) NOT NULL,
+	direccion VARCHAR(MAX) NULL,
+	fecha_ingreso DATE NOT NULL,
+	id_especialidad INT NULL,
+	fecha_vencimiento_colegiado DATE NULL,
+	estado INT NOT NULL
+);
+
+CREATE TRIGGER trg_usuario_cambios
+on Usuario
+AFTER INSERT, UPDATE, DELETE
+AS BEGIN
+	SET NOCOUNT ON;
+	--INSERT
+	IF EXISTS (SELECT * FROM inserted) AND NOT EXISTS (SELECT * FROM deleted)
+	BEGIN 
+		INSERT INTO UsuarioHistorico (tipo_modificacion, fecha_insercion,id_usuario, nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, genero, direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado)
+		SELECT
+		'INSERT' AS tipo_modificacion,
+        GETDATE() AS fecha_insercion,
+		id_usuario, nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, genero, direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado
+		FROM inserted;
+	END
+	-- UPDATE
+    IF EXISTS (SELECT * FROM inserted) AND EXISTS (SELECT * FROM deleted)
+    BEGIN
+        INSERT INTO UsuarioHistorico (tipo_modificacion, fecha_insercion,id_usuario, nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, genero, direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado)
+        SELECT 
+            'UPDATE' AS tipo_modificacion, -- Indica el tipo de operación
+            GETDATE() AS fecha_insercion,
+            id_usuario,nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, genero, direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado
+        FROM inserted;
+    END
+
+    -- DELETE
+    IF NOT EXISTS (SELECT * FROM inserted) AND EXISTS (SELECT * FROM deleted)
+    BEGIN
+        INSERT INTO UsuarioHistorico (tipo_modificacion, fecha_insercion,id_usuario, nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, genero, direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado)
+        SELECT 
+            'DELETE' AS tipo_modificacion, -- Indica el tipo de operación
+            GETDATE() AS fecha_insercion,
+            id_usuario,nombres, apellidos, correo, contrasena, id_rol, telefono, dpi, genero, direccion, fecha_ingreso, id_especialidad, fecha_vencimiento_colegiado, estado
+        FROM deleted;
+    END
+END
+```
+- Esta implementación no solo mejora la administración y seguridad de la información, sino que también refleja nuestro compromiso con la transparencia y la confiabilidad en el manejo de datos sensibles.
+
 <h1> Gestion de expedientes </h1>
 
 Los expedientes médicos estarán almacenados en MongoDB en formato JSON, su estructura es la siguiente:
