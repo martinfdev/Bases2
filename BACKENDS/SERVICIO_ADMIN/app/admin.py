@@ -588,6 +588,52 @@ def consultar_area(current_user):
         save_log_param("eliminacion", "ERROR", "eliminar_area", "Admin_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
 
+@admin_bp.route('/lista_area', methods=['GET'])
+@token_required
+@admin_required
+def lista_area(current_user):
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        #save_log_param("consulta", "ERROR", "lista_area", "Admin_Controller", "Error al conectarse con la base de datos")
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+                        SELECT 
+                            A.id_area,
+                            A.nombre_area,
+                            A.capacidad,
+                            COUNT(P.id_paciente) AS cantidad_pacientes
+                        FROM Area A
+                        LEFT JOIN Paciente P ON A.id_area = P.id_area
+                        GROUP BY A.id_area, A.nombre_area, A.capacidad''')
+        areas = cursor.fetchall()
+        if not areas:
+            #save_log_param("consulta", "ERROR", "lista_area", "Admin_Controller", "No hay usuarios disponibles")
+            return jsonify({"Error": "No hay Areas disponibles"}), 409
+        #print(user)
+        lista_areas = [
+            {
+                "id_area": row[0],
+                "nombre_area": row[1],
+                "capacidad": row[2],
+                "cantidad_pacientes": row[3]
+            } for row in areas
+        ]
+        cursor.close()
+        conn.close()
+        #save_log_param("consulta", "INFO", "lista_area", "Admin_Controller", "Exito, Consulta Realizada")
+        return jsonify({
+            "message": "Areas encontrados",
+            "paciente": lista_areas
+        }), 200
+    except pyodbc.IntegrityError as e:
+        #save_log_param("consulta", "ERROR", "lista_area", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))
+        return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
+    except Exception as e:
+        #save_log_param("consulta", "ERROR", "lista_area", "Admin_Controller", "Error inesperado")
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+
 @admin_bp.route('/crear_paciente', methods=['POST'])
 @token_required
 @admin_required
