@@ -489,6 +489,12 @@ def editar_area(current_user):
         if not nombre_exists:
             #save_log_param("update", "ERROR", "editar_area", "Admin_Controller", "Area no existe")
             return jsonify({"Error": "Area no existe"}), 409
+        
+        cursor.execute('SELECT * FROM Area WHERE nombre_area = ?', (nuevo_nombre_area))
+        nombre_exists = cursor.fetchone()
+        if nombre_exists:
+            #save_log_param("update", "ERROR", "editar_area", "Admin_Controller", "Area no existe")
+            return jsonify({"Error": "Area ya existe"}), 409
         # Inserción de datos en la tabla Especialidad
         cursor.execute(''' UPDATE Area 
                         SET
@@ -788,7 +794,7 @@ def eliminar_paciente(current_user):
             return jsonify({"Error": "Paciente no existe"}), 409
         # Inserción de datos en la tabla Especialidad
         cursor.execute(''' UPDATE Paciente
-                       Set estado = 0 
+                        Set estado = 0 
                         WHERE dpi = ?
                        ''',(dpi))
         conn.commit()
@@ -822,12 +828,15 @@ def consulta_paciente(current_user):
         # Verificar si area existe
         cursor.execute('SELECT * FROM Paciente WHERE dpi = ? AND estado = 1', (dpi))
         nombre_exists = cursor.fetchone()
+        if(not nombre_exists):
+            #save_log_param("consulta", "ERROR", "consulta_paciente", "Admin_Controller", "Paciente no existe")
+            return jsonify({"Error": "paciente no existe"}), 409
 
         cursor.execute('SELECT * FROM area WHERE id_area = ?', (nombre_exists[8]))
         area_exist = cursor.fetchone()
         if not nombre_exists:
-            #save_log_param("consulta", "ERROR", "consulta_paciente", "Admin_Controller", "Area no existe")
-            return jsonify({"Error": "Paciente no existe"}), 409
+            #save_log_param("consulta", "ERROR", "consulta_paciente", "Admin_Controller", "Paciente no existe")
+            return jsonify({"Error": "area no existe"}), 409
         # Inserción de datos en la tabla Especialidad
         paciente ={
                 "id_paciente": nombre_exists[0],
@@ -844,7 +853,7 @@ def consulta_paciente(current_user):
             }
         cursor.close()
         conn.close()
-        #save_log_param("consulta", "INFO", "consulta_paciente", "Admin_Controller", "Exito, Area Eliminada Correctamente")
+        #save_log_param("consulta", "INFO", "consulta_paciente", "Admin_Controller", "Exito, Consulta realizada Correctamente")
         return jsonify({"paciente": paciente}), 201
     except pyodbc.IntegrityError as e:
         #save_log_param("consulta", "ERROR", "consulta_paciente", "Admin_Controller", "Error en la integridad de la base de datos: " + str(e))

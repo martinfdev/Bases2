@@ -4,6 +4,7 @@ from CONFIG.decorators import token_required, enfermera_required
 import bcrypt
 import pyodbc
 import re
+#from REDIS.logs import save_log_param
 enfermera_bp = Blueprint('enfermera', __name__)
 
 @enfermera_bp.route('/dashboard', methods=['GET']) #dashbord para el administrador
@@ -21,14 +22,14 @@ email_regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
 def lista_pacientes(current_user):
     conn = get_db_connection_SQLSERVER()
     if conn is None:
-        save_log_param("consulta", "ERROR", "lista_pacientes", "Enfermera_Controller", "Error al conectarse con la base de datos")
+        #save_log_param("consulta", "ERROR", "lista_pacientes", "Enfermera_Controller", "Error al conectarse con la base de datos")
         return jsonify({"error": "Error al conectarse con la base de datos"}), 500
     cursor = conn.cursor()
     try:
         cursor.execute('SELECT * FROM Paciente')
         user = cursor.fetchall()
         if not user:
-            save_log_param("consulta", "ERROR", "lista_pacientes", "Enfermera_Controller", "No hay usuarios disponibles")
+            #save_log_param("consulta", "ERROR", "lista_pacientes", "Enfermera_Controller", "No hay usuarios disponibles")
             return jsonify({"Error": "No hay Pacientes disponibles"}), 409
         #print(user)
         lista_usuarios = [
@@ -48,16 +49,16 @@ def lista_pacientes(current_user):
         conn.commit()
         cursor.close()
         conn.close()
-        save_log_param("consulta", "INFO", "lista_pacientes", "Enfermera_Controller", "Exito, Consulta Realizada")
+        #save_log_param("consulta", "INFO", "lista_pacientes", "Enfermera_Controller", "Exito, Consulta Realizada")
         return jsonify({
             "message": "Pacientes encontrados",
             "paciente": lista_usuarios
         }), 200
     except pyodbc.IntegrityError as e:
-        save_log_param("consulta", "ERROR", "lista_pacientes", "Enfermera_Controller", "Error en la integridad de la base de datos: " + str(e))
+        #save_log_param("consulta", "ERROR", "lista_pacientes", "Enfermera_Controller", "Error en la integridad de la base de datos: " + str(e))
         return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
     except Exception as e:
-        save_log_param("consulta", "ERROR", "lista_pacientes", "Enfermera_Controller", "Error inesperado")
+        #save_log_param("consulta", "ERROR", "lista_pacientes", "Enfermera_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
 
 @enfermera_bp.route('/consulta_paciente', methods=['POST'])
@@ -79,12 +80,15 @@ def consulta_paciente(current_user):
         # Verificar si area existe
         cursor.execute('SELECT * FROM Paciente WHERE dpi = ? AND estado = 1', (dpi))
         nombre_exists = cursor.fetchone()
+        if(not nombre_exists):
+            #save_log_param("consulta", "ERROR", "consulta_paciente", "Enfermera_Controller", "Paciente no existe")
+            return jsonify({"Error": "paciente no existe"}), 409
 
         cursor.execute('SELECT * FROM area WHERE id_area = ?', (nombre_exists[8]))
         area_exist = cursor.fetchone()
         if not nombre_exists:
-            #save_log_param("consulta", "ERROR", "consulta_paciente", "Enfermera_Controller", "Area no existe")
-            return jsonify({"Error": "Paciente no existe"}), 409
+            #save_log_param("consulta", "ERROR", "consulta_paciente", "Enfermera_Controller", "Paciente no existe")
+            return jsonify({"Error": "area no existe"}), 409
         # Inserción de datos en la tabla Especialidad
         paciente ={
                 "id_paciente": nombre_exists[0],
@@ -101,7 +105,7 @@ def consulta_paciente(current_user):
             }
         cursor.close()
         conn.close()
-        #save_log_param("consulta", "INFO", "consulta_paciente", "Enfermera_Controller", "Exito, Area Eliminada Correctamente")
+        #save_log_param("consulta", "INFO", "consulta_paciente", "Enfermera_Controller", "Exito, Consulta realizada Correctamente")
         return jsonify({"paciente": paciente}), 201
     except pyodbc.IntegrityError as e:
         #save_log_param("consulta", "ERROR", "consulta_paciente", "Enfermera_Controller", "Error en la integridad de la base de datos: " + str(e))
@@ -109,3 +113,63 @@ def consulta_paciente(current_user):
     except Exception as e:
         #save_log_param("consulta", "ERROR", "consulta_paciente", "Enfermera_Controller", "Error inesperado")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+
+@enfermera_bp.route('/editar_paciente', methods=['PUT'])
+@token_required
+@enfermera_required
+def editar_paciente(current_user):
+    data = request.get_json()
+    required_fields = ['nombre','apellido','dpi','fecha_nacimiento','telefono','direccion','id_area']
+    for field in required_fields:
+        if field not in data:
+            #save_log_param("update", "ERROR", "editar_paciente", "Enfermera_Controller", f"Field {field} is required")
+            return jsonify({"error": f"Field {field} is required"}), 400
+    nombre = data['nombre']
+    apellido = data['apellido']
+    dpi = data['dpi']
+    fecha_nacimiento = data['fecha_nacimiento']
+    telefono = data['telefono']
+    direccion = data['direccion']
+    id_area = data['id_area']
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        #save_log_param("update", "ERROR", "editar_paciente", "Enfermera_Controller", "Error al conectarse con la base de datos")
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        # Verificar si area existe
+        cursor.execute('SELECT * FROM paciente WHERE dpi = ?', (dpi))
+        paciente_exists = cursor.fetchone()
+        if not paciente_exists:
+            #save_log_param("update", "ERROR", "editar_paciente", "Enfermera_Controller", "Paciente no existe")
+            return jsonify({"Error": "Paciente no existe"}), 409
+        #VALIDAR EL AREA SI EXISTE
+        cursor.execute('SELECT * FROM Area WHERE id_area = ?', (id_area))
+        area_exists = cursor.fetchone()
+        if not area_exists:
+            #save_log_param("update", "ERROR", "editar_paciente", "Enfermera_Controller", "Area no existe")
+            return jsonify({"Error": "Area no existe"}), 409
+
+        # Inserción de datos en la tabla Especialidad
+        cursor.execute(''' UPDATE Paciente 
+                        SET
+                            nombre = ?,
+                            apellido = ?,
+                            fecha_nacimiento = ?,
+                            telefono = ?,
+                            direccion = ?,
+                            id_area = ?
+                        WHERE dpi = ?
+                       ''',(nombre, apellido, fecha_nacimiento, telefono, direccion, id_area, dpi))
+        conn.commit()
+        #save_log_param("Insercion", "INFO", "editar_paciente", "Enfermera_Controller", "Exito, Area registrada Correctamente")
+        return jsonify({"message": "Paciente editado Correctamente"}), 201
+    except pyodbc.IntegrityError as e:
+        #save_log_param("Insercion", "ERROR", "editar_paciente", "Enfermera_Controller", "Error en la integridad de la base de datos: " + str(e))
+        return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
+    except Exception as e:
+        #save_log_param("Insercion", "ERROR", "editar_paciente", "Enfermera_Controller", "Error inesperado")
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+    finally:
+        cursor.close()
+        conn.close()
