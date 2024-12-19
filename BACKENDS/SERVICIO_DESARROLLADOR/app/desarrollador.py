@@ -571,7 +571,17 @@ def consultar_area(current_user):
     cursor = conn.cursor()
     try:
         # Verificar si area existe
-        cursor.execute('SELECT * FROM Area WHERE nombre_area = ?', (nombre_area))
+        #cursor.execute('SELECT * FROM Area WHERE nombre_area = ?', (nombre_area))
+        cursor.execute('''
+                        SELECT 
+                            A.id_area,
+                            A.nombre_area,
+                            A.capacidad,
+                            COUNT(P.id_paciente) AS cantidad_pacientes
+                        FROM Area A
+                        LEFT JOIN Paciente P ON A.id_area = P.id_area
+                        WHERE nombre_area = ?
+                        GROUP BY A.id_area, A.nombre_area, A.capacidad''', (nombre_area))
         area = cursor.fetchone()
         if not area:
             save_log_param("eliminacion", "ERROR", "eliminar_area", "Desarrollador_Controller", "Area no existe")
