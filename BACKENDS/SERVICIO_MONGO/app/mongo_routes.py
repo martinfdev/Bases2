@@ -40,7 +40,7 @@ def crear_expediente():
             return jsonify({"error": f"Ya existe un expediente del paciente con DPI: {dpi}."}), 400
         
         result = expedientes.insert_one(data)
-        #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", f"Documento insertado con ID: {result.inserted_id}")
+        #save_log_param("insercion", "INFO", "crear_expediente", "Mongo_Controller", f"Documento insertado con ID: {result.inserted_id}")
         return jsonify({"message": f"Documento insertado con ID: {result.inserted_id}"}), 201
     except DuplicateKeyError as e:
         #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", "Ya existe un expediente para este paciente!")
@@ -93,7 +93,7 @@ def nuevo_ingreso():
             {"$push": {"historialIngresos": data_ingreso}}
         )
         print(f"Ingreso Registrado con Exito")
-        #save_log_param("insercion", "ERROR", "nuevo_ingreso", "Mongo_Controller", "Ingreso insertado con exito") 
+        #save_log_param("insercion", "INFO", "nuevo_ingreso", "Mongo_Controller", "Ingreso insertado con exito") 
         return jsonify({"message": f"Ingreso insertado con exito"}), 201
     except OperationFailure as e:
         #save_log_param("insercion", "ERROR", "nuevo_ingreso", "Mongo_Controller", "Error de operación en MongoDB: " + str(e)) 
@@ -130,7 +130,7 @@ def obtener_expediente():
         if not exped:
             #save_log_param("consulta", "ERROR", "obtener_expediente", "Mongo_Controller", "No existe un expediente del paciente con DPI: {dpi}.")
             return jsonify({"error": f"No existe un expediente del paciente con DPI: {dpi}."}), 400  
-        #save_log_param("consulta", "ERROR", "obtener_expediente", "Mongo_Controller", "Expediente Obtenido") 
+        #save_log_param("consulta", "INFO", "obtener_expediente", "Mongo_Controller", "Expediente Obtenido") 
         return jsonify({"message": "Expediente Obtenido", "expediente": exped}), 201
     except OperationFailure as e:
         #save_log_param("consulta", "ERROR", "obtener_expediente", "Mongo_Controller", "Error de operación en MongoDB: " + str(e))
@@ -211,16 +211,16 @@ def obtener_diagnosticos_comunes():
 def modificar_expediente():
     data = request.get_json()
     if not data:
-        #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", "No se recibieron datos sobre el expediente.")
+        #save_log_param("edicion", "ERROR", "modificar_expediente", "Mongo_Controller", "No se recibieron datos sobre el expediente.")
         return jsonify({"error": "No se recibieron datos sobre el expediente."}), 400
     dpi = data.get("_id")
     if not dpi:
-        #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", "El DPI del paciente es requerido.")
+        #save_log_param("edicion", "ERROR", "modificar_expediente", "Mongo_Controller", "El DPI del paciente es requerido.")
         return jsonify({"error": "El DPI del paciente es requerido."}), 400
     
     cliente = get_db_connection_MONGODB()
     if cliente is None:
-        #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", f"Error.No se pudo conectar a la base de datos Mongo!")
+        #save_log_param("edicion", "ERROR", "modificar_expediente", "Mongo_Controller", f"Error.No se pudo conectar a la base de datos Mongo!")
         return jsonify({"message": f"Error.No se pudo conectar a la base de datos Mongo!"}), 409
     try:
         MONGO_DB = os.getenv("MONGO_DB")
@@ -231,7 +231,7 @@ def modificar_expediente():
         #BUSCAR EXPEDIENTE EXISTENTE
         exped = expedientes.find_one({"_id": dpi})
         if not exped:
-            #save_log_param("consulta", "ERROR", "obtener_expediente", "Mongo_Controller", "No existe un expediente del paciente con DPI: {dpi}.")
+            #save_log_param("edicion", "ERROR", "modificar_expediente", "Mongo_Controller", "No existe un expediente del paciente con DPI: {dpi}.")
             return jsonify({"error": f"No existe un expediente del paciente con DPI: {dpi}."}), 400 
         historial = exped.get("historialIngresos", [])
         data["historialIngresos"] = historial
@@ -239,19 +239,19 @@ def modificar_expediente():
             {"_id": dpi},
             {"$set": data}
         )
-        #save_log_param("insercion", "ERROR", "modificar_expediente", "Mongo_Controller", f"Expediente del paciente con DPI {dpi} actualizado correctamente.")
+        #save_log_param("edicion", "INFO", "modificar_expediente", "Mongo_Controller", f"Expediente del paciente con DPI {dpi} actualizado correctamente.")
         return jsonify({"message": f"Expediente del paciente con DPI {dpi} actualizado correctamente."}), 200
     except DuplicateKeyError as e:
-        #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", "Ya existe un expediente para este paciente!")
+        #save_log_param("edicion", "ERROR", "modificar_expediente", "Mongo_Controller", "Ya existe un expediente para este paciente!")
         return jsonify({"Error": "Ya existe un expediente para este paciente!"}), 400
     except OperationFailure as e:
-        #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", "Error de operación en MongoDB: " + str(e))
+        #save_log_param("edicion", "ERROR", "modificar_expediente", "Mongo_Controller", "Error de operación en MongoDB: " + str(e))
         return jsonify({"Error": "Error de operación en MongoDB: " + str(e)}), 400
     except PyMongoError as e:
-        #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", "Error en la base de datos MongoDB: " + str(e))
+        #save_log_param("edicion", "ERROR", "modificar_expediente", "Mongo_Controller", "Error en la base de datos MongoDB: " + str(e))
         return jsonify({"Error": "Error en la base de datos MongoDB: " + str(e)}), 500
     except Exception as e:
-        #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", f"Error inesperado: {str(e)}")
+        #save_log_param("edicion", "ERROR", "modificar_expediente", "Mongo_Controller", f"Error inesperado: {str(e)}")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
     finally:
         cliente.close()
@@ -260,20 +260,20 @@ def modificar_expediente():
 def agregar_notasCuidado_expediente():
     data = request.get_json()
     if not data:
-        #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", "No se recibieron datos sobre el expediente.")
+        #save_log_param("insercion", "ERROR", "agregar_notasCuidado", "Mongo_Controller", "No se recibieron datos sobre el expediente.")
         return jsonify({"error": "No se recibieron datos sobre el expediente."}), 400
     dpi = data.get("_id")
     if not dpi:
-        #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", "El DPI del paciente es requerido.")
+        #save_log_param("insercion", "ERROR", "agregar_notasCuidado", "Mongo_Controller", "El DPI del paciente es requerido.")
         return jsonify({"error": "El DPI del paciente es requerido."}), 400
     data_ingreso = data.get("contenido")
     if not data_ingreso:
-        #save_log_param("insercion", "ERROR", "nuevo_ingreso", "Mongo_Controller", "El Contenido de la nota de cuidado de paciente es requerido.") 
+        #save_log_param("insercion", "ERROR", "agregar_notasCuidado", "Mongo_Controller", "El Contenido de la nota de cuidado de paciente es requerido.") 
         return jsonify({"error": "El Contenido de la nota de cuidado de paciente es requerido."}), 400
     
     cliente = get_db_connection_MONGODB()
     if cliente is None:
-        #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", f"Error.No se pudo conectar a la base de datos Mongo!")
+        #save_log_param("insercion", "ERROR", "agregar_notasCuidado", "Mongo_Controller", f"Error.No se pudo conectar a la base de datos Mongo!")
         return jsonify({"message": f"Error.No se pudo conectar a la base de datos Mongo!"}), 409
     try:
         MONGO_DB = os.getenv("MONGO_DB")
@@ -284,7 +284,7 @@ def agregar_notasCuidado_expediente():
         #BUSCAR EXPEDIENTE EXISTENTE
         exped = expedientes.find_one({"_id": dpi})
         if not exped:
-            #save_log_param("consulta", "ERROR", "obtener_expediente", "Mongo_Controller", "No existe un expediente del paciente con DPI: {dpi}.")
+            #save_log_param("consulta", "ERROR", "agregar_notasCuidado", "Mongo_Controller", "No existe un expediente del paciente con DPI: {dpi}.")
             return jsonify({"error": f"No existe un expediente del paciente con DPI: {dpi}."}), 400 
 
         if "notaCuidado" not in exped:
@@ -296,19 +296,19 @@ def agregar_notasCuidado_expediente():
             {"_id": dpi},
             {"$push": {"notaCuidado": data_ingreso}}
         )
-        #save_log_param("insercion", "ERROR", "modificar_expediente", "Mongo_Controller", f"Expediente del paciente con DPI {dpi} actualizado correctamente.")
-        return jsonify({"message": f"Expediente del paciente con DPI {dpi} actualizado correctamente."}), 200
+        #save_log_param("insercion", "INFO", "agregar_notasCuidado", "Mongo_Controller", f"Nota de Cuidado Agregado Correctamente")
+        return jsonify({"message": f"Nota de Cuidado Agregado Correctamente"}), 200
     except DuplicateKeyError as e:
-        #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", "Ya existe un expediente para este paciente!")
+        #save_log_param("insercion", "ERROR", "agregar_notasCuidado", "Mongo_Controller", "Ya existe un expediente para este paciente!")
         return jsonify({"Error": "Ya existe un expediente para este paciente!"}), 400
     except OperationFailure as e:
-        #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", "Error de operación en MongoDB: " + str(e))
+        #save_log_param("insercion", "ERROR", "agregar_notasCuidado", "Mongo_Controller", "Error de operación en MongoDB: " + str(e))
         return jsonify({"Error": "Error de operación en MongoDB: " + str(e)}), 400
     except PyMongoError as e:
-        #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", "Error en la base de datos MongoDB: " + str(e))
+        #save_log_param("insercion", "ERROR", "agregar_notasCuidado", "Mongo_Controller", "Error en la base de datos MongoDB: " + str(e))
         return jsonify({"Error": "Error en la base de datos MongoDB: " + str(e)}), 500
     except Exception as e:
-        #save_log_param("insercion", "ERROR", "crear_expediente", "Mongo_Controller", f"Error inesperado: {str(e)}")
+        #save_log_param("insercion", "ERROR", "agregar_notasCuidado", "Mongo_Controller", f"Error inesperado: {str(e)}")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
     finally:
         cliente.close()
