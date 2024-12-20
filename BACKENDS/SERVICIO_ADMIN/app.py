@@ -9,6 +9,7 @@ sys.path.append(config_path)
 
 # Ahora puedes importar `config`
 from CONFIG.config import load_config
+from SERVICIO_MONGO.app.mongo_routes import obtener_diagnosticos_comunes
 
 
 

@@ -10,6 +10,10 @@ import bcrypt
 import pyodbc
 import re
 from REDIS.logs import save_log_param
+
+from .reporte_estadisticas import get_pacientes_atendidos, get_diagnosticos_mas_comunes
+
+
 admin_bp = Blueprint('admin', __name__)
 
 
@@ -921,3 +925,21 @@ def editar_paciente(current_user):
     finally:
         cursor.close()
         conn.close()
+
+@admin_bp.route('/pacientes-atendidos', methods=['GET']) #dashbord para el administrador
+@token_required
+@admin_required
+def obtener_pacientes_atendidos(current_user):
+    estadisticas = get_pacientes_atendidos()
+    if not estadisticas:
+        return jsonify({"message": "No hay pacientes atendidos."}), 200
+    return jsonify(estadisticas), 200
+
+
+@admin_bp.route('/obtener-diagnosticos-comunes', methods=['GET'])  # Dashboard para el administrador
+@token_required
+@admin_required
+def obtener_diagnosticos_comunes(current_user):
+    diagnosticos_comunes = get_diagnosticos_mas_comunes()  # Llama a la función correcta
+
+    return diagnosticos_comunes  # Ya debe estar formateado como JSON y con el código de estado

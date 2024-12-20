@@ -6,7 +6,7 @@ import pyodbc
 import re
 from dotenv import load_dotenv
 import os
-from app.mongo_connection import get_db_connection_MONGODB
+from .mongo_connection import get_db_connection_MONGODB
 base_mongo = Blueprint('mongo', __name__)
 from REDIS.logs import save_log_param
 load_dotenv()
@@ -140,6 +140,69 @@ def obtener_expediente():
         return jsonify({"Error": "Error en la base de datos MongoDB: " + str(e)}), 500
     except Exception as e:
         save_log_param("consulta", "ERROR", "obtener_expediente", "Mongo_Controller", f"Error inesperado: {str(e)}")
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+    finally:
+        cliente.close()
+
+@base_mongo.route('/obtener_diagnosticos_comunes', methods=['POST'])
+def obtener_diagnosticos_comunes():
+    #data = request.get_json()
+    cliente = get_db_connection_MONGODB()
+    if cliente is None:
+        save_log_param("consulta", "ERROR", "obtener_diagnosticos_comunes", "Mongo_Controller", "No se pudo conectar a la base de datos Mongo!")
+        return jsonify({"message": "Error. No se pudo conectar a la base de datos Mongo!"}), 409
+    try:
+        MONGO_DB = os.getenv("MONGO_DB")
+        MONGO_COLLECTION = os.getenv("MONGO_COLLECTION")
+        db = cliente[MONGO_DB]
+        expedientes = db[MONGO_COLLECTION]
+        
+        # Crear el pipeline de agregación para obtener los diagnósticos más comunes
+        pipeline = [
+            {
+                "$unwind": "$diagnosticos"  # Descomponer el campo 'diagnosticos'
+            },
+            {
+                "$group": {
+                    "_id": "$diagnosticos",  # Agrupar por diagnóstico
+                    "frecuencia": {"$sum": 1}  # Contar la cantidad de veces que aparece cada diagnóstico
+                }
+            },
+            {
+                "$sort": {"frecuencia": -1}  # Ordenar por frecuencia (de mayor a menor)
+            },
+            {
+                "$limit": 10  # Limitar los resultados a los 10 diagnósticos más comunes
+            }
+        ]
+        
+        # Ejecutar el pipeline de agregación
+        resultados = list(expedientes.aggregate(pipeline))
+        
+        # Si no hay resultados, se devuelve un mensaje adecuado
+        if not resultados:
+            save_log_param("consulta", "ERROR", "obtener_diagnosticos_comunes", "Mongo_Controller", "No se encontraron diagnósticos comunes.")
+            return jsonify({"message": "No se encontraron diagnósticos comunes."}), 404
+        diagnosticos_comunes = {
+            "diagnosticos": [
+                {
+                    "diagnostico": resultado["_id"],
+                    "frecuencia": resultado["frecuencia"]
+                }
+                for resultado in resultados
+            ]
+        }
+        save_log_param("consulta", "ERROR", "obtener_diagnosticos_comunes", "Mongo_Controller", "Diagnósticos comunes obtenidos.")
+        return jsonify(diagnosticos_comunes), 200
+
+    except OperationFailure as e:
+        save_log_param("consulta", "ERROR", "obtener_diagnosticos_comunes", "Mongo_Controller", f"Error de operación en MongoDB: {str(e)}")
+        return jsonify({"Error": f"Error de operación en MongoDB: {str(e)}"}), 400
+    except PyMongoError as e:
+        save_log_param("consulta", "ERROR", "obtener_diagnosticos_comunes", "Mongo_Controller", f"Error en la base de datos MongoDB: {str(e)}")
+        return jsonify({"Error": f"Error en la base de datos MongoDB: {str(e)}"}), 500
+    except Exception as e:
+        save_log_param("consulta", "ERROR", "obtener_diagnosticos_comunes", "Mongo_Controller", f"Error inesperado: {str(e)}")
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
     finally:
         cliente.close()
