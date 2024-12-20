@@ -20,6 +20,7 @@ const PatientRecordForm = () => {
             alfabeto: '',
             escolaridad: '',
             procedencia: '',
+            sexo: '', // campo para el sexo
         },
         contactoEmergencia: [
             { nombre: '', relacion: '', telefono: '' },
@@ -115,6 +116,7 @@ const PatientRecordForm = () => {
                 alfabeto: '',
                 escolaridad: '',
                 procedencia: '',
+                sexo: '',
             },
             contactoEmergencia: [
                 { nombre: '', relacion: '', telefono: '' },
@@ -160,6 +162,8 @@ const PatientRecordForm = () => {
         })
     }
     
+    const isMasculino = formData.datosPaciente.sexo === 'Masculino';
+
     return (
         <div className="max-w-5xl mx-auto p-6 bg-white shadow-lg rounded-lg">
             <h2 className="text-3xl font-semibold mb-6">Expediente de Nuevo Paciente</h2>
@@ -263,6 +267,23 @@ const PatientRecordForm = () => {
                             value={formData.datosPaciente.procedencia}
                             onChange={handleChange}
                         />
+
+                        {/* Campo Sexo como un select */}
+                        <div>
+                            <label className="block text-gray-700 font-semibold mb-1">
+                                Sexo
+                            </label>
+                            <select
+                                name="datosPaciente.sexo"
+                                value={formData.datosPaciente.sexo}
+                                onChange={handleChange}
+                                className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="">Seleccione...</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Femenino">Femenino</option>
+                            </select>
+                        </div>
                     </div>
                 </section>
 
@@ -410,7 +431,7 @@ const PatientRecordForm = () => {
                             />
                         </div>
 
-                        {/* Gineco-Obstétricos */}
+                        {/* Gineco-Obstétricos, con disabled según el sexo */}
                         <div className="mt-4">
                             <h5 className="text-lg font-semibold mb-2">Gineco-Obstétricos</h5>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -420,6 +441,7 @@ const PatientRecordForm = () => {
                                     type="text"
                                     value={formData.antecedentes.personalesNoPatologicos.ginecoObstetricos.menarquia}
                                     onChange={handleChange}
+                                    disabled={isMasculino}
                                 />
                                 <Input
                                     label="Ciclos Menstruales"
@@ -427,6 +449,7 @@ const PatientRecordForm = () => {
                                     type="text"
                                     value={formData.antecedentes.personalesNoPatologicos.ginecoObstetricos.ciclosMenstruales}
                                     onChange={handleChange}
+                                    disabled={isMasculino}
                                 />
                                 <Input
                                     label="Última Menstruación"
@@ -434,6 +457,7 @@ const PatientRecordForm = () => {
                                     type="date"
                                     value={formData.antecedentes.personalesNoPatologicos.ginecoObstetricos.ultimaMenstruacion}
                                     onChange={handleChange}
+                                    disabled={isMasculino}
                                 />
                                 <Input
                                     label="Anticonceptivos/Terapia Hormonal"
@@ -441,6 +465,7 @@ const PatientRecordForm = () => {
                                     type="text"
                                     value={formData.antecedentes.personalesNoPatologicos.ginecoObstetricos.anticonceptivos}
                                     onChange={handleChange}
+                                    disabled={isMasculino}
                                 />
                                 <Input
                                     label="Gestas"
@@ -448,6 +473,7 @@ const PatientRecordForm = () => {
                                     type="number"
                                     value={formData.antecedentes.personalesNoPatologicos.ginecoObstetricos.gestas}
                                     onChange={handleChange}
+                                    disabled={isMasculino}
                                 />
                                 <Input
                                     label="Partos"
@@ -455,6 +481,7 @@ const PatientRecordForm = () => {
                                     type="number"
                                     value={formData.antecedentes.personalesNoPatologicos.ginecoObstetricos.partos}
                                     onChange={handleChange}
+                                    disabled={isMasculino}
                                 />
                                 <Input
                                     label="Cesáreas"
@@ -462,6 +489,7 @@ const PatientRecordForm = () => {
                                     type="number"
                                     value={formData.antecedentes.personalesNoPatologicos.ginecoObstetricos.cesareas}
                                     onChange={handleChange}
+                                    disabled={isMasculino}
                                 />
                                 <Input
                                     label="Abortos"
@@ -469,6 +497,7 @@ const PatientRecordForm = () => {
                                     type="number"
                                     value={formData.antecedentes.personalesNoPatologicos.ginecoObstetricos.abortos}
                                     onChange={handleChange}
+                                    disabled={isMasculino}
                                 />
                                 <Input
                                     label="Hijos Vivos"
@@ -476,6 +505,7 @@ const PatientRecordForm = () => {
                                     type="number"
                                     value={formData.antecedentes.personalesNoPatologicos.ginecoObstetricos.hijosVivos}
                                     onChange={handleChange}
+                                    disabled={isMasculino}
                                 />
                             </div>
                         </div>
