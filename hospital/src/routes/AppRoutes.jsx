@@ -6,7 +6,8 @@ import PageAdminDashboard from '../pages/admin/PageAdminDashboard'
 import UsersView from '../pages/admin/UserView'
 import NewPatientPage from '../pages/admin/NewPatientPage'
 import PatientView from '../pages/admin/PatientView'
-import DeveloperLayout from '../layouts/DeveloperLayout'
+import DeveloperLayout from '../layouts/DeveloperLayout'  
+import PageDeveloperDashboard from '../pages/dev/DevDashboardPage'
 import LogVitacore from '../components/dev/LogVitacore'
 import DoctorLayout from '../layouts/DoctorLayout'
 import PatientRecordPage from '../pages/PatientRecordPage'
@@ -46,7 +47,7 @@ const AppRouter = () => {
         {/* protectd routes for developer users */}
         <Route path='developer/' element={<PrivateRoute roles={[4]}><DeveloperLayout /></PrivateRoute>}>
         <Route index element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard" element={<NotFound />} />
+        <Route path="dashboard" element={<PageDeveloperDashboard />} />
         <Route path="logs" element={<LogVitacore />} />
         <Route path="users/create" element={<NewUserForm currentUserRole={4} />} />
         <Route path="records/view" element={<NotFound />} />
