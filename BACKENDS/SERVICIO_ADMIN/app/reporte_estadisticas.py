@@ -2,8 +2,15 @@
 from CONFIG.connection import get_db_connection_SQLSERVER
 from SERVICIO_MONGO.app.mongo_routes import obtener_diagnosticos_comunes
 from flask import jsonify
-#pacientes atendidos
+from io import BytesIO
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+import pandas as pd
+'''
+el reporte de diagnosticos mas comunes esta en la parte de mongo_routes.py
+'''
 
+#pacientes atendidos
 def get_pacientes_atendidos():
     conn = get_db_connection_SQLSERVER()
     cursor = conn.cursor()
@@ -40,7 +47,6 @@ def get_diagnosticos_mas_comunes():
     except Exception as e:
         return jsonify({"error": f"Error al obtener los diagnósticos: {str(e)}"}), 500  # Error 500 si ocurre una excepción
     
-
 def get_estado_area():
     conn = get_db_connection_SQLSERVER()
     cursor = conn.cursor()
@@ -79,4 +85,4 @@ def get_estado_area():
         })
     cursor.close()
     conn.close()
-    return jsonify(estado_areas)
+    return estado_areas

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, send_file
 from datetime import datetime
 import sys
 import os
@@ -11,8 +11,8 @@ import pyodbc
 import re
 from REDIS.logs import save_log_param
 
-from .reporte_estadisticas import get_pacientes_atendidos, get_diagnosticos_mas_comunes
-
+from .reporte_estadisticas import get_pacientes_atendidos, get_diagnosticos_mas_comunes, get_estado_area
+from .descargar_reportes import generar_pdf_areas, generar_excel_areas,generar_pdf_diagnosticos_comunes, generar_pdf_pacientes_atendidos, generar_excel_pacientes_atendidos, generar_excel_diagnosticos_comunes
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -943,3 +943,71 @@ def obtener_diagnosticos_comunes(current_user):
     diagnosticos_comunes = get_diagnosticos_mas_comunes()  # Llama a la función correcta
 
     return diagnosticos_comunes  # Ya debe estar formateado como JSON y con el código de estado
+
+
+@admin_bp.route('/obtener_estado_areas', methods=['GET'])  # Dashboard para el administrador
+@token_required
+@admin_required
+def obtener_estado_areas(current_user):
+    areas = get_estado_area()
+    if not areas:
+        return jsonify({"message": "No hay areas registradas."}), 200
+    return jsonify(areas), 200
+
+
+@admin_bp.route('/descargarPDF_area', methods=['GET'])  # Dashboard para el administrador
+@token_required
+@admin_required
+def descargarPDF_area(current_user):
+    areas = get_estado_area()
+    if not areas:
+        return jsonify({"message": "No hay areas registradas."}), 200
+    pdf_buffer = generar_pdf_areas(areas)
+    return send_file(pdf_buffer, as_attachment=True, download_name="reporte_estado_areas.pdf", mimetype='application/pdf')
+
+@admin_bp.route('/descargar_reporte_pacientes', methods=['GET'])
+@token_required
+@admin_required
+def descargar_reporte_pacientes():
+    atendidos = get_pacientes_atendidos()
+    pacientes_atendidos = obtener_pacientes_atendidos(atendidos)  # Asegúrate de tener esta función
+    pdf_buffer = generar_pdf_pacientes_atendidos(pacientes_atendidos)
+    return send_file(pdf_buffer, as_attachment=True, download_name="reporte_pacientes_atendidos.pdf", mimetype='application/pdf')
+
+@admin_bp.route('/descargar_reporte_diagnosticos', methods=['GET'])
+@token_required
+@admin_required
+def descargar_reporte_diagnosticos():
+    diagnosticos_comunes_ = get_diagnosticos_mas_comunes()
+    diagnosticos_comunes = obtener_diagnosticos_comunes(diagnosticos_comunes_)  # Asegúrate de tener esta función
+    pdf_buffer = generar_pdf_diagnosticos_comunes(diagnosticos_comunes)
+    return send_file(pdf_buffer, as_attachment=True, download_name="reporte_diagnosticos_comunes.pdf", mimetype='application/pdf')
+
+
+@admin_bp.route('/descargarEXCEL_area', methods=['GET'])  # Dashboard para el administrador
+@token_required
+@admin_required
+def descargarEXCEL_area(current_user):
+    areas = get_estado_area()
+    if not areas:
+        return jsonify({"message": "No hay areas registradas."}), 200
+    excel_buffer  = generar_excel_areas(areas)
+    return send_file(excel_buffer, as_attachment=True, download_name="reporte_estado_areas.xlsx", mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+@admin_bp.route('/descargar_reporte_pacientes_excel', methods=['GET'])
+@token_required
+@admin_required
+def descargar_reporte_pacientes_excel():
+    pacientes_atendidos = obtener_pacientes_atendidos()  # Asegúrate de definir esta función
+    excel_buffer = generar_excel_pacientes_atendidos(pacientes_atendidos)
+    
+    return send_file(excel_buffer, as_attachment=True, download_name="reporte_pacientes_atendidos.xlsx", mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+@admin_bp.route('/descargar_reporte_diagnosticos_excel', methods=['GET'])
+@token_required
+@admin_required
+def descargar_reporte_diagnosticos_excel():
+    diagnosticos_comunes = obtener_diagnosticos_comunes()
+    excel_buffer = generar_excel_diagnosticos_comunes(diagnosticos_comunes)
+    
+    return send_file(excel_buffer, as_attachment=True, download_name="reporte_diagnosticos_comunes.xlsx", mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
