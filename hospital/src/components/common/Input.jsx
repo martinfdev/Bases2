@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 
-const Input = ({ label, name, type, value, onChange }) => (
+const Input = ({ label, name, type, value, onChange, disabled }) => (
     <div className="flex flex-col">
       <label className="text-gray-700 font-medium mb-1" htmlFor={name}>
         {label}
@@ -11,6 +11,7 @@ const Input = ({ label, name, type, value, onChange }) => (
         name={name}
         value={value}
         onChange={onChange}
+        disabled={disabled}
         className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
     </div>
@@ -22,6 +23,7 @@ Input.propTypes = {
     label: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
+    disabled: PropTypes.bool,
     value: PropTypes.string,
     onChange: PropTypes.func,
   }
