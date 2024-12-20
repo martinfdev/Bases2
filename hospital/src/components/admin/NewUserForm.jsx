@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import PropTypes, { number } from "prop-types"
+import PropTypes from "prop-types"
 import { registerUser } from "../../services/userServices"
 import { getSpecialties } from "../../services/adminServices"
 
@@ -56,8 +56,7 @@ const NewUserForm = ({ currentUserRole }) => {
     const roles = [
         { id: 1, name: 'Administrador' },
         { id: 2, name: 'Doctor' },
-        { id: 3, name: 'Enfermera' },
-        { id: 4, name: 'Desarrollador' }
+        { id: 3, name: 'Enfermera' }
     ]
 
     const getAvailableRoles = () => {
