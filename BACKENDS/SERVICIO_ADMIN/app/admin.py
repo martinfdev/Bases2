@@ -1011,3 +1011,4 @@ def descargar_reporte_diagnosticos_excel():
     excel_buffer = generar_excel_diagnosticos_comunes(diagnosticos_comunes)
     
     return send_file(excel_buffer, as_attachment=True, download_name="reporte_diagnosticos_comunes.xlsx", mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
