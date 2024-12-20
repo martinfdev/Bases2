@@ -82,7 +82,9 @@ const LoginForm = () => {
   return (
     <div className=" flex items-center justify-center bg-gray-100 p-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6">
+
         {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+        
         <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">
           Iniciar Sesión
         </h2>
