@@ -31,7 +31,7 @@ def lista_area(current_user):
                             A.capacidad,
                             COUNT(P.id_paciente) AS cantidad_pacientes
                         FROM Area A
-                        LEFT JOIN Paciente P ON A.id_area = P.id_area
+                        LEFT JOIN Paciente P ON A.id_area = P.id_area AND P.estado = 1
                         GROUP BY A.id_area, A.nombre_area, A.capacidad''')
         areas = cursor.fetchall()
         if not areas:

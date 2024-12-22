@@ -591,7 +591,7 @@ def consultar_area(current_user):
                             A.capacidad,
                             COUNT(P.id_paciente) AS cantidad_pacientes
                         FROM Area A
-                        LEFT JOIN Paciente P ON A.id_area = P.id_area
+                        LEFT JOIN Paciente P ON A.id_area = P.id_area AND P.estado = 1
                         WHERE nombre_area = ?
                         GROUP BY A.id_area, A.nombre_area, A.capacidad''', (nombre_area))
         
@@ -638,7 +638,7 @@ def lista_area(current_user):
                             A.capacidad,
                             COUNT(P.id_paciente) AS cantidad_pacientes
                         FROM Area A
-                        LEFT JOIN Paciente P ON A.id_area = P.id_area
+                        LEFT JOIN Paciente P ON A.id_area = P.id_area AND P.estado = 1
                         GROUP BY A.id_area, A.nombre_area, A.capacidad''')
         areas = cursor.fetchall()
         if not areas:
@@ -695,6 +695,18 @@ def register_patient(current_user):
     cursor = conn.cursor()
     try:
         conn.autocommit = False #INICIAR UNA TRANSACCION
+        #VALIDAR ESPACIO EN AREA
+        cursor.execute('SELECT COUNT(*) FROM Paciente WHERE id_area = ?', (id_area))
+        cantidad = cursor.fetchone()[0]
+        
+        cursor.execute('SELECT * FROM Area WHERE id_area = ?', (id_area))
+        area_actual = cursor.fetchone()[2]
+
+        if(int(area_actual) < int(cantidad)+1 ):
+            conn.rollback()
+            #save_log_param("Insercion", "ERROR", "crear_paciente", "Admin_Controller", "Error. El area ya no tiene espacio para otro paciente")
+            return jsonify({"message": "El area ya no tiene espacio para otro paciente"}), 201
+
         # Verificar si el email o dpi ya exite
         cursor.execute('SELECT * FROM Paciente WHERE dpi = ?', (dpi))
         patient_exists = cursor.fetchone()
