@@ -11,7 +11,7 @@ const PatientTable = ({ patients, onDelete }) => {
     }
 
     return (
-        <div className="max-w-7xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+        <div className="max-w-full mx-auto p-6 bg-white shadow-lg rounded-lg">
             <h2 className="text-2xl font-semibold mb-6">Lista de Pacientes</h2>
             <table className="min-w-full bg-white rounded-lg overflow-hidden shadow">
                 <thead className="bg-gray-900 text-gray-100 ">
