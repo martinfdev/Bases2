@@ -89,7 +89,7 @@ const UsersView = () => {
           className="border px-3 py-2 rounded focus:outline-none focus:ring focus:border-blue-300"
         />
       </div>
-      <div className="overflow-auto">
+      <div>
         <UserTable
           users={filteredUsers}
           onEdit={handleEdit}
