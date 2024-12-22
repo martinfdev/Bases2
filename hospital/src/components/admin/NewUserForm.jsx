@@ -61,7 +61,6 @@ const NewUserForm = ({ currentUserRole }) => {
 
     const getAvailableRoles = () => {
         if (currentUserRole === 1) {
-            console.log('current user role:', currentUserRole)
             return roles.filter(role => role.id === 2 || role.id === 3)
         } else if (currentUserRole === 4) {
             return roles
