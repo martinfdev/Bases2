@@ -1,9 +1,10 @@
 import {
-  FaTachometerAlt, FaUserCog, FaUserFriends, FaUserSlash,
+  FaTachometerAlt, FaUserCog, FaUserFriends, FaHandHoldingMedical,
   FaMapMarkedAlt, FaMap, FaUserTag, FaClipboardList,
   FaFileExport, FaChartPie, FaEnvelopeOpenText, FaInbox,
   FaUserPlus
 } from 'react-icons/fa'
+import { MdOutlineListAlt } from 'react-icons/md'
 import  Layout  from '../layouts/Layout'
 
 
@@ -27,11 +28,23 @@ const AdminLayout = () => {
           path: '/admin/users/list',
           icon: <FaUserFriends />
       },
+    //   {
+    //       section: 'Gestión de Usuarios',
+    //       label: 'Usuarios Inactivos',
+    //       path: '/admin/users/inactive',
+    //       icon: <FaUserSlash />
+    //   },
       {
-          section: 'Gestión de Usuarios',
-          label: 'Usuarios Inactivos',
-          path: '/admin/users/inactive',
-          icon: <FaUserSlash />
+            section: 'Gestión de Especialidades',
+            label: 'Crear Especialidad',
+            path: '/admin/speciality/create',
+            icon: <FaHandHoldingMedical />
+      },
+      {
+            section: 'Gestión de Especialidades',
+            label: 'Listar Especialidades',
+            path: '/admin/speciality/list',
+            icon: <MdOutlineListAlt  />
       },
       {
           section: 'Gestión de Pacientes',
