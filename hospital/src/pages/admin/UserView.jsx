@@ -1,19 +1,24 @@
 import { useEffect, useState } from 'react'
 import UserTable from '../../components/admin/UserTable'
-import { getUsers, deleteUser, updateUser } from '../../services/adminServices'
+import { getUsers, deleteUser, updateUser, getSpecialties } from '../../services/adminServices'
 import ViewUserModal from '../../components/user/ViewUserModal'
 import EditUserModal from '../../components/user/EditUserModal'
 import DeleteConfirmationModal from '../../components/user/DeleteConfirmationModal'
+import useAppContext from '../../hooks/useAppContext'
 
 
 const UsersView = () => {
   const [users, setUsers] = useState([])
   const [search, setSearch] = useState('')
   const [filteredUsers, setFilteredUsers] = useState([])
+  const [specialties, setSpecialties] = useState([])
   const [selectedUser, setSelectedUser] = useState(null)
   const [isViewOpen, setIsViewOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const [error , setError] = useState('')
+  const { addNotification } = useAppContext()
+
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -22,10 +27,24 @@ const UsersView = () => {
         setUsers(data.user)
         setFilteredUsers(data.user)
       } catch (error) {
+        setError(error.message)
         console.error('Error al obtener datos de usuarios:', error)
       }
     }
     fetchUsers()
+  }, [])
+
+  useEffect(() => {
+    const fetchSpecialties = async () => {
+      try {
+        const data = await getSpecialties()
+        setSpecialties(data.especialidades)
+      } catch (error) {
+        setError(error.message)
+        console.error('Error al obtener especialidades:', error)
+      }
+    }
+    fetchSpecialties()
   }, [])
 
   useEffect(() => {
@@ -58,8 +77,16 @@ const UsersView = () => {
       setUsers(updatedUsers)
       setFilteredUsers(updatedUsers)
       setIsEditOpen(false)
+      addNotification({
+        type: 'success',
+        message: 'Usuario actualizado correctamente', 
+      })
     }
     catch (error) {
+      addNotification({
+        type: 'error',
+        message: 'Error al actualizar usuario',
+      })
       console.error('Error al actualizar usuario:', error)
     }
   }
@@ -71,8 +98,16 @@ const UsersView = () => {
       setFilteredUsers(remainingUsers)
       setIsDeleteOpen(false)
       await deleteUser(user.dpi)
+      addNotification({
+        type: 'success',
+        message: 'Usuario eliminado correctamente',
+      })
     }
     catch (error) {
+      addNotification({
+        type: 'error',
+        message: 'Error al eliminar usuario',
+      })
       console.error('Error al eliminar usuario:', error)
     }
   }
@@ -80,6 +115,7 @@ const UsersView = () => {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Listado de Usuarios</h1>
+      {error && <p className="text-red-500 mb-4">{error}</p>}
       <div className="mb-4 flex items-center space-x-2">
         <input
           type="text"
@@ -109,6 +145,7 @@ const UsersView = () => {
         onClose={() => setIsEditOpen(false)}
         user={selectedUser}
         onSave={handleSaveEdit}
+        specialties={specialties}
       />
 
       <DeleteConfirmationModal
