@@ -9,14 +9,13 @@ const ViewSpecialityTable = () => {
 
     useEffect(() => {
         const fetchSpecialities = async () => {
-            const data = await getSpecialties()
-            setSpecialities(data.especialidades)
-        }
-        try {
-            fetchSpecialities()
-        } catch (error) {
-            console.error('Error al obtener especialidades:', error)
-            setError(error.message)
+            try {
+                const data = await getSpecialties()
+                setSpecialities(data.especialidades)
+            } catch (error) {
+                console.error('Error al obtener especialidades:', error)
+                setError(error.message)
+            }
         }
         fetchSpecialities()
     }, [])
