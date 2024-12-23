@@ -15,7 +15,7 @@ const modalVariants = {
 const NotificationModal = ({ notification, onClose }) => {
   const closeButtonRef = useRef(null)
 
-  // close modal when pressing the Escape key
+  // Cerrar el modal al presionar la tecla Esc
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
@@ -28,17 +28,17 @@ const NotificationModal = ({ notification, onClose }) => {
     }
   }, [onClose])
 
-  // disable scrolling when the modal is open
+  // Prevenir el scroll del fondo cuando el modal está abierto
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-    // focus the close button when the modal is open
+    // Enfocar el botón de cerrar cuando el modal se abre
     closeButtonRef.current?.focus()
     return () => {
       document.body.style.overflow = 'auto'
     }
   }, [])
 
-  // get styles based on the notification type
+  // Determinar el color y el ícono según el tipo de notificación
   const getStyles = () => {
     switch (notification.type) {
       case 'success':
@@ -66,7 +66,7 @@ const NotificationModal = ({ notification, onClose }) => {
         exit="hidden"
       >
         <motion.div
-          className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-md w-full mx-4 p-6 relative`}
+          className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-md w-full mx-4 p-6 relative"
           variants={modalVariants}
           initial="hidden"
           animate="visible"
@@ -79,21 +79,29 @@ const NotificationModal = ({ notification, onClose }) => {
         >
           <button
             onClick={onClose}
-            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 
+                       dark:text-gray-300 dark:hover:text-white 
+                       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
             aria-label="Cerrar notificación"
             ref={closeButtonRef}
           >
             ✖️
           </button>
           <div className="flex items-center">
-            <span className={`text-3xl mr-4 ${styles.bg} p-2 rounded-full`}>
+            <span className={`text-3xl mr-4 bg-red-400 p-2 rounded-full`}>
               {styles.icon}
             </span>
             <div>
-              <h3 id="notification-title" className="text-xl font-semibold mb-2 capitalize text-gray-800 dark:text-gray-100">
+              <h3
+                id="notification-title"
+                className="text-xl font-semibold mb-2 capitalize text-gray-800 dark:text-gray-100"
+              >
                 {notification.type}
               </h3>
-              <p id="notification-message" className="text-gray-700 dark:text-gray-300">
+              <p
+                id="notification-message"
+                className="text-gray-700 dark:text-gray-300"
+              >
                 {notification.message}
               </p>
             </div>
@@ -104,14 +112,13 @@ const NotificationModal = ({ notification, onClose }) => {
   )
 }
 
-
+// Definimos los tipos de las props usando PropTypes
 NotificationModal.propTypes = {
-    notification: PropTypes.shape({
-        type: PropTypes.string.isRequired,
-        message: PropTypes.string.isRequired,
-    }).isRequired,
-    onClose: PropTypes.func.isRequired,
-    }
-
+  notification: PropTypes.shape({
+    type: PropTypes.string.isRequired,
+    message: PropTypes.string.isRequired,
+  }).isRequired,
+  onClose: PropTypes.func.isRequired,
+}
 
 export default NotificationModal
