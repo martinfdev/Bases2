@@ -1,25 +1,9 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import Modal from '../shared/Modal'
-import { getSpecialties } from '../../services/adminServices'
 
-const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
+const EditUserModal = ({ isOpen, onClose, user, onSave, specialties }) => {
   const [form, setForm] = useState({})
-  const [specialties, setSpecialties] = useState([])
-
-  useEffect(() => {
-    const fetchSpecialties = async () => {
-      try {
-        const data = await getSpecialties()
-        setSpecialties(data.especialidades)
-      } catch (error) {
-        console.error('Error al obtener datos de especialidades:', error)
-      }
-    }
-    fetchSpecialties()
-  }, [])
-
-
   useEffect(() => {
     if (user) {
       setForm({ ...user })
@@ -130,6 +114,21 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
           />
         </div>
         <div>
+          <label className="block text-gray-700">Rol</label>
+          <select
+            name="id_rol"
+            value={form.id_rol}
+            onChange={handleChange}
+            className="w-full border px-3 py-2 rounded focus:outline-none focus:ring"
+            required
+          >
+            <option value="1">Administrador</option>
+            <option value="2">Doctor</option>
+            <option value="3">Enfermera</option>
+            <option value="4">Desarrollador</option>
+          </select>
+        </div>
+        <div>
           <label className="block text-gray-700">Especialidad</label>
           <select
             name="id_especialidad"
@@ -183,6 +182,7 @@ EditUserModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   user: PropTypes.object,
   onSave: PropTypes.func.isRequired,
+  specialties: PropTypes.array.isRequired
 }
 
 export default EditUserModal
