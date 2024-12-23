@@ -8,6 +8,7 @@ import NewPatientPage from '../pages/admin/NewPatientPage'
 import PatientView from '../pages/admin/PatientView'
 import NewSpecialityPage from '../pages/admin/NewSpecialityPage'
 import ViewSpecialityTable from '../pages/admin/ViewSpecialityTable'
+import NewAreaPage from '../pages/admin/NewAreaPage' 
 import DeveloperLayout from '../layouts/DeveloperLayout'  
 import PageDeveloperDashboard from '../pages/dev/DevDashboardPage'
 import LogVitacore from '../components/dev/LogVitacore'
@@ -37,7 +38,7 @@ const AppRouter = () => {
         <Route path="patients/list" element={<PatientView />} />
         <Route path="speciality/create" element={<NewSpecialityPage />} />
         <Route path="speciality/list" element={<ViewSpecialityTable />} />
-        <Route path="areas/create" element={<NotFound />} />
+        <Route path="areas/create" element={<NewAreaPage />} />
         <Route path="areas/list" element={<NotFound />} />
         <Route path="areas/assign" element={<NotFound />} />
         <Route path="logs" element={<LogVitacore />} />
