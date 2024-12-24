@@ -1071,27 +1071,28 @@ def obtener_pacientes_sin_area(current_user):
         conn.close()
 
 
-@admin_bp.route('/enfermeras_disponibles', methods=['GET']) #verificar si esto tambien aplica para los doctores
+@admin_bp.route('/enfermeras', methods=['GET']) #listado de enfermeras 
 @token_required
 @admin_required
-def listar_enfermeras_disponibles(current_user):
+def listar_enfermeras(current_user):
     conn = get_db_connection_SQLSERVER()
     if conn is None:
         return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+
     cursor = conn.cursor()
+
     try:
-        # Obtener lista de enfermeras disponibles
+        # Obtener lista de enfermeras
         cursor.execute("""
-            SELECT u.id_usuario, u.nombres, u.apellidos, u.correo, u.telefono, u.dpi, u.genero, u.direccion
-            FROM Usuario u
-            LEFT JOIN PacienteEnfermera pe ON u.id_usuario = pe.id_usuario
-            WHERE u.fecha_vencimiento_colegiado IS NULL
-              AND u.id_rol = ?
-              AND pe.id_usuario IS NULL  -- Enfermera no asignada a ningún paciente
-        """, (3,))  # Asume que id_rol = 3 corresponde a enfermeras
+            SELECT id_usuario, nombres, apellidos, correo, telefono, dpi, genero, direccion
+            FROM Usuario
+            WHERE fecha_vencimiento_colegiado IS NULL AND id_rol = ?
+        """, (3,))  # Asume que id_rol = 2 corresponde a enfermeras
         enfermeras = cursor.fetchall()
+
         if not enfermeras:
-            return jsonify({"message": "No hay enfermeras disponibles"}), 404
+            return jsonify({"message": "No hay enfermeras registradas"}), 404
+
         # Formatear resultado en JSON
         lista_enfermeras = [
             {
@@ -1105,7 +1106,54 @@ def listar_enfermeras_disponibles(current_user):
                 "direccion": row[7]
             } for row in enfermeras
         ]
-        return jsonify({"enfermeras_disponibles": lista_enfermeras}), 200
+
+        return jsonify({"enfermeras": lista_enfermeras}), 200
+
+    except Exception as e:
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@admin_bp.route('/doctores', methods=['GET']) #listado de doctores
+@token_required
+@admin_required
+def listar_doctores(current_user):
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+
+    cursor = conn.cursor()
+
+    try:
+        # Obtener lista de doctores
+        cursor.execute("""
+            SELECT id_usuario, nombres, apellidos, correo, telefono, dpi, genero, direccion, fecha_vencimiento_colegiado
+            FROM Usuario
+            WHERE fecha_vencimiento_colegiado IS NOT NULL AND id_rol = ?
+        """, (2,))  # Asume que id_rol = 1 corresponde a doctores
+        doctores = cursor.fetchall()
+
+        if not doctores:
+            return jsonify({"message": "No hay doctores registrados"}), 404
+
+        # Formatear resultado en JSON
+        lista_doctores = [
+            {
+                "id_usuario": row[0],
+                "nombres": row[1],
+                "apellidos": row[2],
+                "correo": row[3],
+                "telefono": row[4],
+                "dpi": row[5],
+                "genero": row[6],
+                "direccion": row[7],
+                "fecha_vencimiento_colegiado": row[8].strftime("%Y-%m-%d")
+            } for row in doctores
+        ]
+
+        return jsonify({"doctores": lista_doctores}), 200
+
     except Exception as e:
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
     finally:
@@ -1135,8 +1183,8 @@ def asignar_area_a_paciente(current_user):
         # Validar que id_enfermera corresponde a una enfermera
         cursor.execute("""
             SELECT id_usuario FROM Usuario
-            WHERE id_usuario = ? AND fecha_vencimiento_colegiado IS NULL AND id_rol = ?
-        """, (id_enfermera, 3))
+            WHERE id_usuario = ? AND fecha_vencimiento_colegiado IS NULL AND id_rol = 3
+        """, (id_enfermera,))
         enfermera = cursor.fetchone()
 
         if not enfermera:
@@ -1145,19 +1193,33 @@ def asignar_area_a_paciente(current_user):
         # Validar que id_doctor corresponde a un doctor
         cursor.execute("""
             SELECT id_usuario FROM Usuario
-            WHERE id_usuario = ? AND fecha_vencimiento_colegiado IS NOT NULL AND id_rol = ?
-        """, (id_doctor, 2))
+            WHERE id_usuario = ? AND fecha_vencimiento_colegiado IS NOT NULL AND id_rol = 2
+        """, (id_doctor,))
         doctor = cursor.fetchone()
 
         if not doctor:
             return jsonify({"error": "El usuario seleccionado como doctor no es válido"}), 400
 
-        # Actualizar área, enfermera y doctor del paciente
+        # Actualizar área del paciente
         cursor.execute("""
-            UPDATE Usuario
-            SET id_area = ?, id_enfermera = ?, id_doctor = ?
-            WHERE id_usuario = ?
-        """, (id_area, id_enfermera, id_doctor, id_paciente))
+            UPDATE Paciente
+            SET id_area = ?
+            WHERE id_paciente = ?
+        """, (id_area, id_paciente))
+        conn.commit()
+
+        # Asignar la enfermera al paciente en la tabla PacienteEnfermera
+        cursor.execute("""
+            INSERT INTO PacienteEnfermera (id_paciente, id_usuario)
+            VALUES (?, ?)
+        """, (id_paciente, id_enfermera))
+        conn.commit()
+
+        # Asignar el doctor al paciente en la misma tabla PacienteEnfermera
+        cursor.execute("""
+            INSERT INTO PacienteEnfermera (id_paciente, id_usuario)
+            VALUES (?, ?)
+        """, (id_paciente, id_doctor))
         conn.commit()
 
         # Registrar el cambio en un historial
@@ -1166,25 +1228,21 @@ def asignar_area_a_paciente(current_user):
                 tipo_modificacion, fecha_insercion, id_paciente, nombre, apellido, dpi, genero,
                 fecha_nacimiento, telefono, direccion, id_area, estado
             )
-            SELECT 'Asignación de Área', GETDATE(), id_usuario, nombres, apellidos, dpi, genero,
-                   fecha_ingreso, telefono, direccion, ?, estado
-            FROM Usuario
-            WHERE id_usuario = ?
+            SELECT 'Asignación de Área', GETDATE(), id_paciente, nombre, apellido, dpi, genero,
+                fecha_nacimiento, telefono, direccion, ?, estado
+            FROM Paciente
+            WHERE id_paciente = ?
         """, (id_area, id_paciente))
         conn.commit()
-
         return jsonify({"message": "Paciente asignado a área, enfermera y doctor exitosamente"}), 200
-
     except pyodbc.IntegrityError as e:
         return jsonify({"error": f"Error en la integridad de la base de datos: {str(e)}"}), 400
-
     except Exception as e:
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
 
     finally:
         cursor.close()
         conn.close()
-
 
 @admin_bp.route('/ultimos_pacientes_ingresados', methods=['GET'])
 @token_required
@@ -1201,10 +1259,16 @@ def ultimos_pacientes_ingresados(current_user):
     try:
         # Consulta para obtener los últimos pacientes ingresados
         cursor.execute("""
-            SELECT TOP (?) id_paciente, nombre, apellido, dpi, genero, fecha_nacimiento, telefono, direccion, id_area, estado, fecha_insercion
-            FROM PacienteHistorico
-            WHERE tipo_modificacion = 'Asignación a Área'
+            WITH PacientesAsignados AS (
+                SELECT *, ROW_NUMBER() OVER (PARTITION BY id_paciente ORDER BY fecha_insercion DESC) AS rn
+                FROM PacienteHistorico
+                WHERE tipo_modificacion = 'Asignación de Área'
+            )
+            SELECT id_paciente, nombre, apellido, dpi, genero, fecha_nacimiento, telefono, direccion, id_area, estado, fecha_insercion
+            FROM PacientesAsignados
+            WHERE rn = 1
             ORDER BY fecha_insercion DESC
+            OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY;
         """, (limite,))
         pacientes = cursor.fetchall()
 
@@ -1227,13 +1291,51 @@ def ultimos_pacientes_ingresados(current_user):
                 "fecha_insercion": row[10].strftime("%Y-%m-%d %H:%M:%S")  # Formato de fecha
             } for row in pacientes
         ]
+        return jsonify({"pacientes": lista_pacientes}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@admin_bp.route('/DarDeAlta/<int:id_paciente>', methods=['DELETE'])
+@token_required
+@admin_required
+def dar_de_alta(current_user, id_paciente):
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+
+    cursor = conn.cursor()
+
+    try:
+        # Verificar si el paciente existe en la tabla PacienteEnfermera
+        cursor.execute("""
+            SELECT 1 
+            FROM PacienteEnfermera 
+            WHERE id_paciente = ?
+        """, (id_paciente,))
+        paciente_existente = cursor.fetchone()
+
+        if not paciente_existente:
+            return jsonify({
+                "error": "El paciente no tiene asignaciones o no existe."
+            }), 404
+
+        # Eliminar todas las referencias al paciente en PacienteEnfermera
+        cursor.execute("""
+            DELETE FROM PacienteEnfermera 
+            WHERE id_paciente = ?
+        """, (id_paciente,))
+        conn.commit()
 
         return jsonify({
-            "message": f"Últimos {limite} pacientes ingresados encontrados",
-            "pacientes": lista_pacientes
+            "message": f"El paciente con ID {id_paciente} ha sido dado de alta exitosamente. Se eliminaron todas las referencias."
         }), 200
 
     except Exception as e:
+        conn.rollback()
         return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
 
     finally:

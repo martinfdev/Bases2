@@ -950,3 +950,82 @@ def editar_paciente(current_user):
         conn.close()
 
 
+@desarrollador_bp.route('/DarDeAlta/<int:id_paciente>', methods=['DELETE'])
+@token_required
+@desarrollador_required
+def dar_de_alta(current_user, id_paciente):
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+
+    cursor = conn.cursor()
+
+    try:
+        # Verificar si el paciente existe en la tabla PacienteEnfermera
+        cursor.execute("""
+            SELECT 1 
+            FROM PacienteEnfermera 
+            WHERE id_paciente = ?
+        """, (id_paciente,))
+        paciente_existente = cursor.fetchone()
+
+        if not paciente_existente:
+            return jsonify({
+                "error": "El paciente no tiene asignaciones o no existe."
+            }), 404
+
+        # Eliminar todas las referencias al paciente en PacienteEnfermera
+        cursor.execute("""
+            DELETE FROM PacienteEnfermera 
+            WHERE id_paciente = ?
+        """, (id_paciente,))
+        conn.commit()
+
+        return jsonify({
+            "message": f"El paciente con ID {id_paciente} ha sido dado de alta exitosamente. Se eliminaron todas las referencias."
+        }), 200
+
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+
+    finally:
+        cursor.close()
+        conn.close()
+
+@desarrollador_bp.route('/pacientes_sin_area', methods=['GET'])
+@token_required
+@desarrollador_required
+def obtener_pacientes_sin_area(current_user):
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        # Obtener lista de pacientes sin área asignada
+        cursor.execute("""
+            SELECT id_paciente, nombre, apellido, dpi, genero, fecha_nacimiento, telefono, direccion
+            FROM Paciente
+            WHERE id_area IS NULL
+        """)
+        pacientes = cursor.fetchall()
+        if not pacientes:
+            return jsonify({"message": "No hay pacientes sin área asignada"}), 404
+        lista_pacientes = [
+            {
+                "id_paciente": row[0],
+                "nombre": row[1],
+                "apellido": row[2],
+                "dpi": row[3],
+                "genero": row[4],
+                "fecha_nacimiento": row[5].strftime("%Y-%m-%d"),
+                "telefono": row[6],
+                "direccion": row[7]
+            } for row in pacientes
+        ]
+        return jsonify({"pacientes_sin_area": lista_pacientes}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+    finally:
+        cursor.close()
+        conn.close()

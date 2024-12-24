@@ -173,3 +173,50 @@ def editar_paciente(current_user):
     finally:
         cursor.close()
         conn.close()
+
+
+@enfermera_bp.route('/listadpPacientes_asignados', methods=['GET'])
+@token_required
+@enfermera_required
+def dashboard_enfermera(current_user):
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        # Obtener la lista de pacientes asignados a la enfermera actual
+        cursor.execute("""
+            SELECT p.id_paciente, p.nombre, p.apellido, p.dpi, p.genero, p.fecha_nacimiento, 
+                   p.telefono, p.direccion, p.estado, a.nombre_area
+            FROM PacienteEnfermera pe
+            INNER JOIN Paciente p ON pe.id_paciente = p.id_paciente
+            INNER JOIN Area a ON p.id_area = a.id_area
+            WHERE pe.id_usuario = ?
+        """, (current_user['id_usuario'],))
+        pacientes = cursor.fetchall()
+        # Si no hay pacientes asignados
+        if not pacientes:
+            return jsonify({"pacientes_asignados": "No hay pacientes asignados."}), 200
+        # Formatear resultado en JSON
+        lista_pacientes = [
+            {
+                "id_paciente": row[0],
+                "nombre": row[1],
+                "apellido": row[2],
+                "dpi": row[3],
+                "genero": row[4],
+                "fecha_nacimiento": row[5],
+                "telefono": row[6],
+                "direccion": row[7],
+                "estado": row[8],
+                "area": row[9]
+            } for row in pacientes
+        ]
+        return jsonify({"pacientes_asignados": lista_pacientes}), 200
+
+    except Exception as e:
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+
+    finally:
+        cursor.close()
+        conn.close()
