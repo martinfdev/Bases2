@@ -44,7 +44,7 @@ const NotificationModal = ({ notification, onClose }) => {
       case 'success':
         return { bg: 'bg-green-500', icon: '✅' }
       case 'error':
-        return { bg: 'bg-red-500', icon: '❌' }
+        return { bg: 'bg-red-400', icon: '❌' }
       case 'info':
         return { bg: 'bg-blue-500', icon: 'ℹ️' }
       case 'warning':
@@ -88,7 +88,7 @@ const NotificationModal = ({ notification, onClose }) => {
             ✖️
           </button>
           <div className="flex items-center">
-            <span className={`text-3xl mr-4 bg-red-400 p-2 rounded-full`}>
+            <span className={`text-3xl mr-4 ${styles.bg} p-2 rounded-full`}>
               {styles.icon}
             </span>
             <div>
