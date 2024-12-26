@@ -1,9 +1,12 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 import Input from '../common/Input'
 import Select from '../common/Select'
 import { createPatient } from '../../services/adminServices'
+import useAppContext from '../../hooks/useAppContext'
 
-const PacienteForm = () => {
+const PacienteForm = ({ listAreas }) => {
+    const { addNotification } = useAppContext()
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
@@ -12,9 +15,12 @@ const PacienteForm = () => {
         fecha_nacimiento: '',
         telefono: '',
         direccion: '',
-        id_area: '',
+        id_area: 0,
         estado: '',
     })
+
+    //dpi is a number, so we need therteen digits
+    const dpiRegex = /^\d{13}$/
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -23,9 +29,19 @@ const PacienteForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if (!dpiRegex.test(formData.dpi)) {
+            addNotification({
+                type: 'error',
+                message: 'El DPI debe contener exactamente 13 dígitos'
+            })
+            return
+        }
         try {
             await createPatient(formData)
-            alert('Paciente creado exitosamente')
+            addNotification({
+                type: 'success',
+                message: 'Paciente creado exitosamente'
+            })
             handleReset()
         } catch (error) {
             console.error(error)
@@ -41,7 +57,7 @@ const PacienteForm = () => {
             fecha_nacimiento: '',
             telefono: '',
             direccion: '',
-            id_area: '',
+            id_area: 0,
             estado: '',
         })
     }
@@ -54,6 +70,7 @@ const PacienteForm = () => {
                     label="Nombre"
                     name="nombre"
                     type="text"
+                    required={true}
                     value={formData.nombre}
                     onChange={handleChange}
                 />
@@ -64,13 +81,19 @@ const PacienteForm = () => {
                     value={formData.apellido}
                     onChange={handleChange}
                 />
-                <Input
-                    label="DPI"
-                    name="dpi"
-                    type="text"
-                    value={formData.dpi}
-                    onChange={handleChange}
-                />
+                <div className="flex flex-col">
+                    <label className="text-gray-700 font-medium mb-1">
+                        {"DPI"}
+                    </label>
+                    <input
+                        type="number"
+                        id="dpi"
+                        name="dpi"
+                        value={formData.dpi}
+                        onChange={handleChange}
+                        className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
                 <Select
                     label="Género"
                     name="genero"
@@ -104,12 +127,13 @@ const PacienteForm = () => {
                     value={formData.direccion}
                     onChange={handleChange}
                 />
-                <Input
-                    label="ID Área"
-                    name="id_area"
+                <Select
+                    label="Área"
                     type="number"
+                    name="id_area"
                     value={formData.id_area}
                     onChange={handleChange}
+                    options={listAreas.map(area => ({ value: area.id_area, label: area.nombre_area }))}
                 />
                 <Select
                     label="Estado"
@@ -118,8 +142,8 @@ const PacienteForm = () => {
                     onChange={handleChange}
                     options={[
                         { value: '', label: 'Selecciona estado' },
-                        { value: '1', label: 'Activo' },
-                        { value: '0', label: 'Inactivo' },
+                        { value: 1, label: 'Activo' },
+                        { value: 0, label: 'Inactivo' },
                     ]}
                 />
                 <button
@@ -132,4 +156,13 @@ const PacienteForm = () => {
         </div>
     )
 }
+PacienteForm.propTypes = {
+    listAreas: PropTypes.arrayOf(
+        PropTypes.shape({
+            id_area: PropTypes.number.isRequired,
+            nombre_area: PropTypes.string.isRequired,
+        })
+    ).isRequired,
+}
+
 export default PacienteForm
