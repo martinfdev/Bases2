@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 
-const AreaTable = ({ areas }) => {
-    
+const AreaTable = ({ areas, onEdit, onDelete }) => {
     return (
         <div className="max-w-full mx-auto p-6 bg-white shadow-lg rounded-lg">
         <table className="min-w-full bg-white rounded-lg overflow-hidden shadow">
@@ -23,7 +22,7 @@ const AreaTable = ({ areas }) => {
                         <td className='py-2 px-4 border-b text-center'>{area.cantidad_pacientes}</td>
                         <td className='py-3 px-4 border-b flex space-x-8 items-center justify-center'>
                         <button
-                            onClick={() => onEdit(area.id_especialidad)}
+                            onClick={() => onEdit(area.id_area)}
                             className="flex items-center bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
                         >
                             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,7 +31,7 @@ const AreaTable = ({ areas }) => {
                             Editar
                         </button>
                         <button
-                            onClick={() => onDelete(area.id_especialidad)}
+                            onClick={() => onDelete(area.id_area)}
                             className="flex items-center bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
                         >
                             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,7 +53,10 @@ AreaTable.propTypes = {
         id_area: PropTypes.number.isRequired,
         nombre_area: PropTypes.string.isRequired,
         capacidad: PropTypes.number.isRequired,
+        cantidad_pacientes: PropTypes.number.isRequired,
     })).isRequired,
+    onEdit: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired
 }
 
 export default AreaTable
