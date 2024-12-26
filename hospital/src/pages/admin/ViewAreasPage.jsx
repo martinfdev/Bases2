@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getAreas, deleteArea, updateArea } from '../../services/adminServices'
 import AreaTable from '../../components/tables/AreaTable'
 import DeleteModalArea from '../../components/mod/DeleteModalArea'
+import EditModalArea from '../../components/mod/EditModalArea'
 import useAppContext from '../../hooks/useAppContext'
 
 const ViewAreasPage = () => {
@@ -35,14 +36,17 @@ const ViewAreasPage = () => {
         }
     }, [search, areas])
 
-
-
     const handleDelete = async (id) => {
         setIsDeleteOpen(true)
         setSelectedArea(areas.find(a => a.id_area === id))
     }
 
-    const handleDeteArea = async (area) => {
+    const handleEdit = async (id) => {
+        setIsEditOpen(true)
+        setSelectedArea(areas.find(a => a.id_area === id))
+    }
+
+    const handleDeleteArea = async (area) => {
         try {
             await deleteArea(area.nombre_area)
             setAreas(areas.filter(a => a.id_area !== area.id_area))
@@ -55,15 +59,40 @@ const ViewAreasPage = () => {
             )
             setSelectedArea(null)
         } catch (error) {
+            addNotification(
+                {
+                    type: 'error',
+                    message: 'Error al eliminar area'
+                }
+            )
             console.error('Error al eliminar area:', error)
             setError(error.message)
         }
     }
 
-    const handleEdit = async (id) => {
-        setIsEditOpen(true)
-        setSelectedArea(areas.find(a => a.id_area === id))
-    }
+    const handleUpdateArea = async (area) => {
+        try {
+            await updateArea(area)
+            setAreas(areas.map(a => a.id_area === area.id_area ? area : a))
+            setIsEditOpen(false)
+            addNotification(
+                {
+                    type: 'success',
+                    message: 'Area actualizada correctamente'
+                }
+            )
+            setSelectedArea(null)
+        } catch (error) {
+            addNotification(
+                {
+                    type: 'error',
+                    message: 'Error al actualizar area'
+                }
+            )
+            console.error('Error al actualizar area:', error)
+            setError(error.message)
+        }
+    } 
 
     return (
         <div>
@@ -88,8 +117,16 @@ const ViewAreasPage = () => {
                 <DeleteModalArea
                     isOpen={isDeleteOpen}
                     onClose={() => setIsDeleteOpen(false)}
-                    onConfirm={handleDeteArea}
+                    onConfirm={handleDeleteArea}
                     area={selectedArea}
+                />
+            </div>
+            <div className="flex justify-center">
+                <EditModalArea
+                    isOpen={isEditOpen}
+                    onClose={() => setIsEditOpen(false)}
+                    area={selectedArea}
+                    onSave={handleUpdateArea}
                 />
             </div>
         </div>
