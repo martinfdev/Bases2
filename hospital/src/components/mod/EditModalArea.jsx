@@ -82,8 +82,7 @@ EditModalArea.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   area: PropTypes.object,
-  onSave: PropTypes.func.isRequired,
-  specialties: PropTypes.array.isRequired
+  onSave: PropTypes.func.isRequired
 }
 
 export default EditModalArea
