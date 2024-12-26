@@ -3,6 +3,7 @@ import { getAreas, deleteArea, updateArea } from '../../services/adminServices'
 import AreaTable from '../../components/tables/AreaTable'
 import DeleteModalArea from '../../components/mod/DeleteModalArea'
 import EditModalArea from '../../components/mod/EditModalArea'
+import ViewModalArea from '../../components/mod/ViewModalArea'
 import useAppContext from '../../hooks/useAppContext'
 
 const ViewAreasPage = () => {
@@ -11,6 +12,7 @@ const ViewAreasPage = () => {
     const [filteredAreas, setFilteredAreas] = useState([])
     const [isEditOpen, setIsEditOpen] = useState(false)
     const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+    const [isViewOpen, setIsViewOpen] = useState(false)
     const [selectedArea, setSelectedArea] = useState(null)
     const [ search, setSearch ] = useState('')
     const { addNotification } = useAppContext()
@@ -44,6 +46,11 @@ const ViewAreasPage = () => {
     const handleEdit = async (id) => {
         setIsEditOpen(true)
         setSelectedArea(areas.find(a => a.id_area === id))
+    }
+
+    const handleView = async (area) => {
+        setSelectedArea(area)
+        setIsViewOpen(true)
     }
 
     const handleDeleteArea = async (area) => {
@@ -111,7 +118,9 @@ const ViewAreasPage = () => {
                 <AreaTable
                     areas={filteredAreas}
                     onEdit={handleEdit}
-                    onDelete={handleDelete} />
+                    onDelete={handleDelete} 
+                    onView={handleView}
+                />
             </div>
             <div className="flex justify-center">
                 <DeleteModalArea
@@ -127,6 +136,13 @@ const ViewAreasPage = () => {
                     onClose={() => setIsEditOpen(false)}
                     area={selectedArea}
                     onSave={handleUpdateArea}
+                />
+            </div>
+            <div className="flex justify-center">
+                <ViewModalArea
+                    isOpen={isViewOpen}
+                    onClose={() => setIsViewOpen(false)}
+                    area={selectedArea}
                 />
             </div>
         </div>
