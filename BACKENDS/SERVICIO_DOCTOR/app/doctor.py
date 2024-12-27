@@ -4,6 +4,7 @@ from CONFIG.decorators import token_required, doctor_required
 import bcrypt
 import pyodbc
 import re
+from datetime import datetime
 #from REDIS.logs import save_log_param
 doctor_bp = Blueprint('doctor', __name__)
 
@@ -303,3 +304,39 @@ def dar_de_alta(current_user, id_paciente):
     finally:
         cursor.close()
         conn.close()
+
+@doctor_bp.route('/validar_vencimiento_colegiado', methods=['POST'])
+@token_required
+@doctor_required
+def validar_vencimiento_colegiado(current_user):
+    data = request.get_json()
+    field = 'dpi'
+    if field not in data:
+        #save_log_param("consulta", "ERROR", "validar_vencimiento_colegiado", "Doctor_Controller", f"Field {field} is required")
+        return jsonify({"error": f"Field {field} is required"}), 400
+    dpi = data['dpi']
+    conn = get_db_connection_SQLSERVER()
+    if conn is None:
+        #save_log_param("consulta", "ERROR", "validar_vencimiento_colegiado", "Doctor_Controller", "Error al conectarse con la base de datos")
+        return jsonify({"error": "Error al conectarse con la base de datos"}), 500
+    cursor = conn.cursor()
+    try:
+        # Verificar si area existe
+        cursor.execute('SELECT * FROM Usuario WHERE dpi = ? AND estado = 1', (dpi))
+        nombre_exists = cursor.fetchone()
+        if not nombre_exists:
+            #save_log_param("consulta", "ERROR", "validar_vencimiento_colegiado", "Doctor_Controller", "Usuario no existe")
+            return jsonify({"Error": "Usuario no existe"}), 409
+        fecha_base = datetime.strptime(str(nombre_exists[12]), "%Y-%m-%d")
+        fecha_actual = datetime.now()
+        diferencia = (fecha_base - fecha_actual).days
+        cursor.close()
+        conn.close()
+        #save_log_param("consulta", "INFO", "validar_vencimiento_colegiado", "Doctor_Controller", "Exito, Consulta Realizada con exito")
+        return jsonify({"dias_restantes": diferencia}), 201
+    except pyodbc.IntegrityError as e:
+        #save_log_param("consulta", "ERROR", "validar_vencimiento_colegiado", "Doctor_Controller", "Error en la integridad de la base de datos: " + str(e))
+        return jsonify({"Error": "Error en la integridad de la base de datos: " + str(e)}), 400
+    except Exception as e:
+        #save_log_param("consulta", "ERROR", "validar_vencimiento_colegiado", "Doctor_Controller", "Error inesperado")
+        return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
