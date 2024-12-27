@@ -21,7 +21,7 @@ from datetime import datetime
 import json
 base_mongo = Blueprint('mongo', __name__)
 
-#from REDIS.logs import save_log_param
+from REDIS.logs import save_log_param, crear_backup_r
 load_dotenv()
 
 
@@ -402,8 +402,8 @@ def crear_backup_Mongo():
     with open('token.json', 'w') as token:
         token.write(creds.to_json())'''
     #BACKUP MONGO
+    fecha_actual = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     try:
-        fecha_actual = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         cliente = get_db_connection_MONGODB() #CONEXION A MONGO
         if cliente is not None:
             try:
@@ -457,7 +457,11 @@ def crear_backup_Mongo():
         except Exception as e:
             print(f"Error al realizar el backup: {e}")
 
-
+    #BACKUP REDIS
+    contenedor_d_r = os.getenv("ID_CONT_REDIS")
+    nombre_backup_r = "backup_"+str(fecha_actual)+".rdb" 
+    estado_b_r = crear_backup_r(contenedor_d_r, nombre_backup_r)
+    
     #SUBIR ARCHIVOS
     creds = cargar_creds()
     if creds is None:
@@ -467,21 +471,31 @@ def crear_backup_Mongo():
     backup_folder_id = create_folder(service, 'backups')
     mongo_folder_id = create_folder(service, 'mongo', backup_folder_id)
     sql_folder_id = create_folder(service, 'sql', backup_folder_id)
+    redis_folder_id = create_folder(service, 'redis', backup_folder_id)
 
     file_sql_id = ""
     file_mongo_id = ""
+    file_redis_id = ""
     if(mongo_folder_id):
         if not os.path.exists(archivo_respaldo):
-            print(f"Error: El archivo {archivo_respaldo} no existe.")
+            print(f"Error (MONGO): El archivo {archivo_respaldo} no existe.")
         file_mongo_id = upload_to_google_drive(service, archivo_respaldo, mongo_folder_id)
         os.remove(archivo_respaldo)#borrar el archivo local
         status_mongo = "EXITO"
 
     if(sql_folder_id):
         if not os.path.exists(backup_path_sql_FILE):
-            print(f"Error: El archivo {backup_path_sql_FILE} no existe.")
+            print(f"Error (SQL): El archivo {backup_path_sql_FILE} no existe.")
         else:
             file_sql_id = upload_to_google_drive(service, backup_path_sql_FILE, sql_folder_id)
             status_sql = "EXITO"
+    
+    if (redis_folder_id):
+        if(estado_b_r):
+            file_redis_id = upload_to_google_drive(service, nombre_backup_r, redis_folder_id)
+            os.remove(nombre_backup_r)
+            status_redis = "EXITO"
+        else:
+            print(f"Error (REDIS): Error al crear backup redis")
     #save_log_param("consulta", "INFO", "crear_backup_Mongo", "Mongo_Controller", "Backups creado con exito") 
-    return jsonify({"mongo_status": status_mongo, "file_mongo_id": file_mongo_id, "sql_status": status_sql,"file_sql_id": file_sql_id }), 200
+    return jsonify({"mongo_status": status_mongo, "file_mongo_id": file_mongo_id, "sql_status": status_sql,"file_sql_id": file_sql_id, "redis_status":status_redis, "file_redis_id": file_redis_id }), 200
