@@ -59,7 +59,7 @@ const PatientView = () => {
                 message: 'Error al eliminar paciente',
             })
             console.error('Error al eliminar paciente:', error)
-        }
+        } 
     }
 
     return (
