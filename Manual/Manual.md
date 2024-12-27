@@ -2405,6 +2405,8 @@ CREATE TABLE PacienteEnfermera(
 );
 ```
 
+*NOTA: La tabla PacienteEnfermera se utilizara para PacienteDoctor*
+
 - En el proceso de integrar triggers que registren automáticamente las operaciones de insert, update y delete en las tablas históricas UsuarioHistorico y PacienteHistorico, se identificó la necesidad de realizar modificaciones en las tablas principales Usuario y Paciente. Estas modificaciones fueron necesarias para garantizar el correcto funcionamiento y la coherencia de los triggers, respetando la integridad de los datos y el propósito del sistema.
 ```sql
 ALTER TABLE Usuario
