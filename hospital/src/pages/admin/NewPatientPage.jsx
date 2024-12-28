@@ -14,7 +14,6 @@ const NewPatientPage = () => {
             try {
                 const data = await getAreas()
                 setAreas(data.paciente)
-                console.log(data)
             } catch (error) {
                 console.error('Error al obtener especialidades:', error)
                 setError(error.message)

@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types'
 
-const Select = ({ label, name, value, onChange, options }) => (
+const Select = ({ label, name, type, value, onChange, options }) => (
     <div className="flex flex-col">
         <label className="mb-1 text-sm font-medium text-gray-700" htmlFor={name}>
             {label}
         </label>
         <select
             id={name}
+            type={type}
             name={name}
             value={value}
             onChange={onChange}
@@ -23,6 +24,7 @@ const Select = ({ label, name, value, onChange, options }) => (
 
 Select.propTypes = {
     label: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     value: PropTypes.string,
     onChange: PropTypes.func,
