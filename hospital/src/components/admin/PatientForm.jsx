@@ -131,7 +131,7 @@ const PacienteForm = ({ listAreas }) => {
                     label="Área"
                     type="number"
                     name="id_area"
-                    value={formData.id_area}
+                    value={formData.id_area.stringValue}
                     onChange={handleChange}
                     options={listAreas.map(area => ({ value: area.id_area, label: area.nombre_area }))}
                 />
