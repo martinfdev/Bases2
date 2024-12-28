@@ -1,6 +1,6 @@
 import PropsTypes from 'prop-types'
 
-const PatientTable = ({ patients, onDelete }) => {
+const PatientTable = ({ patients, onDelete, onEdit, onView }) => {
     const getState = (state) => {
         return state === "1" ? "Activo" : "Inactivo"
     }
@@ -30,21 +30,40 @@ const PatientTable = ({ patients, onDelete }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {patients.map(p => (
-                        <tr key={p.id_paciente} className="hover:bg-blue-100">
-                            <td className="py-2 px-4 border-b text-center">{p.id_paciente}</td>
-                            <td className="py-2 px-4 border-b">{p.nombre}</td>
-                            <td className="py-2 px-4 border-b">{p.apellido}</td>
-                            <td className="py-2 px-4 border-b">{p.dpi}</td>
-                            <td className="py-2 px-4 border-b">{p.genero}</td>
-                            <td className="py-2 px-4 border-b text-center">{formatDate(p.fecha_nacimiento)}</td>
-                            <td className="py-2 px-4 border-b">{p.telefono}</td>
-                            <td className="py-2 px-4 border-b">{p.direccion}</td>
-                            <td className="py-2 px-4 border-b text-center">{p.id_area}</td>
-                            <td className="py-2 px-4 border-b text-center">{getState(p.estado)}</td>
+                    {patients.map(patient => (
+                        <tr key={patient.id_paciente} className="hover:bg-blue-100">
+                            <td className="py-2 px-4 border-b text-center">{patient.id_paciente}</td>
+                            <td className="py-2 px-4 border-b">{patient.nombre}</td>
+                            <td className="py-2 px-4 border-b">{patient.apellido}</td>
+                            <td className="py-2 px-4 border-b">{patient.dpi}</td>
+                            <td className="py-2 px-4 border-b">{patient.genero}</td>
+                            <td className="py-2 px-4 border-b text-center">{formatDate(patient.fecha_nacimiento)}</td>
+                            <td className="py-2 px-4 border-b">{patient.telefono}</td>
+                            <td className="py-2 px-4 border-b">{patient.direccion}</td>
+                            <td className="py-2 px-4 border-b text-center">{patient.id_area}</td>
+                            <td className="py-2 px-4 border-b text-center">{getState(patient.estado)}</td>
                             <td className="py-3 px-4 flex space-x-2">
                                 <button
-                                    onClick={() => onDelete(p)}
+                                    onClick={() => onView(patient)}
+                                    className="flex items-center bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+                                >
+                                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    Ver
+                                </button>
+                                <button
+                                    onClick={() => onEdit(patient)}
+                                    className="flex items-center bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
+                                >
+                                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 113.828 3.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Editar
+                                </button>
+                                <button
+                                    onClick={() => onDelete(patient)}
                                     className="flex items-center bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
                                 >
                                     <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,6 +83,8 @@ const PatientTable = ({ patients, onDelete }) => {
 PatientTable.propTypes = {
     patients: PropsTypes.array.isRequired,
     onDelete: PropsTypes.func.isRequired,
+    onEdit: PropsTypes.func.isRequired,
+    onView: PropsTypes.func.isRequired
 }
 
 export default PatientTable
