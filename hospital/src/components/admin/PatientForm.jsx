@@ -97,6 +97,7 @@ const PacienteForm = ({ listAreas }) => {
                 <Select
                     label="Género"
                     name="genero"
+                    type="text"
                     value={formData.genero}
                     onChange={handleChange}
                     options={[
@@ -131,7 +132,7 @@ const PacienteForm = ({ listAreas }) => {
                     label="Área"
                     type="number"
                     name="id_area"
-                    value={formData.id_area.stringValue}
+                    value={formData.id_area.toString()}
                     onChange={handleChange}
                     options={listAreas.map(area => ({ value: area.id_area, label: area.nombre_area }))}
                 />
