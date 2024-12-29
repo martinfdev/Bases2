@@ -11,6 +11,8 @@ import ViewSpecialityTable from '../pages/admin/ViewSpecialityTable'
 import ViewAreasPage from '../pages/admin/ViewAreasPage'
 import NewAreaPage from '../pages/admin/NewAreaPage'
 import AttendedPatientsPage from '../pages/admin/AttendedPatientsPage'
+import CommonDiagnosisPage from '../pages/admin/CommonDiagnosisPage'
+import DownloadReportsPage from '../pages/admin/DownloadReportsPage'
 import DeveloperLayout from '../layouts/DeveloperLayout'  
 import PageDeveloperDashboard from '../pages/dev/DevDashboardPage'
 import LogVitacore from '../components/dev/LogVitacore'
@@ -44,7 +46,8 @@ const AppRouter = () => {
         <Route path="areas/list" element={<ViewAreasPage />} />
         <Route path="areas/attended/patients" element={<AttendedPatientsPage />} />
         <Route path="logs" element={<LogVitacore />} />
-        <Route path="reports" element={<NotFound />} />
+        <Route path="reports/generate" element={<DownloadReportsPage />} />
+        <Route path="reports/common-diagnosis" element={<CommonDiagnosisPage />} />
         <Route path="statistics" element={<NotFound />} />
         <Route path="notifications/send" element={<NotFound />} />
         <Route path="notifications/requests" element={<NotFound />} />
