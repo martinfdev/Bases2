@@ -1,6 +1,6 @@
 const API_URL = import.meta.env.VITE_BASE_ADMIN_URL
 
-import {dashboardAdmin, listSpecialty, listUsers, listPatients, listAreas, listAttendedPatients} from '../test/testData' //this is just for testing purposes in development mode
+import {dashboardAdmin, listSpecialty, listUsers, listPatients, listAreas, listAttendedPatients, commonDignosis, patientDontAreaAssigned} from '../test/testData' //this is just for testing purposes in development mode
 
 /**
  * get dashboard data from the server for the admin user
@@ -511,6 +511,254 @@ export const getAttendedPatients = async () => {
         return data
     } catch (error) {
         console.error('Error al obtener datos de pacientes atendidos:', error)
+        throw error
+    }
+}
+
+/**
+ * get the list of common diagnosis from the server
+ * @returns a promise that resolves to the list of attended patients
+ * @throws an error if the request fails
+ */
+export const getCommonDiagnosis = async () => {
+    try {
+        // const response = await fetch(`${API_URL}/admin/obtener-diagnosticos-comunes`, {
+        //     method: 'GET',
+        //     headers: {
+        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
+        //     },
+        // })
+        // if (!response.ok) {
+        //     throw new Error('Error al obtener datos de diagnósticos comunes')
+        // }
+        // const data = await response.json()
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const data = commonDignosis
+        return data
+    }
+    catch (error) {
+        console.error('Error al obtener datos de diagnósticos comunes:', error)
+        throw error
+    }
+}
+
+/**
+ * get list of patients dont have area assigned
+ * @returns a promise that resolves to the list of patients
+ * @throws an error if the request fails
+ * */
+
+export const getPatientsDontHaveArea = async () => {
+    try {
+        // const response = await fetch(`${API_URL}/admin/pacientes_sin_area_asignada`, {
+        //     method: 'GET',
+        //     headers: {
+        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
+        //     },
+        // })
+        // if (!response.ok) {
+        //     throw new Error('Error al obtener datos de pacientes sin área asignada')
+        // }
+        // const data = await response.json()
+        const data = listPatients
+        return data
+    } catch (error) {
+        console.error('Error al obtener datos de pacientes sin área asignada:', error)
+        throw error
+    }
+}
+
+/**
+ * report Area download pdf file from the server
+ * @returns a promise that resolves to the list of attended patients
+ * @throws an error if the request fails
+ */
+
+export const downloadReportArea = async () => {
+    try {
+        // const response = await fetch(`${API_URL}/admin/descargarPDF_area`, {
+        const response = await fetch(`https://run.mocky.io/v3/2cc4f894-9b5d-4c74-8de0-5c228f71e928`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        })
+        if (!response.ok) {
+            throw new Error('Error al descargar reporte de area')
+        }
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(new Blob([blob]))
+        const link = document.createElement('a')
+        link.href = url
+        link.download = 'reporte_area.pdf'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        console.log('Descargando reporte de area')
+    } catch (error) {
+        console.error('Error al descargar reporte de area:', error)
+        throw error
+    }
+}
+
+/**
+ * report Patients download pdf file from the server
+ * @returns a promise that resolves to the list of attended patients
+ * @throws an error if the request fails
+ */
+export const downloadReportPatients = async () => {
+    try {
+        // const response = await fetch(`${API_URL}/admin/descargar_reporte_pacientes`, {
+        const response = await fetch(`https://run.mocky.io/v3/2cc4f894-9b5d-4c74-8de0-5c228f71e928`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        })
+        if (!response.ok) {
+            throw new Error('Error al descargar reporte de pacientes')
+        }
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(new Blob([blob]))
+        const link = document.createElement('a')
+        link.href = url
+        link.download = 'reporte_pacientes.pdf'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        console.log('Descargando reporte de pacientes')
+    } catch (error) {
+        console.error('Error al descargar reporte de pacientes:', error)
+        throw error
+    }
+}
+
+/**
+ * report Diagnosis download pdf file from the server
+ * @returns a promise that resolves to the list of attended patients
+ * @throws an error if the request fails
+ */
+
+export const downloadReportDiagnosis = async () => {
+    try {
+        // const response = await fetch(`${API_URL}/admin/descargar_reporte_diagnosticos`, {
+        const response = await fetch(`https://run.mocky.io/v3/2cc4f894-9b5d-4c74-8de0-5c228f71e928`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        })
+        if (!response.ok) {
+            throw new Error('Error al descargar reporte de diagnósticos')
+        }
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(new Blob([blob]))
+        const link = document.createElement('a')
+        link.href = url
+        link.download = 'reporte_diagnosticos.pdf'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        console.log('Descargando reporte de diagnósticos')
+    } catch (error) {
+        console.error('Error al descargar reporte de diagnósticos:', error)
+        throw error
+    }
+}
+
+/**
+ * report Area download excel file from the server
+ * @returns a promise that resolves to the list of attended patients
+ * @throws an error if the request fails
+ */
+
+export const downloadReportAreaExcel = async () => {
+    try {
+        // const response = await fetch(`${API_URL}/admin/downloadReportAreaExcel`, {
+        const response = await fetch(`https://run.mocky.io/v3/2cc4f894-9b5d-4c74-8de0-5c228f71e928`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        })
+        if (!response.ok) {
+            throw new Error('Error al descargar reporte de area')
+        }
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(new Blob([blob]))
+        const link = document.createElement('a')
+        link.href = url
+        link.download = 'reporte_area.xlsx'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        console.log('Descargando reporte de area')
+    } catch (error) {
+        console.error('Error al descargar reporte de area:', error)
+        throw error
+    }
+}
+
+/**
+ * report Patients download excel file from the server
+ * @returns a promise that resolves to the list of attended patients
+ * @throws an error if the request fails
+ */
+export const downloadReportPatientsExcel = async () => {
+    try {
+        // const response = await fetch(`${API_URL}/admin/descargar_reporte_pacientes_excel`, {
+        const response = await fetch(`https://run.mocky.io/v3/2cc4f894-9b5d-4c74-8de0-5c228f71e928`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        })
+        if (!response.ok) {
+            throw new Error('Error al descargar reporte de pacientes')
+        }
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(new Blob([blob]))
+        const link = document.createElement('a')
+        link.href = url
+        link.download = 'reporte_pacientes.xlsx'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        console.log('Descargando reporte de pacientes')
+    } catch (error) {
+        console.error('Error al descargar reporte de pacientes:', error)
+        throw error
+    }
+}
+
+/**
+ * report Diagnosis download excel file from the server
+ * @returns a promise that resolves to the list of attended patients
+ * @throws an error if the request fails
+ */
+export const downloadReportDiagnosisExcel = async () => {
+    try {
+        // const response = await fetch(`${API_URL}/admin/descargar_reporte_diagnosticos_excel`, {
+        const response = await fetch(`https://run.mocky.io/v3/2cc4f894-9b5d-4c74-8de0-5c228f71e928`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        })
+        if (!response.ok) {
+            throw new Error('Error al descargar reporte de diagnósticos')
+        }
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(new Blob([blob]))
+        const link = document.createElement('a')
+        link.href = url
+        link.download = 'reporte_diagnosticos.xlsx'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        console.log('Descargando reporte de diagnósticos')
+    } catch (error) {
+        console.error('Error al descargar reporte de diagnósticos:', error)
         throw error
     }
 }
