@@ -1,6 +1,6 @@
 import {
   FaTachometerAlt, FaUserCog, FaUserFriends, FaHandHoldingMedical,
-  FaMapMarkedAlt, FaMap, FaUserTag, FaClipboardList,
+  FaMapMarkedAlt, FaMap, FaUserCheck , 
   FaFileExport, FaChartPie, FaEnvelopeOpenText, FaInbox,
   FaUserPlus
 } from 'react-icons/fa'
@@ -73,16 +73,16 @@ const AdminLayout = () => {
       },
       {
           section: 'Gestión de Áreas',
-          label: 'Asignar Pacientes',
-          path: '/admin/areas/assign',
-          icon: <FaUserTag />
+          label: 'Pacientes Atendidos',
+          path: '/admin/areas/attended/patients',
+          icon: <FaUserCheck/>
       },
-      {
-          section: 'Bitácora del Sistema',
-          label: 'Visualizar Bitácora',
-          path: '/admin/logs',
-          icon: <FaClipboardList />
-      },
+    //   {
+    //       section: 'Bitácora del Sistema',
+    //       label: 'Visualizar Bitácora',
+    //       path: '/admin/logs',
+    //       icon: <FaClipboardList />
+    //   },
       {
           section: 'Reportes',
           label: 'Generar Reportes (PDF/Excel)',
