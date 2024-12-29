@@ -35,13 +35,13 @@ const AdminLayout = () => {
     //       icon: <FaUserSlash />
     //   },
       {
-            section: 'Gestión de Especialidades',
+            section: 'Especialidades',
             label: 'Crear Especialidad',
             path: '/admin/speciality/create',
             icon: <FaHandHoldingMedical />
       },
       {
-            section: 'Gestión de Especialidades',
+            section: 'Especialidades',
             label: 'Listar Especialidades',
             path: '/admin/speciality/list',
             icon: <MdOutlineListAlt  />
