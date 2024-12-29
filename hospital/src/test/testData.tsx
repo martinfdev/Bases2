@@ -310,3 +310,78 @@ export const dataUserInactive = [
         "nombre_usuario": "asdf"
     }
 ]
+
+export const dashboardDeveloper = {
+    message:"Welcome desarrollador, user #numero usuario"
+}
+
+export const listAreas = {
+    "message": "Areas encontrados",
+	"paciente": [
+		{
+			"cantidad_pacientes": 1,
+			"capacidad": 50,
+			"id_area": 1,
+			"nombre_area": "Cardiologia"
+		},
+		{
+			"cantidad_pacientes": 1,
+			"capacidad": 20,
+			"id_area": 4,
+			"nombre_area": "Maternidad"
+		},
+        {
+            "cantidad_pacientes": 1,
+            "capacidad": 10,
+            "id_area": 5,
+            "nombre_area": "Traumatologia"
+        },
+        {
+            "cantidad_pacientes": 1,
+            "capacidad": 10,
+            "id_area": 6,
+            "nombre_area": "Pediatria"
+        },
+        {
+            "cantidad_pacientes": 1,
+            "capacidad": 10,
+            "id_area": 7,
+            "nombre_area": "Neurologia"
+        },
+        {
+            "cantidad_pacientes": 1,
+            "capacidad": 10,
+            "id_area": 8,
+            "nombre_area": "Oftalmologia"
+        }
+	]
+}
+
+export const listAttendedPatients = [
+    {
+        "area": "Pediatría",
+        "pacientes_atendidos": 15
+    },
+    {
+        "area": "Urgencias",
+        "pacientes_atendidos": 30
+    },
+    {
+        "area": "Cirugía",
+        "pacientes_atendidos": 10
+    }
+]
+
+export const commonDignostics = {
+    "diagnosticos": [
+        {
+            "diagnostico": "Cáncer de pulmón",
+            "frecuencia": 15
+        },
+        {
+            "diagnostico": "Neumonía",
+            "frecuencia": 10
+        }
+    ]
+}
+
