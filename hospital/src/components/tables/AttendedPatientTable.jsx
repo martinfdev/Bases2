@@ -26,8 +26,8 @@ const AttendedPatientTable = ({ listAttendedPatients}) => {
 
 AttendedPatientTable.propTypes = {
     listAttendedPatients: PropTypes.arrayOf(PropTypes.shape({
-        area: PropTypes.number.isRequired,
-        pacientes_atendidos: PropTypes.string.isRequired
+        area: PropTypes.string.isRequired,
+        pacientes_atendidos: PropTypes.number.isRequired
     })).isRequired
 }
 
