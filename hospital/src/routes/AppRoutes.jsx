@@ -5,11 +5,12 @@ import AdminLayout from '../layouts/AdminLayout'
 import PageAdminDashboard from '../pages/admin/PageAdminDashboard'
 import UsersView from '../pages/admin/UserView'
 import NewPatientPage from '../pages/admin/NewPatientPage'
-import PatientView from '../pages/admin/PatientView'
+import PatientViewPage from '../pages/admin/PatientViewPage'
 import NewSpecialityPage from '../pages/admin/NewSpecialityPage'
 import ViewSpecialityTable from '../pages/admin/ViewSpecialityTable'
 import ViewAreasPage from '../pages/admin/ViewAreasPage'
-import NewAreaPage from '../pages/admin/NewAreaPage' 
+import NewAreaPage from '../pages/admin/NewAreaPage'
+import AttendedPatientsPage from '../pages/admin/AttendedPatientsPage'
 import DeveloperLayout from '../layouts/DeveloperLayout'  
 import PageDeveloperDashboard from '../pages/dev/DevDashboardPage'
 import LogVitacore from '../components/dev/LogVitacore'
@@ -36,12 +37,12 @@ const AppRouter = () => {
         <Route path="users/list" element={<UsersView />} />
         <Route path="users/inactive" element={<NotFound />} />
         <Route path="patients/create" element={<NewPatientPage />} />
-        <Route path="patients/list" element={<PatientView />} />
+        <Route path="patients/list" element={<PatientViewPage />} />
         <Route path="speciality/create" element={<NewSpecialityPage />} />
         <Route path="speciality/list" element={<ViewSpecialityTable />} />
         <Route path="areas/create" element={<NewAreaPage />} />
         <Route path="areas/list" element={<ViewAreasPage />} />
-        <Route path="areas/assign" element={<NotFound />} />
+        <Route path="areas/attended/patients" element={<AttendedPatientsPage />} />
         <Route path="logs" element={<LogVitacore />} />
         <Route path="reports" element={<NotFound />} />
         <Route path="statistics" element={<NotFound />} />
