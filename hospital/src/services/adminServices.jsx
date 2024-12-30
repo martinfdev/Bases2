@@ -1,7 +1,7 @@
 const API_URL = import.meta.env.VITE_BASE_ADMIN_URL
 
 import {dashboardAdmin, listSpecialty, listUsers, listPatients, listAreas, listAttendedPatients, commonDignosis, patientDontAreaAssigned,
-    listNurses, listDoctors
+    listNurses, listDoctors, lastPatientsIngresed
 } from '../test/testData' //this is just for testing purposes in development mode
 
 /**
@@ -865,3 +865,32 @@ export const assignPatient = async (dataToSend) => {
         throw error
     }
 }
+
+/**
+ * get the list of patients last ingresed from the server
+ * @returns a promise that resolves to the list of patients
+ * @throws an error if the request fails
+ */
+
+export const getPatientsLastIngresed = async () => {
+    try {
+        // const response = await fetch(`${API_URL}/admin/ultimos_pacientes_ingresados`, {
+        //     method: 'GET',
+        //     headers: {
+        //          'Content-Type': 'application/json', 
+        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
+        //     },
+        // })
+        // if (!response.ok) {
+        //     throw new Error('Error al obtener datos de pacientes ingresados')
+        // }
+        // const data = await response.json()
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const data = lastPatientsIngresed
+        return data
+    } catch (error) {
+        console.error('Error al obtener datos de pacientes ingresados:', error)
+        throw error
+    }
+}
+

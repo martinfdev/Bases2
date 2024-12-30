@@ -437,6 +437,57 @@ export const listNurses = {
             "id_usuario": 3,
             "nombres": "Luis Antonio",
             "telefono": "41201792"
+        },
+        {
+            "apellidos": "J. Chalí",
+            "correo": "cutzalluis@gmail.com",
+            "direccion": "Ciudad de Guatemala",
+            "dpi": "2842258270404",
+            "genero": "Femenino",
+            "id_usuario": 7,
+            "nombres": "Jazmin Claris",
+            "telefono": "41201792"
+
+        },
+        {
+            "apellidos": "R. Gómez",
+            "correo": "rgomez@example.com",
+            "direccion": "Mixco, Guatemala",
+            "dpi": "3054123478901",
+            "genero": "Masculino",
+            "id_usuario": 8,
+            "nombres": "Ricardo Antonio",
+            "telefono": "50019821"
+        },
+        {
+            "apellidos": "P. Morales",
+            "correo": "pmorales@example.com",
+            "direccion": "Villa Nueva, Guatemala",
+            "dpi": "2567890341205",
+            "genero": "Femenino",
+            "id_usuario": 9,
+            "nombres": "Paola Andrea",
+            "telefono": "32015846"
+        },
+        {
+            "apellidos": "C. López",
+            "correo": "clopez@example.com",
+            "direccion": "Zona 10, Guatemala",
+            "dpi": "2156890341106",
+            "genero": "Masculino",
+            "id_usuario": 10,
+            "nombres": "Carlos Daniel",
+            "telefono": "78451236"
+        },
+        {
+            "apellidos": "L. Pérez",
+            "correo": "lperez@example.com",
+            "direccion": "Santa Catarina Pinula, Guatemala",
+            "dpi": "1987320456123",
+            "genero": "Femenino",
+            "id_usuario": 11,
+            "nombres": "Luisa Fernanda",
+            "telefono": "41478695"
         }
     ]
 }
@@ -453,6 +504,198 @@ export const listDoctors = {
             "id_usuario": 2,
             "nombres": "Pedro",
             "telefono": "46664955"
+        },
+        {
+            "apellidos": "Gómez López",
+            "correo": "ricardogomez@example.com",
+            "direccion": "Mixco, Guatemala",
+            "dpi": "2156489703401",
+            "fecha_vencimiento_colegiado": "2045-05-20",
+            "genero": "Masculino",
+            "id_usuario": 3,
+            "nombres": "Ricardo",
+            "telefono": "50214789"
+        },
+        {
+            "apellidos": "Morales Ramírez",
+            "correo": "paolamorales@example.com",
+            "direccion": "Villa Nueva, Guatemala",
+            "dpi": "1956478210567",
+            "fecha_vencimiento_colegiado": "2048-11-15",
+            "genero": "Femenino",
+            "id_usuario": 4,
+            "nombres": "Paola",
+            "telefono": "31245687"
+        },
+        {
+            "apellidos": "López Martínez",
+            "correo": "carloslopez@example.com",
+            "direccion": "Zona 1, Guatemala",
+            "dpi": "3054789023410",
+            "fecha_vencimiento_colegiado": "2052-03-10",
+            "genero": "Masculino",
+            "id_usuario": 5,
+            "nombres": "Carlos",
+            "telefono": "78459632"
+        },
+        {
+            "apellidos": "Pérez Castillo",
+            "correo": "luisaperez@example.com",
+            "direccion": "Antigua Guatemala, Guatemala",
+            "dpi": "2847156349823",
+            "fecha_vencimiento_colegiado": "2047-07-22",
+            "genero": "Femenino",
+            "id_usuario": 6,
+            "nombres": "Luisa",
+            "telefono": "45872631"
+        }
+    ]
+}
+
+export const lastPatientsIngresed = {
+    "pacientes": [
+        {
+            "apellido": "Pérez",
+            "direccion": "Calle 123, Zona 1, Ciudad",
+            "dpi": "1234567891234",
+            "estado": "1",
+            "fecha_insercion": "2024-12-24 11:15:04",
+            "fecha_nacimiento": "Wed, 15 May 1985 00:00:00 GMT",
+            "genero": "M",
+            "id_area": 1,
+            "id_paciente": 1,
+            "nombre": "Juan",
+            "telefono": "12345678"
+        },
+        {
+            "apellido": "Gómez",
+            "direccion": "Avenida Central, Zona 3, Ciudad",
+            "dpi": "2345678901234",
+            "estado": "1",
+            "fecha_insercion": "2024-12-24 12:00:00",
+            "fecha_nacimiento": "Thu, 20 Aug 1990 00:00:00 GMT",
+            "genero": "F",
+            "id_area": 2,
+            "id_paciente": 2,
+            "nombre": "María",
+            "telefono": "87654321"
+        },
+        {
+            "apellido": "López",
+            "direccion": "Calle Los Olivos, Zona 5, Ciudad",
+            "dpi": "3456789012345",
+            "estado": "1",
+            "fecha_insercion": "2024-12-24 12:30:00",
+            "fecha_nacimiento": "Tue, 10 Oct 1988 00:00:00 GMT",
+            "genero": "M",
+            "id_area": 3,
+            "id_paciente": 3,
+            "nombre": "Carlos",
+            "telefono": "98765432"
+        },
+        {
+            "apellido": "Hernández",
+            "direccion": "Boulevard Las Palmas, Zona 7, Ciudad",
+            "dpi": "4567890123456",
+            "estado": "1",
+            "fecha_insercion": "2024-12-24 13:00:00",
+            "fecha_nacimiento": "Fri, 05 Jan 1975 00:00:00 GMT",
+            "genero": "M",
+            "id_area": 4,
+            "id_paciente": 4,
+            "nombre": "Luis",
+            "telefono": "12398745"
+        },
+        {
+            "apellido": "Martínez",
+            "direccion": "Residencial Los Álamos, Zona 9, Ciudad",
+            "dpi": "5678901234567",
+            "estado": "1",
+            "fecha_insercion": "2024-12-24 13:30:00",
+            "fecha_nacimiento": "Wed, 30 Jul 1992 00:00:00 GMT",
+            "genero": "F",
+            "id_area": 5,
+            "id_paciente": 5,
+            "nombre": "Ana",
+            "telefono": "67891234"
+        },
+        {
+            "apellido": "Ramírez",
+            "direccion": "Colonia Las Flores, Zona 6, Ciudad",
+            "dpi": "6789012345678",
+            "estado": "1",
+            "fecha_insercion": "2024-12-24 14:00:00",
+            "fecha_nacimiento": "Mon, 25 Mar 1983 00:00:00 GMT",
+            "genero": "M",
+            "id_area": 6,
+            "id_paciente": 6,
+            "nombre": "Miguel",
+            "telefono": "78912345"
+        },
+        {
+            "apellido": "Fernández",
+            "direccion": "Sector 4, Lote 22, Ciudad",
+            "dpi": "7890123456789",
+            "estado": "1",
+            "fecha_insercion": "2024-12-24 14:30:00",
+            "fecha_nacimiento": "Sat, 11 Nov 1978 00:00:00 GMT",
+            "genero": "F",
+            "id_area": 7,
+            "id_paciente": 7,
+            "nombre": "Rosa",
+            "telefono": "23456789"
+        },
+        {
+            "apellido": "Castro",
+            "direccion": "Callejón San José, Zona 8, Ciudad",
+            "dpi": "8901234567890",
+            "estado": "1",
+            "fecha_insercion": "2024-12-24 15:00:00",
+            "fecha_nacimiento": "Sun, 15 Feb 1987 00:00:00 GMT",
+            "genero": "M",
+            "id_area": 8,
+            "id_paciente": 8,
+            "nombre": "Pedro",
+            "telefono": "34567890"
+        },
+        {
+            "apellido": "Morales",
+            "direccion": "Residencial El Roble, Zona 2, Ciudad",
+            "dpi": "9012345678901",
+            "estado": "1",
+            "fecha_insercion": "2024-12-24 15:30:00",
+            "fecha_nacimiento": "Tue, 01 Sep 1995 00:00:00 GMT",
+            "genero": "F",
+            "id_area": 9,
+            "id_paciente": 9,
+            "nombre": "Laura",
+            "telefono": "45678901"
+        },
+        {
+            "apellido": "Vásquez",
+            "direccion": "Boulevard Santa Clara, Zona 10, Ciudad",
+            "dpi": "0123456789012",
+            "estado": "1",
+            "fecha_insercion": "2024-12-24 16:00:00",
+            "fecha_nacimiento": "Thu, 20 Dec 1980 00:00:00 GMT",
+            "genero": "M",
+            "id_area": 10,
+            "id_paciente": 10,
+            "nombre": "Javier",
+            "telefono": "56789012"
+        },
+        {
+            "apellido": "Sánchez",
+            "direccion": "Urbanización Los Cipreses, Zona 4, Ciudad",
+            "dpi": "1234567890123",
+            "estado": "1",
+            "fecha_insercion": "2024-12-24 16:30:00",
+            "fecha_nacimiento": "Sun, 05 Apr 1993 00:00:00 GMT",
+            "genero": "F",
+            "id_area": 11,
+            "id_paciente": 11,
+            "nombre": "Sofía",
+            "telefono": "67890123"
         }
     ]
 }

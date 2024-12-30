@@ -1,6 +1,6 @@
 const API_URL = import.meta.env.VITE_BASE_DEV_URL
 
-// import {listLogs} from '../test/testData' //this is just for testing purposes in development mode
+import {listLogs, dashboardDeveloper} from '../test/testData' //this is just for testing purposes in development mode
 
 /**
  * get dashboard data from the server for the developer user
@@ -9,15 +9,16 @@ const API_URL = import.meta.env.VITE_BASE_DEV_URL
  */
 export async function getDashboardData() {
     try {
-        const response = await fetch(`${API_URL}/desarrollador/dashboard`, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-        })
-        if (!response.ok) {
-            throw new Error('Error al obtener datos del dashboard')
-        }
-        const data = await response.json()
+        // const response = await fetch(`${API_URL}desarrollador/dashboard`, {
+        //     headers: {
+        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
+        //     },
+        // })
+        // if (!response.ok) {
+        //     throw new Error('Error al obtener datos del dashboard')
+        // }
+        // const data = await response.json()
+        const data = dashboardDeveloper
         return data
     }
     catch (error) {
