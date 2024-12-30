@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import { registerUser } from "../../services/userServices"
 import { getSpecialties } from "../../services/adminServices"
+import useAppContext from "../../hooks/useAppContext"
 
 const NewUserForm = ({ currentUserRole }) => {
     const [form, setForm] = useState({
@@ -19,6 +20,11 @@ const NewUserForm = ({ currentUserRole }) => {
         fecha_vencimiento_colegiado: '',
         estado: 0
     })
+    const { addNotification } = useAppContext()
+    const [isNurse, setIsNurse] = useState(false)
+
+    // DPI regex validation
+    const dpiRegex = /^\d{13}$/
 
     const handleChange = e => {
         setForm({ ...form, [e.target.name]: e.target.value })
@@ -26,6 +32,13 @@ const NewUserForm = ({ currentUserRole }) => {
 
     const handleSubmit = async e => {
         e.preventDefault()
+        if (!dpiRegex.test(form.dpi)) {
+            addNotification({
+                type: 'error',
+                message: 'El DPI debe contener exactamente 13 dígitos'
+            })
+            return
+        }
         try {
             const dataToSend = {
                 ...form,
@@ -52,6 +65,10 @@ const NewUserForm = ({ currentUserRole }) => {
         }
         fetchSpecialties()
     }, [])
+
+    useEffect(() => {
+        setIsNurse(form.id_rol === 3) // 3 corresponds to Enfermera
+    }, [form.id_rol])
 
     const roles = [
         { id: 1, name: 'Administrador' },
@@ -194,35 +211,39 @@ const NewUserForm = ({ currentUserRole }) => {
                             className="mt-1 w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
                         />
                     </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700">ID Especialidad</label>
-                        <select
-                            type="number"
-                            name="id_especialidad"
-                            value={form.id_especialidad}
-                            onChange={handleChange}
-                            required
-                            className="mt-1 w-full border rounded px-3 py-2 bg-white focus:outline-none focus:ring focus:border-blue-300"
-                        >
-                            <option value="">Seleccione una especialidad</option>
-                            {specialities.map(especialidad => (
-                                <option key={especialidad.id_especialidad} value={especialidad.id_especialidad}>
-                                    {especialidad.especialidad}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700">Fecha Vencimiento Colegiado</label>
-                        <input
-                            type="date"
-                            name="fecha_vencimiento_colegiado"
-                            value={form.fecha_vencimiento_colegiado}
-                            onChange={handleChange}
-                            required
-                            className="mt-1 w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
+                    {!isNurse && (
+                        <div className="mb-4">
+                            <label className="block text-gray-700">ID Especialidad</label>
+                            <select
+                                type="number"
+                                name="id_especialidad"
+                                value={form.id_especialidad}
+                                onChange={handleChange}
+                                required
+                                className="mt-1 w-full border rounded px-3 py-2 bg-white focus:outline-none focus:ring focus:border-blue-300"
+                            >
+                                <option value="">Seleccione una especialidad</option>
+                                {specialities.map(especialidad => (
+                                    <option key={especialidad.id_especialidad} value={especialidad.id_especialidad}>
+                                        {especialidad.especialidad}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+                    {!isNurse && (
+                        <div className="mb-4">
+                            <label className="block text-gray-700">Fecha Vencimiento Colegiado</label>
+                            <input
+                                type="date"
+                                name="fecha_vencimiento_colegiado"
+                                value={form.fecha_vencimiento_colegiado}
+                                onChange={handleChange}
+                                required
+                                className="mt-1 w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
+                            />
+                        </div>
+                    )}
                     <div className="mb-6">
                         <label className="block text-gray-700">Estado</label>
                         <select
