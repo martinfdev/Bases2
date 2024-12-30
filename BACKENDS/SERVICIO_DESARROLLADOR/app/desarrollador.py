@@ -504,12 +504,13 @@ def editar_area(current_user):
             #save_log_param("edicion", "ERROR", "editar_area", "Desarrollador_Controller", "Area a modificar no existe")
             return jsonify({"Error": "Area a modificar no existe"}), 409
         
-        cursor.execute('SELECT * FROM Area WHERE nombre_area = ?', (nuevo_nombre_area))
-        nombre_exists = cursor.fetchone()
-        if nombre_exists:
-            #save_log_param("edicion", "ERROR", "editar_area", "Desarrollador_Controller", "Mueva Area ya existe")
-            return jsonify({"Error": "Nueva Area ya existe"}), 409
-        # Inserción de datos en la tabla Especialidad
+        if(nombre_area != nuevo_nombre_area):
+            cursor.execute('SELECT * FROM Area WHERE nombre_area = ?', (nuevo_nombre_area))
+            nombre_exists = cursor.fetchone()
+            if nombre_exists:
+                #save_log_param("edicion", "ERROR", "editar_area", "Desarrollador_Controller", "Mueva Area ya existe")
+                return jsonify({"Error": "Nueva Area ya existe"}), 409
+            # Inserción de datos en la tabla Especialidad
         cursor.execute(''' UPDATE Area 
                         SET
                             nombre_area = ?,
@@ -907,6 +908,11 @@ def editar_paciente(current_user):
     direccion = data['direccion']
     id_area = data['id_area']
     conn = get_db_connection_SQLSERVER()
+    #CONVERSION DE FECHA
+    try:
+        fecha_nacimiento = datetime.strptime(fecha_nacimiento, '%d-%m-%Y').strftime('%Y-%m-%d')
+    except ValueError:
+        pass
     if conn is None:
         #save_log_param("edicion", "ERROR", "editar_paciente", "Desarrollador_Controller", "Error al conectarse con la base de datos")
         return jsonify({"error": "Error al conectarse con la base de datos"}), 500

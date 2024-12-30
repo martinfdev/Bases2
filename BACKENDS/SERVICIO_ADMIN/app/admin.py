@@ -487,6 +487,8 @@ def editar_area(current_user):
         return jsonify({"error": "Error al conectarse con la base de datos"}), 500
     cursor = conn.cursor()
     try:
+        
+
         # Verificar si area existe
         cursor.execute('SELECT * FROM Area WHERE nombre_area = ?', (nombre_area))
         nombre_exists = cursor.fetchone()
@@ -494,11 +496,12 @@ def editar_area(current_user):
             #save_log_param("edicion", "ERROR", "editar_area", "Admin_Controller", "Area a modificar no existe")
             return jsonify({"Error": "Area a modificar no existe"}), 409
         
-        cursor.execute('SELECT * FROM Area WHERE nombre_area = ?', (nuevo_nombre_area))
-        nombre_exists = cursor.fetchone()
-        if nombre_exists:
-            #save_log_param("edicion", "ERROR", "editar_area", "Admin_Controller", "Nueva Area ya existe")
-            return jsonify({"Error": "Nueva Area ya existe"}), 409
+        if(nombre_area != nuevo_nombre_area):
+            cursor.execute('SELECT * FROM Area WHERE nombre_area = ?', (nuevo_nombre_area))
+            nombre_exists = cursor.fetchone()
+            if nombre_exists:
+                #save_log_param("edicion", "ERROR", "editar_area", "Admin_Controller", "Nueva Area ya existe")
+                return jsonify({"Error": "Nueva Area ya existe"}), 409
         # Inserción de datos en la tabla Especialidad
         cursor.execute(''' UPDATE Area 
                         SET
@@ -523,11 +526,11 @@ def editar_area(current_user):
 @admin_required
 def eliminar_area(current_user):
     data = request.get_json()
-    field = 'nombre_area'
+    field = 'id_area'
     if field not in data:
         #save_log_param("eliminacion", "ERROR", "eliminar_area", "Admin_Controller", f"Field {field} is required")
         return jsonify({"error": f"Field {field} is required"}), 400
-    nombre_area = data['nombre_area']
+    id_area = data['id_area']
     conn = get_db_connection_SQLSERVER()
     if conn is None:
         #save_log_param("eliminacion", "ERROR", "eliminar_area", "Admin_Controller", "Error al conectarse con la base de datos")
@@ -535,15 +538,15 @@ def eliminar_area(current_user):
     cursor = conn.cursor()
     try:
         # Verificar si area existe
-        cursor.execute('SELECT * FROM Area WHERE nombre_area = ?', (nombre_area))
+        cursor.execute('SELECT * FROM Area WHERE id_area = ?', (id_area))
         nombre_exists = cursor.fetchone()
         if not nombre_exists:
             #save_log_param("eliminacion", "ERROR", "eliminar_area", "Admin_Controller", "Area no existe")
             return jsonify({"Error": "Area no existe"}), 409
         # Inserción de datos en la tabla Especialidad
         cursor.execute(''' DELETE FROM Area 
-                        WHERE nombre_area = ?
-                       ''',(nombre_area))
+                        WHERE id_area = ?
+                       ''',(id_area))
         conn.commit()
         cursor.close()
         conn.close()
@@ -793,6 +796,7 @@ def lista_pacientes(current_user):
 @admin_required
 def eliminar_paciente(current_user):
     data = request.get_json()
+
     field = 'dpi'
     if field not in data:
         #save_log_param("eliminacion", "ERROR", "eliminar_paciente", "Admin_Controller", f"Field {field} is required")
@@ -898,6 +902,12 @@ def editar_paciente(current_user):
     direccion = data['direccion']
     id_area = data['id_area']
     conn = get_db_connection_SQLSERVER()
+    #CONVERSION DE FECHA
+    try:
+        fecha_nacimiento = datetime.strptime(fecha_nacimiento, '%d-%m-%Y').strftime('%Y-%m-%d')
+    except ValueError:
+        pass
+    
     if conn is None:
         #save_log_param("edicion", "ERROR", "editar_paciente", "Admin_Controller", "Error al conectarse con la base de datos")
         return jsonify({"error": "Error al conectarse con la base de datos"}), 500
