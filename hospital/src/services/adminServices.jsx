@@ -264,9 +264,11 @@ export const getPatients = async () => {
 
 export const deletePatient = async (patientId) => {
     try {
+        console.log(patientId)
         const response = await fetch(`${API_URL}/admin/eliminar_paciente`, {
             method: 'DELETE',
             headers: {
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
             body: JSON.stringify({dpi: patientId}),
@@ -410,6 +412,7 @@ export const getAreas = async () => {
 
 export const deleteArea = async (nombreArea) => {
     try {
+        console.log(nombreArea)
         const response = await fetch(`${API_URL}/admin/eliminar_area`, {
             method: 'DELETE',
             headers: {
