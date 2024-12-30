@@ -138,6 +138,7 @@ const PatientViewPage = () => {
                             onDelete={handleDelete}
                             onEdit={handleEdit}
                             onView={handleView}
+                            buttonStatus={false}
                         />
                     </div>
                     <div className="flex justify-center">
