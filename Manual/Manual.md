@@ -1254,8 +1254,904 @@ Código HTTP 409
 {
 	"error": "No existe un expediente del paciente con DPI: 72345678S90101."
 }
-
 ```
+
+[//]: <> (FASE 2)
+
+## lista_pacientes
+**URL (dirección):**  
+`http://localhost:5001/admin/lista_pacientes`
+`http://localhost:5005/desarrollador/lista_pacientes`
+`http://localhost:5002/doctor/lista_pacientes`
+`http://localhost:5003/enfermera/lista_pacientes`
+
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+```json
+{
+	"message": "Pacientes encontrados",
+	"paciente": [
+		{
+			"apellido": "Lopéz",
+			"direccion": "Calle Principal 123",
+			"dpi": "9777578880222",
+			"estado": "1",
+			"fecha_nacimiento": "Sat, 11 Nov 2000 00:00:00 GMT",
+			"genero": "Masculino",
+			"id_area": 1,
+			"id_paciente": 1,
+			"nombre": "juana",
+			"telefono": "66666666"
+		}
+	]
+}
+```
+
+## eliminar_paciente
+**URL (dirección):**  
+`http://localhost:5001/admin/eliminar_paciente`
+
+
+**Método HTTP:**  
+`DELETE`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+	"dpi": "9777578880222"
+}
+```
+
+Respuestas
+- Código HTTP 200
+```json
+{
+	"message": "Pacientes encontrados",
+	"paciente": [
+		{
+			"apellido": "Lopéz",
+			"direccion": "Calle Principal 123",
+			"dpi": "9777578880222",
+			"estado": "1",
+			"fecha_nacimiento": "Sat, 11 Nov 2000 00:00:00 GMT",
+			"genero": "Masculino",
+			"id_area": 1,
+			"id_paciente": 1,
+			"nombre": "juana",
+			"telefono": "66666666"
+		}
+	]
+}
+```
+- Código HTTP 409
+```json
+{
+	"Error": "Paciente no existe"
+}
+```
+
+## lista_areas
+**URL (dirección):**  
+`http://localhost:5005/desarrollador/lista_area`
+`http://localhost:5001/admin/lista_area`
+`http://localhost:5002/doctor/lista_area`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+```json
+{
+	"message": "Areas encontrados",
+	"paciente": [
+		{
+			"cantidad_pacientes": 1,
+			"capacidad": 50,
+			"id_area": 1,
+			"nombre_area": "Cardiologia"
+		},
+		{
+			"cantidad_pacientes": 1,
+			"capacidad": 20,
+			"id_area": 4,
+			"nombre_area": "Maternidad"
+		}
+	]
+}
+```
+
+## consultar_area
+**URL (dirección):**  
+`http://localhost:5005/desarrollador/lista_area`
+`http://localhost:5001/admin/lista_area`
+`http://localhost:5002/doctor/lista_area`
+
+**Método HTTP:**  
+`POST`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+    "dpi": "7234567890101"
+}
+```
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+	"message": "Areas encontrados",
+	"paciente": [
+		{
+			"cantidad_pacientes": 1,
+			"capacidad": 50,
+			"id_area": 1,
+			"nombre_area": "Cardiologia"
+		},
+		{
+			"cantidad_pacientes": 1,
+			"capacidad": 20,
+			"id_area": 4,
+			"nombre_area": "Maternidad"
+		}
+	]
+}
+```
+
+## consultar_paciente
+**URL (dirección):**  
+`http://localhost:5005/desarrollador/consulta_paciente`
+`http://localhost:5001/admin/consulta_paciente`
+`http://localhost:5003/enfermera/consulta_paciente`
+
+**Método HTTP:**  
+`POST`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+    "dpi": "7234567890101"
+}
+```
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+	"paciente": {
+		"apellido": "Martinez",
+		"direccion": "calle 5 zona 3",
+		"dpi": "3333444440101",
+		"estado": "1",
+		"fecha_nacimiento": "Wed, 23 Feb 2000 00:00:00 GMT",
+		"genero": "Masculino",
+		"id_area": 1,
+		"id_paciente": 2,
+		"nombre": "Alex",
+		"nombre_area": "Cardiologia",
+		"telefono": "99998888"
+	}
+}
+```
+- Código HTTP 400
+
+```json
+{
+	"Error": "paciente no existe"
+}
+```
+
+## editar_paciente
+**URL (dirección):**  
+`http://localhost:5005/desarrollador/editar_paciente`
+`http://localhost:5001/admin/editar_paciente`
+`http://localhost:5002/doctor/editar_paciente`
+`http://localhost:5003/enfermera/editar_paciente`
+
+**Método HTTP:**  
+`PUT`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+    "dpi": "7234567890101"
+}
+```
+Respuestas
+- Código HTTP 200
+
+```json
+{
+  "nombre": "juanaMODIFICADO",
+  "apellido": "Lopéz",
+	"dpi": "9777578880222",
+  "fecha_nacimiento": "2000-11-11",
+	"telefono": "66666666",
+	"direccion": "Calle Principal 123",
+	"id_area" : 4
+}
+```
+- Código HTTP 400
+
+```json
+{
+	"Error": "Paciente no existe"
+}
+```
+
+
+## pacientes_atendidos
+**URL (dirección):**  
+`http://localhost:5001/admin/pacientes-atendidos`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+[
+    {
+        "area": "Pediatría",
+        "pacientes_atendidos": 15
+    },
+    {
+        "area": "Urgencias",
+        "pacientes_atendidos": 30
+    },
+    {
+        "area": "Cirugía",
+        "pacientes_atendidos": 10
+    }
+]
+```
+
+
+## diagnosticos_comunes
+**URL (dirección):**  
+`http://localhost:5001/admin/obtener-diagnosticos-comunes`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+    "diagnosticos": [
+        {
+            "diagnostico": "Cáncer de pulmón",
+            "frecuencia": 15
+        },
+        {
+            "diagnostico": "Neumonía",
+            "frecuencia": 10
+        }
+    ]
+}
+```
+
+## descargarPDF_area
+**URL (dirección):**  
+`http://localhost:5001/admin/descargarPDF_area`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+     "message":"No hay areas registradas"
+}
+```
+
+## descargar_reporte_pacientes
+**URL (dirección):**  
+`http://localhost:5001/admin/descargar_reporte_pacientes`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+     "message":"No se encontraron pacientes"
+}
+```
+
+## descargar_reporte_pacientes
+**URL (dirección):**  
+`http://localhost:5001/admin/descargar_reporte_diagnosticos`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+     "message":"No se encontraron diagnosticos comunes"
+}
+```
+
+## descargarexcel_area
+**URL (dirección):**  
+`http://localhost:5001/admin/descargarexcel_area`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+     "message":"No hay areas registradas"
+}
+```
+
+## descargar_reporte_pacientes_excel
+**URL (dirección):**  
+`http://localhost:5001/admin/descargar_reporte_pacientes_excel`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+     "message":"No hay pacientes registrados"
+}
+```
+
+## modificar_expediente
+**URL (dirección):**  
+`http://localhost:5004/mongo/modificar_expediente`
+
+**Método HTTP:**  
+`PUT`
+
+**Cabecera de Petición:**  
+`Content-Type: application/json`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+    "_id": "9777578880222",
+    "datosPaciente": {
+        "fechaNacimiento": "15-01-2000",
+        "edad": 24,
+        "estadoCivil": "Soltero",
+        "ocupacion": "EstudianteMODIFICADO",
+        "profesion": "Estudiante",
+        "religion": "Evangelico",
+        "grupoSanguineo": "O+",
+        "tipoSangre": "O",
+        "grupoEtnico": "Ladino",
+        "alfabeto": "Si",
+        "escolaridad": "Universitaria",
+        "procedencia": "Domicilio"
+    },
+    "contactoEmergencia": [
+        {"nombre": "CarlosMODIFICADO Perez", "relacion": "Hermano", "telefono": "555-8765"},
+        {"nombre": "Ana Lopez",    "relacion": "Madre",   "telefono": "555-4321"}
+    ],
+    "antecedentes": {
+        "personalesPatologicos": {
+            "medicos": "Diabetes tipo 2 controlada con metformina.",
+            "quirurgicos": "Cirugia de rodilla en 2016 debido a lesion deportiva.",
+            "traumaticos": "Fractura de pierna derecha en accidente de trafico en 2020. Recibio tratamiento quirurgico y rehabilitacion.",
+            "alergicos": "Alergico al polen. Requiere antihistaminicos durante la temporada de alergias.",
+            "toxicomanias": "Fumador durante 10 anos, dejo de fumar hace 2 anos.",
+            "psychiatricos": "Diagnostico de depresion en 2017, tratada con terapia psicologica y medicacion (antidepresivos).",
+            "transfusiones": "Recibio transfusion sanguinea despues de una cirugia en 2016.",
+            "ginecologicos": "n/a",
+            "obstetricos": "n/a"
+        },
+        "familiaresPatologicos": "Padre con hipertension y diabetes tipo 2, madre con cancer de mama diagnosticado a los 50 anos.",
+        "personalesNoPatologicos": {
+            "prenatal": "n/a",
+            "natal": "n/a",
+            "neonatalPostnatal": "n/a",
+            "crecimiento": "Crecimiento normal para su edad",
+            "desarrollo": "Comenzo a caminar a los 12 meses",
+            "inmunizaciones": "Vacunas completas segun el calendario infantil.",
+            "alimentacion": "Alimentacion variada, en su mayoria equilibrada, consume poca comida rapida.",
+            "habitos": "Hace ejercicio 3 veces a la semana, no consume alcohol ni drogas recreativas.",
+            "ginecoObstetricos": {
+                "menarquia": "Menarquia a los 12 anos.",
+                "ciclosMenstruales": "Ciclos regulares de 28 dias.",
+                "ultimaMenstruacion": "Ultima menstruacion el 10 de diciembre de 2023.",
+                "anticonceptivos": "No usa anticonceptivos, metodos naturales.",
+                "gestas": "0 gestas.",
+                "partos": "0 partos.",
+                "cesareas": "0 cesareas.",
+                "abortos": "0 abortos.",
+                "hijosVivos": "0 hijos vivos."
+            }
+        },
+        "socioPersonales": "Paciente vive con sus padres, en su tiempo libre disfruta de actividades al aire libre y leer."
+    },
+    "historialIngresos": [],
+    "notaCuidado": []   
+}
+```
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+	"message": "Expediente del paciente con DPI 9777578880222 actualizado correctamente."
+}
+```
+
+## agregar_notasCuidado
+**URL (dirección):**  
+`http://127.0.0.1:5004/mongo/agregar_notasCuidado`
+
+**Método HTTP:**  
+`PUT`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+    "_id":"9777578880222",
+    "contenido":{
+		"fecha": "2024-12-20T15:30:00Z",
+		"responsable": "Dra. Ana López",
+		"descripcion": "El paciente muestra signos de mejoría. Se recomienda continuar con el tratamiento actual y realizar monitoreo cada 4 horas.",
+		"acciones": [
+			"Administrar medicamento X cada 8 horas.",
+			"Verificar presión arterial cada 4 horas.",
+			"Reevaluación en 24 horas."
+		],
+		"observaciones": "Paciente estable. Sin complicaciones durante la última evaluación."
+	}
+}
+```
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+     "message": "Expediente del paciente con DPI 9777578880222 actualizado correctamente."
+}
+```
+
+
+## paciente_sin_area
+**URL (dirección):**  
+`http://localhost:5001/admin/paciente_sin_area`
+`http://localhost:5005/desarrollador/paciente_sin_area`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+   "pacientes_sin_area":[
+      {
+         "id_paciente":1,
+         "nombre":"Juan",
+         "apellido":"Pérez",
+         "dpi":"1234567890101",
+         "genero":"Masculino",
+         "fecha_nacimiento":"1990-01-01",
+         "telefono":"55555555",
+         "direccion":"Zona 1, Ciudad"
+      },
+      {
+         "id_paciente":2,
+         "nombre":"María",
+         "apellido":"González",
+         "dpi":"1098765432101",
+         "genero":"Femenino",
+         "fecha_nacimiento":"1985-05-15",
+         "telefono":"44444444",
+         "direccion":"Zona 3, Ciudad"
+      }
+   ]
+}
+```
+
+## listado_enfermeras
+**URL (dirección):**  
+`http://localhost:5001/admin/enfermeras`
+`http://localhost:5005/desarrollador/enfermeras`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+   "enfermeras":[
+      {
+         "apellidos":"Cutzal Chalí",
+         "correo":"cutzalluis@gmail.com",
+         "direccion":"Ciudad de Guatemala",
+         "dpi":"2842258270404",
+         "genero":"Masculino",
+         "id_usuario":3,
+         "nombres":"Luis Antonio",
+         "telefono":"41201792"
+      }
+   ]
+}
+```
+
+## listado_doctores
+**URL (dirección):**  
+`http://localhost:5001/admin/enfermeras`
+`http://localhost:5005/desarrollador/enfermeras`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+   "doctores":[
+      {
+         "apellidos":"Martin Francisco",
+         "correo":"pedromartinf07@gmail.com",
+         "direccion":"Ciudad de Guatemala",
+         "dpi":"2574151141308",
+         "fecha_vencimiento_colegiado":"2050-01-01",
+         "genero":"Masculino",
+         "id_usuario":2,
+         "nombres":"Pedro",
+         "telefono":"46664955"
+      }
+   ]
+}
+```
+
+## agregar_paciente_area
+**URL (dirección):**  
+`http://localhost:5001/admin/agregar_paciente_area`
+`http://localhost:5005/desarrollador/agregar_paciente_area`
+
+**Método HTTP:**  
+`POST`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+   "id_paciente":1,
+   "id_area":1,
+   "id_enfermera":3,
+   "id_doctor":2
+}
+```
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+"message": "Paciente asignado a área, enfermera y doctor exitosamente"
+}
+```
+
+## ultimos_pacientes_ingresados
+**URL (dirección):**  
+`http://localhost:5001/admin/ultimos_pacientes_ingresados`
+`http://localhost:5005/desarrollador/ultimos_pacientes_ingresados`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+   "pacientes":[
+      {
+         "apellido":"Pérez",
+         "direccion":"Calle 123, Zona 1, Ciudad",
+         "dpi":"1234567891234",
+         "estado":"1",
+         "fecha_insercion":"2024-12-24 11:15:04",
+         "fecha_nacimiento":"Wed, 15 May 1985 00:00:00 GMT",
+         "genero":"M",
+         "id_area":1,
+         "id_paciente":1,
+         "nombre":"Juan",
+         "telefono":"12345678"
+      }
+   ]
+}
+```
+
+## send-email
+**URL (dirección):**  
+`http://localhost:5006/send-email`
+
+**Método HTTP:**  
+`POST`
+
+**Cabecera de Petición:**  
+`Content-Type: application/json`
+
+**Cuerpo (PAYLOAD):**  
+```json
+{
+	"to": "destino@gmail.com",
+	"nombre": "Eduardo Reyes",
+	"fecha_vencimiento":"31-02-2024"
+}
+```
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+	"message": "Correo enviado exitosamente.",
+	"info": {
+		"accepted": [
+			"eduardoreyes135790@gmail.com"
+		],
+		"rejected": [],
+		"ehlo": [
+			"SIZE 5242880",
+			"PIPELINING",
+			"ENHANCEDSTATUSCODES",
+			"8BITMIME",
+			"DSN",
+			"AUTH PLAIN LOGIN CRAM-MD5"
+		],
+		"envelopeTime": 599,
+		"messageTime": 688,
+		"messageSize": 3263,
+		"response": "250 2.0.0 Ok: queued",
+		"envelope": {
+			"from": "admin@hospital.com",
+			"to": [
+				"eduardoreyes135790@gmail.com"
+			]
+		},
+		"messageId": "<92123622-43d3-55ba-5667-6eba072e5c99@hospital.com>"
+	}
+}
+```
+- Código HTTP 500
+
+```json
+{ 
+      "error": "No se pudo enviar el correo." 
+}
+```
+
+## DarDeAlta
+**URL (dirección):**  
+`http://localhost:5002/doctor/DarDeAlta/<int:id_paciente>`
+
+**Método HTTP:**  
+`DELETE`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+"message": "El paciente con ID 1 ha sido dado de alta exitosamente. Se eliminaron todas las referencias."
+}
+```
+
+## listadpPacientes_asignados
+**URL (dirección):**  
+`http://localhost:5002/doctor/listadpPacientes_asignados`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Authorization: Bearer <token>`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+   "pacientes_asignados":[
+      {
+         "id_paciente":1,
+         "nombre":"Juan",
+         "apellido":"Pérez",
+         "dpi":"123456789",
+         "genero":"Masculino",
+         "fecha_nacimiento":"1985-06-15",
+         "telefono":"555123456",
+         "direccion":"Calle Ficticia 123",
+         "estado":"Activo",
+         "area":"Cardiología"
+      },
+      {
+         "id_paciente":2,
+         "nombre":"María",
+         "apellido":"Gómez",
+         "dpi":"987654321",
+         "genero":"Femenino",
+         "fecha_nacimiento":"1990-02-20",
+         "telefono":"555654321",
+         "direccion":"Avenida Real 456",
+         "estado":"Activo",
+         "area":"Pediatría"
+      }
+   ]
+}
+```
+
+- Código 200
+
+```json
+{
+"pacientes_asignados": "No hay pacientes asignados."
+}
+```
+
+## crear_backups
+**URL (dirección):**  
+`http://localhost:5004/mongo/crear_backups`
+
+**Método HTTP:**  
+`POST`
+
+**Cabecera de Petición:**  
+`Content-Type: application/json`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+	"file_mongo_id": "1rdunMiESWgYQ6k9npB7VEVTHFI6mC1Yq",
+	"file_redis_id": "",
+	"file_sql_id": "1MeEReTB6NAWhztzDilM4Tdkiy0OKfm7j",
+	"mongo_status": "EXITO",
+	"redis_status": "EXITO",
+	"sql_status": "EXITO"
+}
+```
+
+
+
 <h2> Diagrama de Arquitectura del Backend </h2>
 
 ![Imagen microservicios Backend](img_manual/servicios.png)
@@ -1357,7 +2253,7 @@ C:.
 ```
 <h2> Explicación General </h2>
 
-- .env: Configuran las variables de entorno
+- .env: Configuran las variables de entorno, tener en cuenta que los puertos:5000,5001,5002,5003,5004,5005 son para: AUTH, ADMIN, DOCTOR, ENFERMERA, MONGO=5004 y DESARROLLADOR respectivamente.
 - public/: Contiene archivos estáticos que no requieren procesamiento
 - src/
 - assets/: Imágenes y recursos estáticos.
@@ -1430,7 +2326,7 @@ C:.
 
 <h1> Modelo entidad relacion </h1>
 
-![Imagen ER](img_manual/Captura%20de%20pantalla%202024-12-17%20154026.png)
+![Imagen ER](img_manual/Captura%20de%20pantalla%202024-12-26%20181236.png)
 
 - Script de la base de datos.
 
@@ -1508,6 +2404,8 @@ CREATE TABLE PacienteEnfermera(
 	FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
 );
 ```
+
+*NOTA: La tabla PacienteEnfermera se utilizara para PacienteDoctor*
 
 - En el proceso de integrar triggers que registren automáticamente las operaciones de insert, update y delete en las tablas históricas UsuarioHistorico y PacienteHistorico, se identificó la necesidad de realizar modificaciones en las tablas principales Usuario y Paciente. Estas modificaciones fueron necesarias para garantizar el correcto funcionamiento y la coherencia de los triggers, respetando la integridad de los datos y el propósito del sistema.
 ```sql
@@ -2001,4 +2899,246 @@ def delete_log():
         }
     ]
 }
+```
+- Para los usuarios: Administradores y Doctores se creo un sistema de correos electronicos para enviar notificaciones
+
+```js
+const express = require("express");
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
+dotenv.config({ path: "../.env" });
+
+const app = express();
+const CORREO_PORT = process.env.CORREO_PORT || 5006;
+app.use(express.json());
+
+app.post("/send-email", async (req, res) => {
+    const { to,nombre,fecha_vencimiento } = req.body;
+    if (!to) {
+        return res.status(400).json({ error: "El campo 'to' es requerido." });
+    }
+    if (!nombre) {
+        return res.status(400).json({ error: "El campo 'nombre' es requerido." });
+    }
+    if (!fecha_vencimiento) {
+        return res.status(400).json({ error: "El campo 'fecha_vencimiento' es requerido." });
+    }
+    try {
+        const transporter = nodemailer.createTransport({
+            host: process.env.MAILTRAP_HOST,
+            port: process.env.MAILTRAP_PORT,
+            auth: {
+                user: process.env.MAILTRAP_USER,
+                pass: process.env.MAILTRAP_PASS,
+            },
+        });
+
+        const htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recordatorio de Pago</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #eaeaea;
+        }
+        .email-header {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .email-body {
+            padding: 20px;
+            color: #333333;
+        }
+        .email-body p {
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+        .email-body a {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .email-body a:hover {
+            background-color: #0056b3;
+        }
+        .email-footer {
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #666666;
+        }
+        .email-footer p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h1>Recordatorio de Pago</h1>
+        </div>
+        <div class="email-body">
+            <p>Estimado/a: <strong>${nombre}</strong>,</p>
+            <p>Le recordamos que debe realizar el pago de su colegiado para mantener activa su membresía y continuar ejerciendo en el hospital.</p>
+            <p>Por favor, asegúrese de completar el pago antes del <strong>${fecha_vencimiento}</strong> para evitar interrupciones en su actividad profesional.</p>
+            <a href="https://pago.colegiado.com">Realizar Pago</a>
+            <p>Si ya realizó el pago, por favor ignore este mensaje.</p>
+            <p>Atentamente,</p>
+            <p><strong>Administración del Hospital</strong></p>
+        </div>
+        <div class="email-footer">
+            <p>Este es un mensaje automático. Por favor, no responda a este correo.</p>
+            <p>&copy; 2024 Administración del Hospital</p>
+        </div>
+    </div>
+</body>
+</html>`;
+        const info = await transporter.sendMail({
+            from: `"Administración del Hospital" <${process.env.MAILTRAP_FROM}>`, 
+            to,
+            subject: "Recordatorio de Pago del Colegiado",
+            html: htmlContent, 
+        });
+
+        res.status(200).json({
+            message: "Correo enviado exitosamente.",
+            info,
+        });
+    } catch (error) {
+        console.error("Error enviando el correo:", error);
+        res.status(500).json({ error: "No se pudo enviar el correo." });
+    }
+});
+
+app.listen(CORREO_PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${CORREO_PORT}`);
+});
+```
+- Dado que el sistema maneja información crítica tanto de los pacientes como de la
+operación del hospital, es esencial implementar un sistema de backups y
+restauraciones para asegurar la continuidad del servicio en caso de fallos.
+
+Backups para: 
+- MongoDB (Expedientes)
+- SQL Server (Usuarios y Áreas)
+- Redis (Bitácora)
+
+```python
+@base_mongo.route('/crear_backups', methods=['POST'])
+def crear_backup_Mongo():
+    status_mongo = "ERROR"
+    status_sql = "ERROR"
+    status_redis = "ERROR"
+    #OBTENER CREDENCIALES POR PRIMERA VEZ
+    '''creds = obtener_credenciales()
+    with open('token.json', 'w') as token:
+        token.write(creds.to_json())'''
+    #BACKUP MONGO
+    try:
+        fecha_actual = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        cliente = get_db_connection_MONGODB() #CONEXION A MONGO
+        if cliente is not None:
+            try:
+                MONGO_DB = os.getenv("MONGO_DB")
+                MONGO_COLLECTION =  os.getenv("MONGO_COLLECTION") 
+                db = cliente[MONGO_DB]
+                expedientes = db[MONGO_COLLECTION]
+                documentos = list(expedientes.find({}))#OBTENER TODOS LOS EXPEDIENTES
+                archivo_respaldo = f"backup_{MONGO_COLLECTION}_{fecha_actual}.json" #GUARDAR DATA EN ARCHIVO JSON
+                with open(archivo_respaldo, 'w', encoding='utf-8') as f:
+                    json.dump(documentos, f, default=str, ensure_ascii=False, indent=4)
+                    f.close()
+            except OperationFailure as e:
+                #save_log_param("consulta", "ERROR", "crear_backup_Mongo", "Mongo_Controller", "Error de operación en MongoDB: " + str(e))
+                return jsonify({"Error": "Error de operación en MongoDB: " + str(e)}), 400
+            except PyMongoError as e:
+                #save_log_param("consulta", "ERROR", "crear_backup_Mongo", "Mongo_Controller", "Error en la base de datos MongoDB: " + str(e))
+                return jsonify({"Error": "Error en la base de datos MongoDB: " + str(e)}), 500
+            except Exception as e:
+                #save_log_param("consulta", "ERROR", "crear_backup_Mongo", "Mongo_Controller", f"Error inesperado: {str(e)}")
+                return jsonify({"error": f"Error inesperado: {str(e)}"}), 500
+            finally:
+                cliente.close()
+    except:
+        print("ERROR CONECTANDOSE A MONGO")
+    #BACKUP SQL SERVER
+    conn = get_db_connection_SQLSERVER()
+    if conn is not None:
+        cursor = conn.cursor()
+        try:
+            databasesql = os.getenv("DATABASESQL")
+            backup_path_sql = os.getenv("RUTA_TEMPORAL") 
+            backup_path_sql_FILE = f"{backup_path_sql}backup_{fecha_actual}.bak"
+            print(databasesql)
+            print(backup_path_sql_FILE)
+            backup_query = f"""
+                BACKUP DATABASE {databasesql}
+                TO DISK = '{backup_path_sql_FILE}'
+                """
+            cursor.execute(backup_query)
+            error_message = cursor.messages
+            if error_message:
+                print(f"Mensajes de error: {error_message}")
+            conn.commit()
+            cursor.close()
+            conn.close()
+            if not os.path.exists(backup_path_sql_FILE):
+                print(f"Error: OCURRIO UN ERROR AL CREAR BACKUP SQL")
+            #print(f"Backup de la base de datos {databasesql} realizado con éxito en {backup_path_sql}.")
+        except Exception as e:
+            print(f"Error al realizar el backup: {e}")
+    #SUBIR ARCHIVOS
+    creds = cargar_creds()
+    if creds is None:
+        #save_log_param("consulta", "ERROR", "crear_backup_Mongo", "Mongo_Controller", "Ocurrio un error con las credenciales")
+        return jsonify({"Error": "Ocurrio un error con las credenciales"}), 400
+    service = build('drive', 'v3', credentials=creds)
+    backup_folder_id = create_folder(service, 'backups')
+    mongo_folder_id = create_folder(service, 'mongo', backup_folder_id)
+    sql_folder_id = create_folder(service, 'sql', backup_folder_id)
+
+    file_sql_id = ""
+    file_mongo_id = ""
+    if(mongo_folder_id):
+        if not os.path.exists(archivo_respaldo):
+            print(f"Error: El archivo {archivo_respaldo} no existe.")
+        file_mongo_id = upload_to_google_drive(service, archivo_respaldo, mongo_folder_id)
+        os.remove(archivo_respaldo)#borrar el archivo local
+        status_mongo = "EXITO"
+
+    if(sql_folder_id):
+        if not os.path.exists(backup_path_sql_FILE):
+            print(f"Error: El archivo {backup_path_sql_FILE} no existe.")
+        else:
+            file_sql_id = upload_to_google_drive(service, backup_path_sql_FILE, sql_folder_id)
+            status_sql = "EXITO"
+    #save_log_param("consulta", "INFO", "crear_backup_Mongo", "Mongo_Controller", "Backups creado con exito") 
+    return jsonify({"mongo_status": status_mongo, "file_mongo_id": file_mongo_id, "sql_status": status_sql,"file_sql_id": file_sql_id }), 200
 ```

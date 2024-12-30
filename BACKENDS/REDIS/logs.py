@@ -1,6 +1,7 @@
 import json
 import sys
 import os
+import subprocess
 config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
 sys.path.append(config_path)
 from REDIS.dbRedis import RedisClient
@@ -22,9 +23,6 @@ def save_log_json(json_data):
     if not client:
         raise ConnectionError("No se pudo Conectar a Redis.")
     client.set(log_id, json.dumps(log_data))
-
-
-
 
 def save_log_param(tipo, status, function, controlador, descripcion):
     try:
@@ -65,5 +63,18 @@ def delete_log():
         return json.dumps({"message": "Todos los logs han sido eliminados exitosamente"})
     except Exception as e:
         return json.dumps({"error": str(e)})
+    
+def crear_backup_r(contenedor, nombre):
+    try:
+        #client = redis_client.get_client()
+        subprocess.run(["docker", "exec", contenedor, "redis-cli", "SAVE"], check=True)
+        subprocess.run(["docker", "cp", f"{contenedor}:/data/dump.rdb", nombre], check=True)
+        return True
+    except Exception as e:
+        print(e)
+        return False
 
-save_log_param("CALIFICACION", "OK","CALIFICACION_FUNCION","CALIFICACION_CONTROLLER","TODO BIEN")
+#save_log_param("CALIFICACION", "OK","CALIFICACION_FUNCION","CALIFICACION_CONTROLLER","TODO BIEN")
+nombre_backup = "back.rdb" 
+ruta_backup = 'C:\\Backups'
+print(crear_backup_r("364482f3255d", nombre_backup))

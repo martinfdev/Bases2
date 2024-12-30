@@ -1,4 +1,15 @@
-.env
+<<<<<<< HEAD
+venv/
 __pycache__/
 *.pyc
 *.pyo
+instance/
+.env
+.DS_Store
+node_modules/
+=======
+.env
+__pycache__/
+*.pyc
+token.json
+>>>>>>> develop
