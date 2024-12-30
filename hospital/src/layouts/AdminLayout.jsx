@@ -1,11 +1,12 @@
 import {
     FaTachometerAlt, FaUserCog, FaUserFriends, FaHandHoldingMedical,
-    FaMapMarkedAlt, FaMap, FaUserCheck, FaDiagnoses,
+    FaMapMarkedAlt, FaMap, FaUserCheck, FaDiagnoses,FaUsersSlash,
     FaFileExport, FaChartPie, FaEnvelopeOpenText, FaInbox,
     FaUserPlus
 } from 'react-icons/fa'
 import { MdOutlineListAlt } from 'react-icons/md'
 import Layout from '../layouts/Layout'
+import { path } from 'framer-motion/client'
 
 
 const AdminLayout = () => {
@@ -57,6 +58,12 @@ const AdminLayout = () => {
             label: 'Listar Pacientes',
             path: '/admin/patients/list',
             icon: <FaUserFriends />
+        },
+        {
+            section: 'Gestión de Pacientes',
+            label: 'Pacientes sin Área',
+            path: '/admin/patients/dont-have-area',
+            icon: <FaUsersSlash/>
         },
 
         {
