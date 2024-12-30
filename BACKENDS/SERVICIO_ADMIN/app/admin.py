@@ -979,32 +979,34 @@ def obtener_estado_areas(current_user):
     return jsonify(areas), 200
 
 
-@admin_bp.route('/descargarPDF_area', methods=['GET'])  # Dashboard para el administrador
+@admin_bp.route('/descargarPDF_area', methods=['GET'])
 @token_required
 @admin_required
 def descargarPDF_area(current_user):
     areas = get_estado_area()
-    if not areas:
-        return jsonify({"message": "No hay areas registradas."}), 200
     pdf_buffer = generar_pdf_areas(areas)
     return send_file(pdf_buffer, as_attachment=True, download_name="reporte_estado_areas.pdf", mimetype='application/pdf')
+
 
 @admin_bp.route('/descargar_reporte_pacientes', methods=['GET'])
 @token_required
 @admin_required
-def descargar_reporte_pacientes():
+def descargar_reporte_pacientes(current_user):
     atendidos = get_pacientes_atendidos()
-    pacientes_atendidos = obtener_pacientes_atendidos(atendidos)  # Asegúrate de tener esta función
-    pdf_buffer = generar_pdf_pacientes_atendidos(pacientes_atendidos)
+    
+    #pacientes_atendidos = obtener_pacientes_atendidos(atendidos)
+    #pdf_buffer = generar_pdf_pacientes_atendidos(pacientes_atendidos)
+    pdf_buffer = generar_pdf_pacientes_atendidos(atendidos)
     return send_file(pdf_buffer, as_attachment=True, download_name="reporte_pacientes_atendidos.pdf", mimetype='application/pdf')
 
 @admin_bp.route('/descargar_reporte_diagnosticos', methods=['GET'])
 @token_required
 @admin_required
-def descargar_reporte_diagnosticos():
+def descargar_reporte_diagnosticos(current_user):
     diagnosticos_comunes_ = get_diagnosticos_mas_comunes()
-    diagnosticos_comunes = obtener_diagnosticos_comunes(diagnosticos_comunes_)  # Asegúrate de tener esta función
-    pdf_buffer = generar_pdf_diagnosticos_comunes(diagnosticos_comunes)
+    #diagnosticos_comunes = obtener_diagnosticos_comunes(diagnosticos_comunes_)  # Asegúrate de tener esta función
+    #pdf_buffer = generar_pdf_diagnosticos_comunes(diagnosticos_comunes)
+    pdf_buffer = generar_pdf_diagnosticos_comunes(diagnosticos_comunes_)
     return send_file(pdf_buffer, as_attachment=True, download_name="reporte_diagnosticos_comunes.pdf", mimetype='application/pdf')
 
 
@@ -1013,35 +1015,36 @@ def descargar_reporte_diagnosticos():
 @admin_required
 def descargarEXCEL_area(current_user):
     areas = get_estado_area()
-    if not areas:
-        return jsonify({"message": "No hay areas registradas."}), 200
+    # if not areas:
+    #     return jsonify({"message": "No hay areas registradas."}), 200
     excel_buffer  = generar_excel_areas(areas)
     return send_file(excel_buffer, as_attachment=True, download_name="reporte_estado_areas.xlsx", mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 @admin_bp.route('/descargar_reporte_pacientes_excel', methods=['GET'])
 @token_required
 @admin_required
-def descargar_reporte_pacientes_excel():
-    pacientes_atendidos = obtener_pacientes_atendidos()  # Asegúrate de definir esta función
+def descargar_reporte_pacientes_excel(current_user):
+    pacientes_atendidos = get_pacientes_atendidos()  # Asegúrate de definir esta función
+    # if not pacientes_atendidos:
+    #     return jsonify({"message": "No hay Pacientes atendidos."}), 200
     excel_buffer = generar_excel_pacientes_atendidos(pacientes_atendidos)
-    
     return send_file(excel_buffer, as_attachment=True, download_name="reporte_pacientes_atendidos.xlsx", mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
 
 @admin_bp.route('/descargar_reporte_diagnosticos_excel', methods=['GET'])
 @token_required
 @admin_required
-def descargar_reporte_diagnosticos_excel():
-    diagnosticos_comunes = obtener_diagnosticos_comunes()
+def descargar_reporte_diagnosticos_excel(current_user):
+    diagnosticos_comunes = get_diagnosticos_mas_comunes()
+    # if not diagnosticos_comunes:
+    #     return jsonify({"message": "No hay Diagnosticos comunes"}), 200
     excel_buffer = generar_excel_diagnosticos_comunes(diagnosticos_comunes)
-    
     return send_file(excel_buffer, as_attachment=True, download_name="reporte_diagnosticos_comunes.xlsx", mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 
 
+
 #agregar pacientearea (para llevar registro de los últimos pacientes ingresados)
-
-
-
 #obtener pacientes sin area
 @admin_bp.route('/pacientes_sin_area', methods=['GET'])
 @token_required

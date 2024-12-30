@@ -41,11 +41,11 @@ def get_diagnosticos_mas_comunes():
         diagnos = obtener_diagnosticos_comunes()  # Obtiene los diagnósticos comunes desde MongoDB
         # Asegúrate de que obtenemos solo los datos de la respuesta
         if "diagnosticos" in diagnos:
-            return jsonify(diagnos["diagnosticos"]), 200  # Retorna solo los diagnósticos con código 200 OK
+            return diagnos["diagnosticos"]  # Solo retorna los diagnósticos
         else:
-            return jsonify({"message": "No se encontraron diagnósticos comunes."}), 404  # Si no hay diagnósticos, error 404
+            return []  # Si no hay diagnósticos, retorna una lista vacía
     except Exception as e:
-        return jsonify({"error": f"Error al obtener los diagnósticos: {str(e)}"}), 500  # Error 500 si ocurre una excepción
+        return {"error": f"Error al obtener los diagnósticos: {str(e)}"}  # Manejo de excepciones
     
 def get_estado_area():
     conn = get_db_connection_SQLSERVER()
