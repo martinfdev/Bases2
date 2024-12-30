@@ -13,6 +13,7 @@ import NewAreaPage from '../pages/admin/NewAreaPage'
 import AttendedPatientsPage from '../pages/admin/AttendedPatientsPage'
 import CommonDiagnosisPage from '../pages/admin/CommonDiagnosisPage'
 import DownloadReportsPage from '../pages/admin/DownloadReportsPage'
+import PatientDontAreaAsign from '../pages/admin/PatientDontAreaAsign'
 import DeveloperLayout from '../layouts/DeveloperLayout'  
 import PageDeveloperDashboard from '../pages/dev/DevDashboardPage'
 import LogVitacore from '../components/dev/LogVitacore'
@@ -40,6 +41,7 @@ const AppRouter = () => {
         <Route path="users/inactive" element={<NotFound />} />
         <Route path="patients/create" element={<NewPatientPage />} />
         <Route path="patients/list" element={<PatientViewPage />} />
+        <Route path="patients/dont-have-area" element={<PatientDontAreaAsign />} />
         <Route path="speciality/create" element={<NewSpecialityPage />} />
         <Route path="speciality/list" element={<ViewSpecialityTable />} />
         <Route path="areas/create" element={<NewAreaPage />} />
