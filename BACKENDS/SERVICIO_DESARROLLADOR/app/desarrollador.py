@@ -908,6 +908,11 @@ def editar_paciente(current_user):
     direccion = data['direccion']
     id_area = data['id_area']
     conn = get_db_connection_SQLSERVER()
+    #CONVERSION DE FECHA
+    try:
+        fecha_nacimiento = datetime.strptime(fecha_nacimiento, '%d-%m-%Y').strftime('%Y-%m-%d')
+    except ValueError:
+        pass
     if conn is None:
         #save_log_param("edicion", "ERROR", "editar_paciente", "Desarrollador_Controller", "Error al conectarse con la base de datos")
         return jsonify({"error": "Error al conectarse con la base de datos"}), 500
