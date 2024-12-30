@@ -55,7 +55,7 @@ const ViewAreasPage = () => {
 
     const handleDeleteArea = async (area) => {
         try {
-            await deleteArea(area.nombre_area)
+            await deleteArea(area.id_area)
             setAreas(areas.filter(a => a.id_area !== area.id_area))
             setIsDeleteOpen(false)
             addNotification(
