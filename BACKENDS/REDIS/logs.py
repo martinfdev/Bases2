@@ -75,6 +75,6 @@ def crear_backup_r(contenedor, nombre):
         return False
 
 #save_log_param("CALIFICACION", "OK","CALIFICACION_FUNCION","CALIFICACION_CONTROLLER","TODO BIEN")
-nombre_backup = "back.rdb" 
+'''nombre_backup = "back.rdb" 
 ruta_backup = 'C:\\Backups'
-print(crear_backup_r("364482f3255d", nombre_backup))
+print(crear_backup_r("364482f3255d", nombre_backup))'''
