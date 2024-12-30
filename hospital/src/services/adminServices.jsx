@@ -1,6 +1,8 @@
 const API_URL = import.meta.env.VITE_BASE_ADMIN_URL
 
-import {dashboardAdmin, listSpecialty, listUsers, listPatients, listAreas, listAttendedPatients, commonDignosis, patientDontAreaAssigned} from '../test/testData' //this is just for testing purposes in development mode
+import {dashboardAdmin, listSpecialty, listUsers, listPatients, listAreas, listAttendedPatients, commonDignosis, patientDontAreaAssigned,
+    listNurses, listDoctors
+} from '../test/testData' //this is just for testing purposes in development mode
 
 /**
  * get dashboard data from the server for the admin user
@@ -560,7 +562,8 @@ export const getPatientsDontHaveArea = async () => {
         //     throw new Error('Error al obtener datos de pacientes sin área asignada')
         // }
         // const data = await response.json()
-        const data = listPatients
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const data = patientDontAreaAssigned
         return data
     } catch (error) {
         console.error('Error al obtener datos de pacientes sin área asignada:', error)
@@ -759,6 +762,59 @@ export const downloadReportDiagnosisExcel = async () => {
         console.log('Descargando reporte de diagnósticos')
     } catch (error) {
         console.error('Error al descargar reporte de diagnósticos:', error)
+        throw error
+    }
+}
+
+/**
+ * get the list of nurses from the server
+ * @returns a promise that resolves to the list of nurses
+ * @throws an error if the request fails
+ */
+
+export const getNurses = async () => {
+    try {
+        // const response = await fetch(`${API_URL}/admin/enfermeras`, {
+        //     method: 'GET',
+        //     headers: {
+        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
+        //     },
+        // })
+        // if (!response.ok) {
+        //     throw new Error('Error al obtener datos de enfermeras')
+        // }
+        // const data = await response.json()
+        const data = listNurses
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        return data
+    } catch (error) {
+        console.error('Error al obtener datos de enfermeras:', error)
+        throw error
+    }
+}
+
+/**
+ * get the list of doctors from the server
+ * @returns a promise that resolves to the list of doctors
+ * @throws an error if the request fails
+ */
+export const getDoctors = async () => {
+    try {
+        // const response = await fetch(`${API_URL}/admin/doctores`, {
+        //     method: 'GET',
+        //     headers: {
+        //         Authorization: `Bearer ${localStorage.getItem('token')}`,
+        //     },
+        // })
+        // if (!response.ok) {
+        //     throw new Error('Error al obtener datos de doctores')
+        // }
+        // const data = await response.json()
+        const data = listDoctors
+        await new Promise(resolve => setTimeout(resolve, 1000)) 
+        return data
+    } catch (error) {
+        console.error('Error al obtener datos de doctores:', error)
         throw error
     }
 }
