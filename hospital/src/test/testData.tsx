@@ -131,105 +131,105 @@ export const listUsers =
 }
 
 export const listLogs = {
-	"logs": [
-		{
-			"controlador": "Auth_Controller",
-			"descripcion": "Exito. Login Exitoso",
-			"function": "Login",
-			"log_id": "20241216102053",
-			"status": "INFO",
-			"tipo": "Consulta"
-		},
-		{
-			"controlador": "Auth_Controller",
-			"descripcion": "Error. Correo/DPI o contraseña son inválidos",
-			"function": "Login",
-			"log_id": "20241216102050",
-			"status": "ERROR",
-			"tipo": "Consulta"
-		},
-		{
-			"controlador": "Auth_Controller",
-			"descripcion": "Exito. Login Exitoso",
-			"function": "Login",
-			"log_id": "20241216102041",
-			"status": "INFO",
-			"tipo": "Consulta"
-		},
+    "logs": [
         {
-			"controlador": "Auth_Controller",
-			"descripcion": "Exito. Login Exitoso",
-			"function": "Login",
-			"log_id": "20241216102042",
-			"status": "INFO",
-			"tipo": "Consulta"
-		},
+            "controlador": "Auth_Controller",
+            "descripcion": "Exito. Login Exitoso",
+            "function": "Login",
+            "log_id": "20241216102053",
+            "status": "INFO",
+            "tipo": "Consulta"
+        },
         {
-			"controlador": "Auth_Controller",
-			"descripcion": "Exito. Login Exitoso",
-			"function": "Login",
-			"log_id": "20241216102043",
-			"status": "INFO",
-			"tipo": "Consulta"
-		},
+            "controlador": "Auth_Controller",
+            "descripcion": "Error. Correo/DPI o contraseña son inválidos",
+            "function": "Login",
+            "log_id": "20241216102050",
+            "status": "ERROR",
+            "tipo": "Consulta"
+        },
         {
-			"controlador": "Auth_Controller",
-			"descripcion": "Exito. Login Exitoso",
-			"function": "Login",
-			"log_id": "20241216102044",
-			"status": "INFO",
-			"tipo": "Consulta"
-		},
+            "controlador": "Auth_Controller",
+            "descripcion": "Exito. Login Exitoso",
+            "function": "Login",
+            "log_id": "20241216102041",
+            "status": "INFO",
+            "tipo": "Consulta"
+        },
         {
-			"controlador": "Auth_Controller",
-			"descripcion": "Exito. Login Exitoso",
-			"function": "Login",
-			"log_id": "20241216102045",
-			"status": "INFO",
-			"tipo": "Consulta"
-		},
+            "controlador": "Auth_Controller",
+            "descripcion": "Exito. Login Exitoso",
+            "function": "Login",
+            "log_id": "20241216102042",
+            "status": "INFO",
+            "tipo": "Consulta"
+        },
         {
-			"controlador": "Auth_Controller",
-			"descripcion": "Exito. Login Exitoso",
-			"function": "Login",
-			"log_id": "20241216102046",
-			"status": "INFO",
-			"tipo": "Consulta"
-		},
+            "controlador": "Auth_Controller",
+            "descripcion": "Exito. Login Exitoso",
+            "function": "Login",
+            "log_id": "20241216102043",
+            "status": "INFO",
+            "tipo": "Consulta"
+        },
         {
-			"controlador": "Auth_Controller",
-			"descripcion": "Exito. Login Exitoso",
-			"function": "Login",
-			"log_id": "20241216102047",
-			"status": "INFO",
-			"tipo": "Consulta"
-		},
+            "controlador": "Auth_Controller",
+            "descripcion": "Exito. Login Exitoso",
+            "function": "Login",
+            "log_id": "20241216102044",
+            "status": "INFO",
+            "tipo": "Consulta"
+        },
         {
-			"controlador": "Auth_Controller",
-			"descripcion": "Exito. Login Exitoso",
-			"function": "Login",
-			"log_id": "20241216102048",
-			"status": "INFO",
-			"tipo": "Consulta"
-		}
-	]
+            "controlador": "Auth_Controller",
+            "descripcion": "Exito. Login Exitoso",
+            "function": "Login",
+            "log_id": "20241216102045",
+            "status": "INFO",
+            "tipo": "Consulta"
+        },
+        {
+            "controlador": "Auth_Controller",
+            "descripcion": "Exito. Login Exitoso",
+            "function": "Login",
+            "log_id": "20241216102046",
+            "status": "INFO",
+            "tipo": "Consulta"
+        },
+        {
+            "controlador": "Auth_Controller",
+            "descripcion": "Exito. Login Exitoso",
+            "function": "Login",
+            "log_id": "20241216102047",
+            "status": "INFO",
+            "tipo": "Consulta"
+        },
+        {
+            "controlador": "Auth_Controller",
+            "descripcion": "Exito. Login Exitoso",
+            "function": "Login",
+            "log_id": "20241216102048",
+            "status": "INFO",
+            "tipo": "Consulta"
+        }
+    ]
 }
 
 export const listPatients = {
-	"message": "Pacientes encontrados",
-	"paciente": [
-		{
-			"apellido": "Lopéz",
-			"direccion": "Calle Principal 123",
-			"dpi": "9777578880222",
-			"estado": "1",
-			"fecha_nacimiento": "Sat, 11 Nov 2000 00:00:00 GMT",
-			"genero": "Masculino",
-			"id_area": 1,
-			"id_paciente": 1,
-			"nombre": "juana",
-			"telefono": "66666666"
-		},
+    "message": "Pacientes encontrados",
+    "paciente": [
+        {
+            "apellido": "Lopéz",
+            "direccion": "Calle Principal 123",
+            "dpi": "9777578880222",
+            "estado": "1",
+            "fecha_nacimiento": "Sat, 11 Nov 2000 00:00:00 GMT",
+            "genero": "Masculino",
+            "id_area": 1,
+            "id_paciente": 1,
+            "nombre": "juana",
+            "telefono": "66666666"
+        },
         {
             "apellido": "Lopéz",
             "direccion": "Calle Principal 123",
@@ -278,7 +278,7 @@ export const listPatients = {
             "nombre": "juana",
             "telefono": "66666666"
         }
-	]
+    ]
 }
 
 export const adminUsers = [
@@ -312,24 +312,24 @@ export const dataUserInactive = [
 ]
 
 export const dashboardDeveloper = {
-    message:"Welcome desarrollador, user #numero usuario"
+    message: "Welcome desarrollador, user #numero usuario"
 }
 
 export const listAreas = {
     "message": "Areas encontrados",
-	"paciente": [
-		{
-			"cantidad_pacientes": 1,
-			"capacidad": 50,
-			"id_area": 1,
-			"nombre_area": "Cardiologia"
-		},
-		{
-			"cantidad_pacientes": 1,
-			"capacidad": 20,
-			"id_area": 4,
-			"nombre_area": "Maternidad"
-		},
+    "paciente": [
+        {
+            "cantidad_pacientes": 1,
+            "capacidad": 50,
+            "id_area": 1,
+            "nombre_area": "Cardiologia"
+        },
+        {
+            "cantidad_pacientes": 1,
+            "capacidad": 20,
+            "id_area": 4,
+            "nombre_area": "Maternidad"
+        },
         {
             "cantidad_pacientes": 1,
             "capacidad": 10,
@@ -354,7 +354,7 @@ export const listAreas = {
             "id_area": 8,
             "nombre_area": "Oftalmologia"
         }
-	]
+    ]
 }
 
 export const listAttendedPatients = [
@@ -372,7 +372,7 @@ export const listAttendedPatients = [
     }
 ]
 
-export const commonDignostics = {
+export const commonDignosis = {
     "diagnosticos": [
         {
             "diagnostico": "Cáncer de pulmón",
@@ -381,7 +381,78 @@ export const commonDignostics = {
         {
             "diagnostico": "Neumonía",
             "frecuencia": 10
+        },
+        {
+            "diagnostico": "COVID-19",
+            "frecuencia": 30
+        },
+        {
+            "diagnostico": "Gripe",
+            "frecuencia": 5
+        },
+        {
+            "diagnostico": "Bronquitis",
+            "frecuencia": 20
+        },
+        {
+            "diagnostico": "Asma",
+            "frecuencia": 10
         }
     ]
 }
 
+export const patientDontAreaAssigned = {
+    "pacientes_sin_area": [
+        {
+            "id_paciente": 1,
+            "nombre": "Juan",
+            "apellido": "Pérez",
+            "dpi": "1234567890101",
+            "genero": "Masculino",
+            "fecha_nacimiento": "1990-01-01",
+            "telefono": "55555555",
+            "direccion": "Zona 1, Ciudad"
+        },
+        {
+            "id_paciente": 2,
+            "nombre": "María",
+            "apellido": "González",
+            "dpi": "1098765432101",
+            "genero": "Femenino",
+            "fecha_nacimiento": "1985-05-15",
+            "telefono": "44444444",
+            "direccion": "Zona 3, Ciudad"
+        }
+    ]
+}
+
+export const listNurses = {
+    "enfermeras": [
+        {
+            "apellidos": "Cutzal Chalí",
+            "correo": "cutzalluis@gmail.com",
+            "direccion": "Ciudad de Guatemala",
+            "dpi": "2842258270404",
+            "genero": "Masculino",
+            "id_usuario": 3,
+            "nombres": "Luis Antonio",
+            "telefono": "41201792"
+        }
+    ]
+}
+
+export const listDoctors = {
+    "doctores": [
+        {
+            "apellidos": "Martin Francisco",
+            "correo": "pedromartinf07@gmail.com",
+            "direccion": "Ciudad de Guatemala",
+            "dpi": "2574151141308",
+            "fecha_vencimiento_colegiado": "2050-01-01",
+            "genero": "Masculino",
+            "id_usuario": 2,
+            "nombres": "Pedro",
+            "telefono": "46664955"
+        }
+    ]
+}
