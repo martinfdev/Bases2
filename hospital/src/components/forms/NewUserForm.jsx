@@ -67,7 +67,7 @@ const NewUserForm = ({ currentUserRole, registerUser, listSpecialities }) => {
   }
 
   useEffect(() => {
-    setIsNurse(form.id_rol === 3) 
+    setIsNurse(form.id_rol === 3 || form.id_rol === 1) 
   }, [form.id_rol])
 
   const roles = [
