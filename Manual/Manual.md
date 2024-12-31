@@ -166,6 +166,26 @@ Utilizamos una arquitectura orientada a servicios (SOA) donde la capa de usuario
 - Se comunica con otros microservicios para almacenar o consultar información relacionada con el sistema de salud, como logs de eventos o información adicional de pacientes.
 - MongoDB para almacenamiento de datos NoSQL.
 
+
+<h2> Microservicio de Neo4j  </h2>
+
+- Este microservicio está diseñado para facilitar la integración y visualización de datos a través de grafos, utilizando Neo4j como base de datos para representar las relaciones entre los pacientes y las áreas del sistema de salud.
+- El proceso comienza con una consulta a la base de datos SQL Server, donde se extraen los datos de los pacientes y las áreas. Estos datos se organizan en archivos .csv, lo que permite una forma más sencilla de manejarlos y transformarlos.
+- Una vez generados los archivos .csv, se cargan en Neo4j, creando nodos que representan a los pacientes, las áreas y las relaciones entre ellos. Esto permite visualizar y analizar de manera más efectiva cómo se conectan diferentes datos dentro del sistema de salud.
+- Gracias a Neo4j, este enfoque de base de datos en grafos facilita la exploración de relaciones complejas y mejora la capacidad para obtener información detallada y significativa de manera más rápida y flexible.
+
+<h2> Microservicio de Notificaciones Automáticas (Doctores) </h2>
+
+- Este microservicio gestionará el envío de notificaciones automáticas sobre eventos críticos, como el vencimiento del colegiado de un doctor. Se utilizará para enviar alertas por correo electrónico cuando queden 30 días o menos para el vencimiento del colegiado.
+- Se comunica con otros microservicios para obtener la información sobre las fechas de vencimiento del colegiado de los doctores y determinar si se deben generar notificaciones.
+El servicio contará con dos endpoints:
+
+- Un endpoint de consulta que devuelve cuántos días faltan para el vencimiento del colegiado.
+- Un endpoint de notificación que enviará un correo de recordatorio si el vencimiento se acerca (menos de 30 días).
+
+- El frontend se integra con este servicio haciendo una consulta al iniciar sesión para obtener los días restantes y, si es necesario, enviando la notificación por correo.
+- MongoDB puede ser utilizado para almacenar las fechas de vencimiento de los colegiados, lo que permite realizar consultas rápidas sobre los plazos.
+
 <h2> Endpoints de la API </h2>
 
 ## register_user
@@ -2150,6 +2170,66 @@ Respuestas
 }
 ```
 
+## Exportar_datos_a_CSV
+**URL (dirección):**  
+`http://127.0.0.1:5007/neo/extract_expediente`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Content-Type: application/json`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+	"message": "Archivo creado"
+}
+```
+- Código HTTP 500
+
+```json
+{
+	"message": "error"
+}
+```
+
+## cargar_datos_a_neo
+**URL (dirección):**  
+`http://127.0.0.1:5007/cargar_datos_neo/cargar_datos_neo4j`
+
+**Método HTTP:**  
+`POST`
+
+**Cabecera de Petición:**  
+`Content-Type: application/json`
+
+**Cuerpo (PAYLOAD):**  
+*(Se deben de cargar 2 archivos: 
+area_csv: area.csv y 
+paciente_csv: paciente.csv
+)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+	"message": "Datos cargados exitosamente en Neo4j"
+}
+```
+- Código HTTP 500
+
+```json
+{
+	"message": "Error al cargar los datos en Neo4j"
+}
+```
 
 
 <h2> Diagrama de Arquitectura del Backend </h2>
@@ -2169,87 +2249,146 @@ C:.
 |   .gitignore                   # Define qué archivos y carpetas ignorar en Git.
 |   eslint.config.js             # Configuración para ESLint (análisis estático del código).
 |   estructura.txt               # Archivo que describe la estructura del proyecto.
+|   format.json                  # Configuración de formato (puede ser para Prettier o algún formateador).
 |   index.html                   # Punto de entrada principal para la aplicación React.
 |   package-lock.json            # Archivo que asegura la consistencia de dependencias instaladas.
-|   package.json                 # Configuración de dependencias y scripts del proyecto.
-|   postcss.config.js            # Configuración de PostCSS para procesamiento de estilos.
-|   README.md                    # Documentación general del proyecto.
-|   tailwind.config.js           # Configuración de Tailwind CSS.
-|   vite.config.js               # Configuración de Vite (entorno de desarrollo rápido).
-|
-+---public                       # Archivos estáticos públicos que no requieren procesamiento.
-|       vite.svg                 # Ícono o logo utilizado en la app.
+|   package.json                 # Contiene las dependencias, scripts y configuraciones del proyecto.
+|   postcss.config.js            # Configuración de PostCSS para procesamiento de CSS.
+|   README.md                    # Documentación del proyecto (explica cómo usarlo y configurarlo).
+|   tailwind.config.js           # Configuración de TailwindCSS.
+|   vite.config.js               # Configuración de Vite (bundler y servidor de desarrollo).
+|   
++---.vite
+|   \---deps                     # Dependencias generadas por Vite.
++---public
+|       vite.svg                 # Archivo estático (generalmente icono o imagen de la app).
 |       
-\---src                          # Código fuente principal del proyecto.
-    |   App.jsx                  # Componente principal que organiza toda la aplicación.
+\---src
+    |   App.jsx                  # Componente principal de la aplicación React.
     |   index.css                # Estilos globales de la aplicación.
-    |   main.jsx                 # Punto de entrada para renderizar la aplicación React.
+    |   main.jsx                  # Punto de entrada para renderizar la app React en el DOM.
     |   
-    +---assets                   # Recursos estáticos como imágenes, logos, etc.
-    |       react.svg            # Logo de React.
+    +---assets
+    |       react.svg             # Gráfico o ícono utilizado en la app.
     |       
-    +---components               # Componentes reutilizables y específicos.
-    |   +---admin                # Componentes específicos para la sección de administrador.
-    |   |       NewUserForm.jsx  # Formulario para agregar nuevos usuarios.
-    |   |       UserTable.jsx    # Tabla que muestra una lista de usuarios.
+    +---components
+    |   +---admin
+    |   |       PatientForm.jsx   # Formulario para gestionar pacientes en la vista de administrador.
+    |   |       PatientTable.jsx  # Tabla para mostrar pacientes en la vista de administrador.
+    |   |       UserTable.jsx     # Tabla para mostrar usuarios en la vista de administrador.
     |   |       
-    |   +---auth                 # Componentes relacionados con la autenticación.
-    |   |       LoginForm.jsx    # Formulario de inicio de sesión.
+    |   +---auth
+    |   |       LoginForm.jsx     # Formulario de login.
     |   |       
-    |   +---dev                  # Componentes para desarrolladores.
-    |   |       LogVitacore.jsx  # Registro de logs o actividad para desarrolladores.
+    |   +---common
+    |   |       Input.jsx         # Componente de input reutilizable.
+    |   |       Select.jsx        # Componente de selección reutilizable.
+    |   |       TextArea.jsx      # Componente de área de texto reutilizable.
+    |       
+    |   +---dev
+    |   |       LogVitacore.jsx   # Componente relacionado con el desarrollo de la aplicación.
     |   |       
-    |   +---shared               # Componentes reutilizables entre distintas partes de la app.
-    |   |       ErrorBoundary.jsx # Manejo global de errores.
-    |   |       Header.jsx        # Componente de cabecera común.
-    |   |       Modal.jsx         # Componente de ventana modal reutilizable.
-    |   |       Sidebar.jsx       # Barra lateral de navegación.
-    |   |       SidebarLink.jsx   # Enlace reutilizable dentro de la barra lateral.
-    |   |       
-    |   \---user                 # Componentes para manejar la administración de usuarios.
-    |           DeleteConfirmationModal.jsx # Modal de confirmación para eliminar usuarios.
-    |           EditUserModal.jsx           # Modal para editar la información de un usuario.
-    |           ViewUserModal.jsx           # Modal para visualizar detalles del usuario.
+    |   +---forms
+    |   |       AreaForm.jsx      # Formulario para gestionar áreas.
+    |   |       AssigmentFormModal.jsx # Modal para asignar tareas o recursos.
+    |   |       MultiStepFormNewIngres.jsx # Formulario multi-paso para nuevos ingresos.
+    |   |       NewUserForm.jsx    # Formulario para crear un nuevo usuario.
+    |   |       Page1FormNewIngres.jsx # Primer paso del formulario de nuevos ingresos.
+    |   |       SpecialityForm.jsx # Formulario para gestionar especialidades.
+    |       
+    |   +---mod
+    |   |       DeleteModalArea.jsx    # Modal para eliminar un área.
+    |   |       EditModalArea.jsx      # Modal para editar un área.
+    |   |       PatientDeleteModal.jsx # Modal para eliminar un paciente.
+    |   |       PatientEditModal.jsx   # Modal para editar un paciente.
+    |   |       PatientViewModal.jsx   # Modal para ver los detalles de un paciente.
+    |   |       ViewModalArea.jsx      # Modal para ver los detalles de un área.
+    |       
+    |   +---notifications
+    |   |       NotificationModal.jsx # Modal para mostrar notificaciones.
+    |       
+    |   +---patientRecord
+    |   |       ContactInput.jsx      # Componente para ingresar datos de contacto.
+    |   |       PatientRecordForm.jsx # Formulario para gestionar los registros de pacientes.
+    |       
+    |   +---shared
+    |   |       DownloadButton.jsx    # Botón para descargar archivos.
+    |   |       ErrorBoundary.jsx     # Componente para manejar errores en la UI.
+    |   |       Header.jsx            # Componente de encabezado de la aplicación.
+    |   |       Modal.jsx             # Componente genérico de modal.
+    |   |       Sidebar.jsx           # Componente para la barra lateral de navegación.
+    |   |       SidebarLink.jsx       # Componente de enlace en la barra lateral.
+    |   |       Waiting.jsx           # Componente para mostrar un indicador de espera.
+    |       
+    |   +---tables
+    |   |       AreaTable.jsx         # Tabla para mostrar las áreas.
+    |   |       AssigmentTable.jsx    # Tabla para mostrar asignaciones.
+    |   |       AttendedPatientTable.jsx # Tabla para mostrar pacientes atendidos.
+    |   |       CommonDiagnosisTable.jsx # Tabla para mostrar diagnósticos comunes.
+    |   |       LastIngresedPatientsTable.jsx # Tabla para mostrar los últimos pacientes ingresados.
+    |   |       SpecialityTable.jsx   # Tabla para mostrar especialidades.
+    |       
+    |   \---user
+    |           DeleteConfirmationModal.jsx # Modal para confirmar la eliminación de un usuario.
+    |           EditUserModal.jsx          # Modal para editar un usuario.
+    |           ViewUserModal.jsx          # Modal para ver los detalles de un usuario.
     |           
-    +---context                  # Contextos de React para manejo global de estados.
-    |       AuthContext.jsx      # Contexto para manejar el estado de autenticación.
+    +---context
+    |       AppContext.jsx             # Contexto para gestionar el estado global de la app.
+    |       AuthContext.jsx            # Contexto para gestionar el estado de autenticación.
     |       
-    +---hooks                    # Hooks personalizados de React.
-    |       useAuth.jsx          # Hook para acceder y manejar la autenticación del usuario.
+    +---hooks
+    |       useAppContext.jsx          # Hook personalizado para acceder al contexto de la app.
+    |       useAuth.jsx                # Hook personalizado para gestionar la autenticación.
     |       
-    +---layouts                  # Layouts para secciones específicas de la aplicación.
-    |       AdminLayout.jsx      # Layout de la sección de administrador.
-    |       DeveloperLayout.jsx  # Layout de la sección de desarrollador.
-    |       DoctorLayout.jsx     # Layout de la sección de doctor.
-    |       Layout.jsx           # Layout general compartido.
-    |       NurseLayout.jsx      # Layout de la sección de enfermera.
+    +---layouts
+    |       AdminLayout.jsx            # Layout para la vista de administrador.
+    |       DeveloperLayout.jsx        # Layout para la vista de desarrollador.
+    |       DoctorLayout.jsx           # Layout para la vista de doctor.
+    |       Layout.jsx                 # Layout genérico para la aplicación.
+    |       NurseLayout.jsx            # Layout para la vista de enfermera.
     |       
-    +---pages                    # Páginas principales de la aplicación.
-    |   |   LoginPage.jsx        # Página de inicio de sesión.
-    |   |   NotFound.jsx         # Página para errores 404 (ruta no encontrada).
-    |   |   SimplePage.jsx       # Página genérica para pruebas o secciones simples.
-    |   |   Unauthorized.jsx     # Página para accesos no autorizados.
+    +---pages
+    |   |   LoginPage.jsx             # Página de login.
+    |   |   NotFound.jsx              # Página de error 404.
+    |   |   PatientRecordPage.jsx     # Página para gestionar registros de pacientes.
+    |   |   Unauthorized.jsx          # Página para usuarios no autorizados.
     |   |   
-    |   +---admin                # Páginas relacionadas con la sección de administrador.
-    |   |       PageAdminDashboard.jsx # Página principal del panel de administración.
-    |   |       UserView.jsx           # Página para la visualización de usuarios.
+    |   +---admin
+    |   |       AttendedPatientsPage.jsx   # Página para ver pacientes atendidos.
+    |   |       CommonDiagnosisPage.jsx    # Página para ver diagnósticos comunes.
+    |   |       DownloadReportsPage.jsx    # Página para descargar reportes.
+    |   |       LastIngresedPatientsPage.jsx # Página para ver últimos pacientes ingresados.
+    |   |       NewAreaPage.jsx            # Página para crear nuevas áreas.
+    |   |       NewPatientPage.jsx        # Página para crear nuevos pacientes.
+    |   |       NewSpecialityPage.jsx     # Página para crear nuevas especialidades.
+    |   |       NewUserRegisterPage.jsx   # Página para registrar nuevos usuarios.
+    |   |       PageAdminDashboard.jsx    # Página de dashboard de administrador.
+    |   |       PatientDontAreaAsign.jsx  # Página para pacientes sin asignación de área.
+    |   |       PatientViewPage.jsx       # Página para ver los detalles de un paciente.
+    |   |       UserView.jsx              # Página para ver los detalles de un usuario.
+    |   |       ViewAreasPage.jsx         # Página para ver áreas.
+    |   |       ViewSpecialityTable.jsx   # Página para ver la tabla de especialidades.
     |   |       
-    |   \---user                 # (Pendiente) Otras páginas relacionadas con el usuario.
-    |   
-    +---routes                   # Configuración de rutas para la aplicación.
-    |       AppRoutes.jsx        # Rutas principales de la aplicación.
-    |       PrivateRoute.jsx     # Ruta protegida que requiere autenticación.
+    |   +---dev
+    |   |       DevDashboardPage.jsx     # Página de dashboard para desarrolladores.
+    |   |       
+    |   \---user
+    +---routes
+    |       AppRoutes.jsx               # Definición de rutas de la aplicación.
+    |       PrivateRoute.jsx            # Componente para gestionar rutas privadas.
     |       
-    +---services                 # Servicios para conectar con el backend.
-    |       adminServices.jsx    # Servicios para las funciones del administrador.
-    |       authUserService.jsx  # Servicios para la autenticación de usuarios.
-    |       developerService.jsx # Servicios para los desarrolladores.
-    |       userServices.jsx     # Servicios relacionados con operaciones de usuarios.
+    +---services
+    |       adminServices.jsx           # Servicios relacionados con la administración.
+    |       authUserService.jsx         # Servicio de autenticación de usuario.
+    |       developerService.jsx        # Servicio para funcionalidades de desarrollador.
+    |       mongoServices.jsx           # Servicios relacionados con MongoDB.
+    |       userServices.jsx            # Servicios relacionados con los usuarios.
     |       
-    +---test                     # Archivos para pruebas unitarias o de datos.
-    |       testData.tsx         # Datos de prueba o mock utilizados en las pruebas.
+    +---test
+    |       testData.tsx                # Archivo de datos para pruebas.
     |       
-    \---utilities                # Utilidades o helpers reutilizables en el proyecto.
+    \---utilities
 ```
 <h2> Explicación General </h2>
 
@@ -2767,6 +2906,7 @@ Los expedientes médicos estarán almacenados en MongoDB en formato JSON, su est
 - Escalabilidad Horizontal: Ideal para sistemas hospitalarios con grandes volúmenes de datos.
 - Historial Completo: Permite almacenar múltiples registros médicos en un solo documento de manera ordenada.
 
+
 <h1> Bitácora y Gestión de Errores </h1>
 Se han implementado dos archivos principales para la gestión de la bitácora
 
@@ -3050,6 +3190,14 @@ Backups para:
 - SQL Server (Usuarios y Áreas)
 - Redis (Bitácora)
 
+![Imagen General de los backups](img_manual/Imagen%20de%20WhatsApp%202024-12-30%20a%20las%2021.27.53_0fc19990.jpg)
+
+![Backup SQL](img_manual/Imagen%20de%20WhatsApp%202024-12-30%20a%20las%2021.28.04_8cc4e117.jpg)
+
+![Backup Redis](img_manual/Imagen%20de%20WhatsApp%202024-12-30%20a%20las%2021.28.18_94a2d6e3.jpg)
+
+![Backup Mongo](img_manual/Imagen%20de%20WhatsApp%202024-12-30%20a%20las%2021.28.32_225defaf.jpg)
+
 ```python
 @base_mongo.route('/crear_backups', methods=['POST'])
 def crear_backup_Mongo():
@@ -3142,3 +3290,9 @@ def crear_backup_Mongo():
     #save_log_param("consulta", "INFO", "crear_backup_Mongo", "Mongo_Controller", "Backups creado con exito") 
     return jsonify({"mongo_status": status_mongo, "file_mongo_id": file_mongo_id, "sql_status": status_sql,"file_sql_id": file_sql_id }), 200
 ```
+
+- Se implementó una funcionalidad que permita visualizar gráficamente la distribución de pacientes en las diferentes áreas del hospital utilizando Neo4j, se generan 2 archivos: area_csv y paciente_csv y se cargan a Neo4j.
+
+![Imagen arquitectura](img_manual/Captura%20de%20pantalla%202024-12-30%20203513.png)
+
+Para manejar todas las funciones relacionadas a Neo4J se creó un servicio, extraemos los datos de las tablas de SQL Server, luego se crean los 2 archivos anteriormente mencionados y luego se cargarn a Neo4J para poder visualizarlos en Neo4J Browser
