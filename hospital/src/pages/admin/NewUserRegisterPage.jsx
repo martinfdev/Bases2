@@ -3,13 +3,13 @@ import PropsTypes from 'prop-types'
 import { getSpecialties, registerUser } from '../../services/adminServices'
 import NewUserForm from '../../components/forms/NewUserForm'
 import Waiting from '../../components/shared/Waiting'
-import useAppContext  from '../../hooks/useAppContext'
+import useAppContext from '../../hooks/useAppContext'
 
-const NewUserRegisterPage = ({currentUserRole}) => {
+const NewUserRegisterPage = ({ currentUserRole }) => {
     const [specialities, setSpecialities] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
-    const {addNotification} = useAppContext()
+    const { addNotification } = useAppContext()
 
     useEffect(() => {
         const fetchSpecialities = async () => {
@@ -26,12 +26,14 @@ const NewUserRegisterPage = ({currentUserRole}) => {
     }, [])
 
     const handleRegisterUser = async (user) => {
+        setLoading(true)
         try {
             await registerUser(user)
             addNotification({
                 type: 'success',
                 message: 'Usuario registrado correctamente'
-        })
+            })
+            setLoading(false)
         } catch (error) {
             console.log(error)
             addNotification('Ocurrió un error al intentar registrar el usuario', 'error')
@@ -40,9 +42,18 @@ const NewUserRegisterPage = ({currentUserRole}) => {
 
     return (
         <>
-            {loading && <Waiting />}
-            {error && <p className="text-red-500">{error}</p>}
-            <NewUserForm currentUserRole={currentUserRole} lsitSpecialities={specialities} registerUser={handleRegisterUser}  />
+            {loading ? (
+                <Waiting />
+            ) : (
+                <div>
+                    {error && <p className="text-red-500">{error}</p>}
+                    <NewUserForm
+                        currentUserRole={currentUserRole}
+                        listSpecialities={specialities}
+                        registerUser={handleRegisterUser}
+                    />
+                </div>
+            )}
         </>
     )
 }

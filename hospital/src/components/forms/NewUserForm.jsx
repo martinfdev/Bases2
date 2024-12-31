@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import useAppContext from "../../hooks/useAppContext"
 
-const NewUserForm = ({ currentUserRole, registerUser, lsitSpecialities }) => {
+const NewUserForm = ({ currentUserRole, registerUser, listSpecialities }) => {
   const [form, setForm] = useState({
     nombres: "",
     apellidos: "",
@@ -34,6 +34,24 @@ const NewUserForm = ({ currentUserRole, registerUser, lsitSpecialities }) => {
     }
   }
 
+  const clearForm = () => {
+    setForm({
+      nombres: "",
+      apellidos: "",
+      correo: "",
+      contrasena: "",
+      id_rol: 0,
+      telefono: "",
+      dpi: "",
+      genero: "",
+      direccion: "",
+      fecha_ingreso: "",
+      id_especialidad: 0,
+      fecha_vencimiento_colegiado: "",
+      estado: 0,
+    })
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -44,41 +62,9 @@ const NewUserForm = ({ currentUserRole, registerUser, lsitSpecialities }) => {
       })
       return
     }
-
-    try {
-      const dataToSend = {
-        ...form,
-        id_rol: parseInt(form.id_rol, 10),
-        id_especialidad: form.id_especialidad
-          ? parseInt(form.id_especialidad, 10)
-          : null,
-        estado: form.estado ? parseInt(form.estado, 10) : null,
-      }
-
-      await registerUser(dataToSend)
-      alert("Usuario creado exitosamente")
-
-      setForm({
-        nombres: "",
-        apellidos: "",
-        correo: "",
-        contrasena: "",
-        id_rol: 0,
-        telefono: "",
-        dpi: "",
-        genero: "",
-        direccion: "",
-        fecha_ingreso: "",
-        id_especialidad: 0,
-        fecha_vencimiento_colegiado: "",
-        estado: 0,
-      })
-    } catch (error) {
-      console.log(error)
-    }
+    registerUser(form)
+    clearForm()
   }
-
-  const [specialities] = useState(lsitSpecialities)
 
   useEffect(() => {
     setIsNurse(form.id_rol === 3) 
@@ -245,7 +231,7 @@ const NewUserForm = ({ currentUserRole, registerUser, lsitSpecialities }) => {
                 className="mt-1 w-full border rounded px-3 py-2 bg-white focus:outline-none focus:ring focus:border-blue-300"
               >
                 <option value="">Seleccione una especialidad</option>
-                {specialities.map((especialidad) => (
+                {listSpecialities.map((especialidad) => (
                   <option
                     key={especialidad.id_especialidad}
                     value={especialidad.id_especialidad}
@@ -290,7 +276,7 @@ const NewUserForm = ({ currentUserRole, registerUser, lsitSpecialities }) => {
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"
           >
-            Enviar
+            Guardar
           </button>
         </form>
       </div>
@@ -301,7 +287,7 @@ const NewUserForm = ({ currentUserRole, registerUser, lsitSpecialities }) => {
 NewUserForm.propTypes = {
   currentUserRole: PropTypes.number,
   registerUser: PropTypes.func.isRequired,
-  lsitSpecialities: PropTypes.array.isRequired
+  listSpecialities: PropTypes.array.isRequired
 }
 
 export default NewUserForm

@@ -31,6 +31,36 @@ export const getDashboardData = async () => {
 }
 
 /**
+ * Register a new user in the system
+ * @param userData - object containing the user data
+ * @returns a promise that resolves to the user data if the registration is successful
+ * @throws an error if the registration fails
+ */
+export async function registerUser(userData) {
+    try {
+        //   const response = await fetch(`${API_URL}/admin/register`, {
+        //     method: 'POST',
+        //     headers: {
+        //        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        //       'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(userData),
+        //   })
+  
+        //   const data = await response.json()
+  
+        //   if (!response.ok) {
+        //     throw new Error(data.error || 'Error en el registro del usuario.')
+        //   }
+          await new Promise(resolve => setTimeout(resolve, 1000))
+          console.log('userData to send:', userData)
+      } catch (error) {
+          console.error('Error en registro de usuario:', error)
+          throw error
+      }
+  }
+
+/**
  * Get the list of specialties from the server
  * @returns a promise that resolves to the list of specialties
  * @throws an error if the request fails
@@ -270,40 +300,22 @@ export const getPatients = async () => {
 
 export const deletePatient = async (patientId) => {
     try {
-<<<<<<< HEAD
-        console.log(patientId)
-        const response = await fetch(`${API_URL}/admin/eliminar_paciente`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-            body: JSON.stringify({dpi: patientId}),
-        })
-        const data = await response.json()
-        if (!response.ok) {
-            throw new Error(data.error || 'Error en la eliminación del paciente.')   
-        }
-        // await new Promise(resolve => setTimeout(resolve, 1000))
-        // const data = {message: 'Paciente eliminado correctamente'}
-        // console.log('patientData to send:', patientId)
-=======
+        // console.log(patientId)
         // const response = await fetch(`${API_URL}/admin/eliminar_paciente`, {
         //     method: 'DELETE',
         //     headers: {
-        //         'Content-Type': 'application/json',    
+        //         'Content-Type': 'application/json',
         //         Authorization: `Bearer ${localStorage.getItem('token')}`,
         //     },
         //     body: JSON.stringify({dpi: patientId}),
         // })
-       
+        // const data = await response.json()
         // if (!response.ok) {
         //     throw new Error(data.error || 'Error en la eliminación del paciente.')   
         // }
         await new Promise(resolve => setTimeout(resolve, 1000))
         const data = {message: 'Paciente eliminado correctamente'}
         console.log('patientData to send:', patientId)
->>>>>>> origin/develop
         return data
     }
     catch (error) {
@@ -438,23 +450,6 @@ export const getAreas = async () => {
 
 export const deleteArea = async (nombreArea) => {
     try {
-<<<<<<< HEAD
-        console.log(nombreArea)
-        const response = await fetch(`${API_URL}/admin/eliminar_area`, {
-            method: 'DELETE',
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-            body: JSON.stringify({nombre_area: nombreArea}),
-        })
-        const data = await response.json()
-        if (!response.ok) {
-            throw new Error(data.error || 'Error en la eliminación del área.')
-        }
-        // await new Promise(resolve => setTimeout(resolve, 5000))
-        // console.log('areaData to send:', nombreArea)
-        // const data = {message: 'Área eliminada correctamente'}
-=======
         // const response = await fetch(`${API_URL}/admin/eliminar_area`, {
         //     method: 'DELETE',
         //     headers: {
@@ -470,7 +465,6 @@ export const deleteArea = async (nombreArea) => {
         await new Promise(resolve => setTimeout(resolve, 5000))
         console.log('areaData to send:', nombreArea)
         const data = {message: 'Área eliminada correctamente'}
->>>>>>> origin/develop
         return data
     } catch (error) {
         console.error('Error en eliminación de área:', error)
