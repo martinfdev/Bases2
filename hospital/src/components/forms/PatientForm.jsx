@@ -2,10 +2,9 @@ import { useState } from 'react'
 import PropTypes from 'prop-types'
 import Input from '../common/Input'
 import Select from '../common/Select'
-import { createPatient } from '../../services/adminServices'
 import useAppContext from '../../hooks/useAppContext'
 
-const PacienteForm = ({ listAreas }) => {
+const PacienteForm = ({ listAreas, createPatient }) => {
     const { addNotification } = useAppContext()
     const [formData, setFormData] = useState({
         nombre: '',
@@ -15,16 +14,19 @@ const PacienteForm = ({ listAreas }) => {
         fecha_nacimiento: '',
         telefono: '',
         direccion: '',
-        id_area: 0,
+        id_area: '',
         estado: '',
     })
 
-    //dpi is a number, so we need therteen digits
+    // DPI validation regex
     const dpiRegex = /^\d{13}$/
 
     const handleChange = (e) => {
         const { name, value } = e.target
-        setFormData(prev => ({ ...prev, [name]: value }))
+        setFormData(prev => ({
+            ...prev,
+            [name]: value,
+        }))
     }
 
     const handleSubmit = async (e) => {
@@ -32,16 +34,18 @@ const PacienteForm = ({ listAreas }) => {
         if (!dpiRegex.test(formData.dpi)) {
             addNotification({
                 type: 'error',
-                message: 'El DPI debe contener exactamente 13 dígitos'
+                message: 'El DPI debe contener exactamente 13 dígitos',
             })
             return
         }
+
         try {
-            await createPatient(formData)
-            addNotification({
-                type: 'success',
-                message: 'Paciente creado exitosamente'
-            })
+            const submissionData = {
+                ...formData,
+                id_area: parseInt(formData.id_area, 10),
+                estado: formData.estado ? parseInt(formData.estado, 10) : null,
+            }
+            await createPatient(submissionData)
             handleReset()
         } catch (error) {
             console.error(error)
@@ -57,7 +61,7 @@ const PacienteForm = ({ listAreas }) => {
             fecha_nacimiento: '',
             telefono: '',
             direccion: '',
-            id_area: 0,
+            id_area: '',
             estado: '',
         })
     }
@@ -82,11 +86,9 @@ const PacienteForm = ({ listAreas }) => {
                     onChange={handleChange}
                 />
                 <div className="flex flex-col">
-                    <label className="text-gray-700 font-medium mb-1">
-                        {"DPI"}
-                    </label>
+                    <label className="text-gray-700 font-medium mb-1">DPI (13 dígitos)</label>
                     <input
-                        type="number"
+                        type="text"
                         id="dpi"
                         name="dpi"
                         value={formData.dpi}
@@ -97,7 +99,7 @@ const PacienteForm = ({ listAreas }) => {
                 <Select
                     label="Género"
                     name="genero"
-                    type="text"
+                    type='text'
                     value={formData.genero}
                     onChange={handleChange}
                     options={[
@@ -117,7 +119,7 @@ const PacienteForm = ({ listAreas }) => {
                 <Input
                     label="Teléfono"
                     name="telefono"
-                    type="number"
+                    type="text"
                     value={formData.telefono}
                     onChange={handleChange}
                 />
@@ -130,21 +132,25 @@ const PacienteForm = ({ listAreas }) => {
                 />
                 <Select
                     label="Área"
-                    type="number"
                     name="id_area"
-                    value={formData.id_area.toString()}
+                    type='number'
+                    value={formData.id_area}
                     onChange={handleChange}
-                    options={listAreas.map(area => ({ value: area.id_area, label: area.nombre_area }))}
+                    options={listAreas.map(area => ({
+                        value: area.id_area.toString(), // Convert to string
+                        label: area.nombre_area,
+                    }))}
                 />
                 <Select
                     label="Estado"
                     name="estado"
+                    type='text'
                     value={formData.estado}
                     onChange={handleChange}
                     options={[
                         { value: '', label: 'Selecciona estado' },
-                        { value: 1, label: 'Activo' },
-                        { value: 0, label: 'Inactivo' },
+                        { value: '1', label: 'Activo' },
+                        { value: '0', label: 'Inactivo' },
                     ]}
                 />
                 <button
@@ -157,6 +163,7 @@ const PacienteForm = ({ listAreas }) => {
         </div>
     )
 }
+
 PacienteForm.propTypes = {
     listAreas: PropTypes.arrayOf(
         PropTypes.shape({
@@ -164,6 +171,7 @@ PacienteForm.propTypes = {
             nombre_area: PropTypes.string.isRequired,
         })
     ).isRequired,
+    createPatient: PropTypes.func.isRequired,
 }
 
 export default PacienteForm
