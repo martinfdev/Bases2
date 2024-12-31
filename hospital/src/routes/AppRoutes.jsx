@@ -9,6 +9,7 @@ import PatientViewPage from '../pages/admin/PatientViewPage'
 import NewSpecialityPage from '../pages/admin/NewSpecialityPage'
 import ViewSpecialityTable from '../pages/admin/ViewSpecialityTable'
 import ViewAreasPage from '../pages/admin/ViewAreasPage'
+import NewUserRegisterPage from '../pages/admin/NewUserRegisterPage'
 import NewAreaPage from '../pages/admin/NewAreaPage'
 import AttendedPatientsPage from '../pages/admin/AttendedPatientsPage'
 import CommonDiagnosisPage from '../pages/admin/CommonDiagnosisPage'
@@ -21,7 +22,6 @@ import LogVitacore from '../components/dev/LogVitacore'
 import DoctorLayout from '../layouts/DoctorLayout'
 import PatientRecordPage from '../pages/PatientRecordPage'
 import NurseLayout from '../layouts/NurseLayout'
-import NewUserForm from '../components/admin/NewUserForm'
 import NotFound from '../pages/NotFound'
 import Unauthorized from '../pages/Unauthorized'
 
@@ -37,7 +37,7 @@ const AppRouter = () => {
       {<Route path='admin/' element={<PrivateRoute roles={[1]}><AdminLayout /></PrivateRoute>}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<PageAdminDashboard />} />
-        <Route path="users/create" element={<NewUserForm currentUserRole={1} />} />
+        <Route path="users/create" element={<NewUserRegisterPage currentUserRole={1} />} />
         <Route path="users/list" element={<UsersView />} />
         <Route path="patients/create" element={<NewPatientPage />} />
         <Route path="patients/list" element={<PatientViewPage />} />
@@ -62,7 +62,7 @@ const AppRouter = () => {
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<PageDeveloperDashboard />} />
         <Route path="logs" element={<LogVitacore />} />
-        <Route path="users/create" element={<NewUserForm currentUserRole={4} />} />
+        {/* <Route path="users/create" element={<NewUserForm currentUserRole={4} />} /> */}
         <Route path="records/view" element={<NotFound />} />
         <Route path="records/edit" element={<NotFound />} />
         <Route path="settings" element={<NotFound />} />
