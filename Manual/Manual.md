@@ -2249,87 +2249,146 @@ C:.
 |   .gitignore                   # Define qué archivos y carpetas ignorar en Git.
 |   eslint.config.js             # Configuración para ESLint (análisis estático del código).
 |   estructura.txt               # Archivo que describe la estructura del proyecto.
+|   format.json                  # Configuración de formato (puede ser para Prettier o algún formateador).
 |   index.html                   # Punto de entrada principal para la aplicación React.
 |   package-lock.json            # Archivo que asegura la consistencia de dependencias instaladas.
-|   package.json                 # Configuración de dependencias y scripts del proyecto.
-|   postcss.config.js            # Configuración de PostCSS para procesamiento de estilos.
-|   README.md                    # Documentación general del proyecto.
-|   tailwind.config.js           # Configuración de Tailwind CSS.
-|   vite.config.js               # Configuración de Vite (entorno de desarrollo rápido).
-|
-+---public                       # Archivos estáticos públicos que no requieren procesamiento.
-|       vite.svg                 # Ícono o logo utilizado en la app.
+|   package.json                 # Contiene las dependencias, scripts y configuraciones del proyecto.
+|   postcss.config.js            # Configuración de PostCSS para procesamiento de CSS.
+|   README.md                    # Documentación del proyecto (explica cómo usarlo y configurarlo).
+|   tailwind.config.js           # Configuración de TailwindCSS.
+|   vite.config.js               # Configuración de Vite (bundler y servidor de desarrollo).
+|   
++---.vite
+|   \---deps                     # Dependencias generadas por Vite.
++---public
+|       vite.svg                 # Archivo estático (generalmente icono o imagen de la app).
 |       
-\---src                          # Código fuente principal del proyecto.
-    |   App.jsx                  # Componente principal que organiza toda la aplicación.
+\---src
+    |   App.jsx                  # Componente principal de la aplicación React.
     |   index.css                # Estilos globales de la aplicación.
-    |   main.jsx                 # Punto de entrada para renderizar la aplicación React.
+    |   main.jsx                  # Punto de entrada para renderizar la app React en el DOM.
     |   
-    +---assets                   # Recursos estáticos como imágenes, logos, etc.
-    |       react.svg            # Logo de React.
+    +---assets
+    |       react.svg             # Gráfico o ícono utilizado en la app.
     |       
-    +---components               # Componentes reutilizables y específicos.
-    |   +---admin                # Componentes específicos para la sección de administrador.
-    |   |       NewUserForm.jsx  # Formulario para agregar nuevos usuarios.
-    |   |       UserTable.jsx    # Tabla que muestra una lista de usuarios.
+    +---components
+    |   +---admin
+    |   |       PatientForm.jsx   # Formulario para gestionar pacientes en la vista de administrador.
+    |   |       PatientTable.jsx  # Tabla para mostrar pacientes en la vista de administrador.
+    |   |       UserTable.jsx     # Tabla para mostrar usuarios en la vista de administrador.
     |   |       
-    |   +---auth                 # Componentes relacionados con la autenticación.
-    |   |       LoginForm.jsx    # Formulario de inicio de sesión.
+    |   +---auth
+    |   |       LoginForm.jsx     # Formulario de login.
     |   |       
-    |   +---dev                  # Componentes para desarrolladores.
-    |   |       LogVitacore.jsx  # Registro de logs o actividad para desarrolladores.
+    |   +---common
+    |   |       Input.jsx         # Componente de input reutilizable.
+    |   |       Select.jsx        # Componente de selección reutilizable.
+    |   |       TextArea.jsx      # Componente de área de texto reutilizable.
+    |       
+    |   +---dev
+    |   |       LogVitacore.jsx   # Componente relacionado con el desarrollo de la aplicación.
     |   |       
-    |   +---shared               # Componentes reutilizables entre distintas partes de la app.
-    |   |       ErrorBoundary.jsx # Manejo global de errores.
-    |   |       Header.jsx        # Componente de cabecera común.
-    |   |       Modal.jsx         # Componente de ventana modal reutilizable.
-    |   |       Sidebar.jsx       # Barra lateral de navegación.
-    |   |       SidebarLink.jsx   # Enlace reutilizable dentro de la barra lateral.
-    |   |       
-    |   \---user                 # Componentes para manejar la administración de usuarios.
-    |           DeleteConfirmationModal.jsx # Modal de confirmación para eliminar usuarios.
-    |           EditUserModal.jsx           # Modal para editar la información de un usuario.
-    |           ViewUserModal.jsx           # Modal para visualizar detalles del usuario.
+    |   +---forms
+    |   |       AreaForm.jsx      # Formulario para gestionar áreas.
+    |   |       AssigmentFormModal.jsx # Modal para asignar tareas o recursos.
+    |   |       MultiStepFormNewIngres.jsx # Formulario multi-paso para nuevos ingresos.
+    |   |       NewUserForm.jsx    # Formulario para crear un nuevo usuario.
+    |   |       Page1FormNewIngres.jsx # Primer paso del formulario de nuevos ingresos.
+    |   |       SpecialityForm.jsx # Formulario para gestionar especialidades.
+    |       
+    |   +---mod
+    |   |       DeleteModalArea.jsx    # Modal para eliminar un área.
+    |   |       EditModalArea.jsx      # Modal para editar un área.
+    |   |       PatientDeleteModal.jsx # Modal para eliminar un paciente.
+    |   |       PatientEditModal.jsx   # Modal para editar un paciente.
+    |   |       PatientViewModal.jsx   # Modal para ver los detalles de un paciente.
+    |   |       ViewModalArea.jsx      # Modal para ver los detalles de un área.
+    |       
+    |   +---notifications
+    |   |       NotificationModal.jsx # Modal para mostrar notificaciones.
+    |       
+    |   +---patientRecord
+    |   |       ContactInput.jsx      # Componente para ingresar datos de contacto.
+    |   |       PatientRecordForm.jsx # Formulario para gestionar los registros de pacientes.
+    |       
+    |   +---shared
+    |   |       DownloadButton.jsx    # Botón para descargar archivos.
+    |   |       ErrorBoundary.jsx     # Componente para manejar errores en la UI.
+    |   |       Header.jsx            # Componente de encabezado de la aplicación.
+    |   |       Modal.jsx             # Componente genérico de modal.
+    |   |       Sidebar.jsx           # Componente para la barra lateral de navegación.
+    |   |       SidebarLink.jsx       # Componente de enlace en la barra lateral.
+    |   |       Waiting.jsx           # Componente para mostrar un indicador de espera.
+    |       
+    |   +---tables
+    |   |       AreaTable.jsx         # Tabla para mostrar las áreas.
+    |   |       AssigmentTable.jsx    # Tabla para mostrar asignaciones.
+    |   |       AttendedPatientTable.jsx # Tabla para mostrar pacientes atendidos.
+    |   |       CommonDiagnosisTable.jsx # Tabla para mostrar diagnósticos comunes.
+    |   |       LastIngresedPatientsTable.jsx # Tabla para mostrar los últimos pacientes ingresados.
+    |   |       SpecialityTable.jsx   # Tabla para mostrar especialidades.
+    |       
+    |   \---user
+    |           DeleteConfirmationModal.jsx # Modal para confirmar la eliminación de un usuario.
+    |           EditUserModal.jsx          # Modal para editar un usuario.
+    |           ViewUserModal.jsx          # Modal para ver los detalles de un usuario.
     |           
-    +---context                  # Contextos de React para manejo global de estados.
-    |       AuthContext.jsx      # Contexto para manejar el estado de autenticación.
+    +---context
+    |       AppContext.jsx             # Contexto para gestionar el estado global de la app.
+    |       AuthContext.jsx            # Contexto para gestionar el estado de autenticación.
     |       
-    +---hooks                    # Hooks personalizados de React.
-    |       useAuth.jsx          # Hook para acceder y manejar la autenticación del usuario.
+    +---hooks
+    |       useAppContext.jsx          # Hook personalizado para acceder al contexto de la app.
+    |       useAuth.jsx                # Hook personalizado para gestionar la autenticación.
     |       
-    +---layouts                  # Layouts para secciones específicas de la aplicación.
-    |       AdminLayout.jsx      # Layout de la sección de administrador.
-    |       DeveloperLayout.jsx  # Layout de la sección de desarrollador.
-    |       DoctorLayout.jsx     # Layout de la sección de doctor.
-    |       Layout.jsx           # Layout general compartido.
-    |       NurseLayout.jsx      # Layout de la sección de enfermera.
+    +---layouts
+    |       AdminLayout.jsx            # Layout para la vista de administrador.
+    |       DeveloperLayout.jsx        # Layout para la vista de desarrollador.
+    |       DoctorLayout.jsx           # Layout para la vista de doctor.
+    |       Layout.jsx                 # Layout genérico para la aplicación.
+    |       NurseLayout.jsx            # Layout para la vista de enfermera.
     |       
-    +---pages                    # Páginas principales de la aplicación.
-    |   |   LoginPage.jsx        # Página de inicio de sesión.
-    |   |   NotFound.jsx         # Página para errores 404 (ruta no encontrada).
-    |   |   SimplePage.jsx       # Página genérica para pruebas o secciones simples.
-    |   |   Unauthorized.jsx     # Página para accesos no autorizados.
+    +---pages
+    |   |   LoginPage.jsx             # Página de login.
+    |   |   NotFound.jsx              # Página de error 404.
+    |   |   PatientRecordPage.jsx     # Página para gestionar registros de pacientes.
+    |   |   Unauthorized.jsx          # Página para usuarios no autorizados.
     |   |   
-    |   +---admin                # Páginas relacionadas con la sección de administrador.
-    |   |       PageAdminDashboard.jsx # Página principal del panel de administración.
-    |   |       UserView.jsx           # Página para la visualización de usuarios.
+    |   +---admin
+    |   |       AttendedPatientsPage.jsx   # Página para ver pacientes atendidos.
+    |   |       CommonDiagnosisPage.jsx    # Página para ver diagnósticos comunes.
+    |   |       DownloadReportsPage.jsx    # Página para descargar reportes.
+    |   |       LastIngresedPatientsPage.jsx # Página para ver últimos pacientes ingresados.
+    |   |       NewAreaPage.jsx            # Página para crear nuevas áreas.
+    |   |       NewPatientPage.jsx        # Página para crear nuevos pacientes.
+    |   |       NewSpecialityPage.jsx     # Página para crear nuevas especialidades.
+    |   |       NewUserRegisterPage.jsx   # Página para registrar nuevos usuarios.
+    |   |       PageAdminDashboard.jsx    # Página de dashboard de administrador.
+    |   |       PatientDontAreaAsign.jsx  # Página para pacientes sin asignación de área.
+    |   |       PatientViewPage.jsx       # Página para ver los detalles de un paciente.
+    |   |       UserView.jsx              # Página para ver los detalles de un usuario.
+    |   |       ViewAreasPage.jsx         # Página para ver áreas.
+    |   |       ViewSpecialityTable.jsx   # Página para ver la tabla de especialidades.
     |   |       
-    |   \---user                 # (Pendiente) Otras páginas relacionadas con el usuario.
-    |   
-    +---routes                   # Configuración de rutas para la aplicación.
-    |       AppRoutes.jsx        # Rutas principales de la aplicación.
-    |       PrivateRoute.jsx     # Ruta protegida que requiere autenticación.
+    |   +---dev
+    |   |       DevDashboardPage.jsx     # Página de dashboard para desarrolladores.
+    |   |       
+    |   \---user
+    +---routes
+    |       AppRoutes.jsx               # Definición de rutas de la aplicación.
+    |       PrivateRoute.jsx            # Componente para gestionar rutas privadas.
     |       
-    +---services                 # Servicios para conectar con el backend.
-    |       adminServices.jsx    # Servicios para las funciones del administrador.
-    |       authUserService.jsx  # Servicios para la autenticación de usuarios.
-    |       developerService.jsx # Servicios para los desarrolladores.
-    |       userServices.jsx     # Servicios relacionados con operaciones de usuarios.
+    +---services
+    |       adminServices.jsx           # Servicios relacionados con la administración.
+    |       authUserService.jsx         # Servicio de autenticación de usuario.
+    |       developerService.jsx        # Servicio para funcionalidades de desarrollador.
+    |       mongoServices.jsx           # Servicios relacionados con MongoDB.
+    |       userServices.jsx            # Servicios relacionados con los usuarios.
     |       
-    +---test                     # Archivos para pruebas unitarias o de datos.
-    |       testData.tsx         # Datos de prueba o mock utilizados en las pruebas.
+    +---test
+    |       testData.tsx                # Archivo de datos para pruebas.
     |       
-    \---utilities                # Utilidades o helpers reutilizables en el proyecto.
+    \---utilities
 ```
 <h2> Explicación General </h2>
 
