@@ -18,6 +18,7 @@ import PatientDontAreaAsign from '../pages/admin/PatientDontAreaAsign'
 import LastIngresedPatientsPage from '../pages/admin/LastIngresedPatientsPage'
 import DeveloperLayout from '../layouts/DeveloperLayout'  
 import PageDeveloperDashboard from '../pages/dev/DevDashboardPage'
+import NewUserRegisterDevPage from '../pages/dev/NewUserRegisterDevPage'
 import LogVitacore from '../components/dev/LogVitacore'
 import DoctorLayout from '../layouts/DoctorLayout'
 import PatientRecordPage from '../pages/PatientRecordPage'
@@ -62,7 +63,7 @@ const AppRouter = () => {
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<PageDeveloperDashboard />} />
         <Route path="logs" element={<LogVitacore />} />
-        {/* <Route path="users/create" element={<NewUserForm currentUserRole={4} />} /> */}
+        <Route path="users/create" element={<NewUserRegisterDevPage currentUserRole={4} />} />
         <Route path="records/view" element={<NotFound />} />
         <Route path="records/edit" element={<NotFound />} />
         <Route path="settings" element={<NotFound />} />
