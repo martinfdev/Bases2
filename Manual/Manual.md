@@ -166,6 +166,26 @@ Utilizamos una arquitectura orientada a servicios (SOA) donde la capa de usuario
 - Se comunica con otros microservicios para almacenar o consultar información relacionada con el sistema de salud, como logs de eventos o información adicional de pacientes.
 - MongoDB para almacenamiento de datos NoSQL.
 
+
+<h2> Microservicio de Neo4j  </h2>
+
+- Este microservicio está diseñado para facilitar la integración y visualización de datos a través de grafos, utilizando Neo4j como base de datos para representar las relaciones entre los pacientes y las áreas del sistema de salud.
+- El proceso comienza con una consulta a la base de datos SQL Server, donde se extraen los datos de los pacientes y las áreas. Estos datos se organizan en archivos .csv, lo que permite una forma más sencilla de manejarlos y transformarlos.
+- Una vez generados los archivos .csv, se cargan en Neo4j, creando nodos que representan a los pacientes, las áreas y las relaciones entre ellos. Esto permite visualizar y analizar de manera más efectiva cómo se conectan diferentes datos dentro del sistema de salud.
+- Gracias a Neo4j, este enfoque de base de datos en grafos facilita la exploración de relaciones complejas y mejora la capacidad para obtener información detallada y significativa de manera más rápida y flexible.
+
+<h2> Microservicio de Notificaciones Automáticas (Doctores) </h2>
+
+- Este microservicio gestionará el envío de notificaciones automáticas sobre eventos críticos, como el vencimiento del colegiado de un doctor. Se utilizará para enviar alertas por correo electrónico cuando queden 30 días o menos para el vencimiento del colegiado.
+- Se comunica con otros microservicios para obtener la información sobre las fechas de vencimiento del colegiado de los doctores y determinar si se deben generar notificaciones.
+El servicio contará con dos endpoints:
+
+- Un endpoint de consulta que devuelve cuántos días faltan para el vencimiento del colegiado.
+- Un endpoint de notificación que enviará un correo de recordatorio si el vencimiento se acerca (menos de 30 días).
+
+- El frontend se integra con este servicio haciendo una consulta al iniciar sesión para obtener los días restantes y, si es necesario, enviando la notificación por correo.
+- MongoDB puede ser utilizado para almacenar las fechas de vencimiento de los colegiados, lo que permite realizar consultas rápidas sobre los plazos.
+
 <h2> Endpoints de la API </h2>
 
 ## register_user
@@ -2150,6 +2170,66 @@ Respuestas
 }
 ```
 
+## Exportar_datos_a_CSV
+**URL (dirección):**  
+`http://127.0.0.1:5007/neo/extract_expediente`
+
+**Método HTTP:**  
+`GET`
+
+**Cabecera de Petición:**  
+`Content-Type: application/json`
+
+**Cuerpo (PAYLOAD):**  
+*(No se requiere payload para esta petición)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+	"message": "Archivo creado"
+}
+```
+- Código HTTP 500
+
+```json
+{
+	"message": "error"
+}
+```
+
+## cargar_datos_a_neo
+**URL (dirección):**  
+`http://127.0.0.1:5007/cargar_datos_neo/cargar_datos_neo4j`
+
+**Método HTTP:**  
+`POST`
+
+**Cabecera de Petición:**  
+`Content-Type: application/json`
+
+**Cuerpo (PAYLOAD):**  
+*(Se deben de cargar 2 archivos: 
+area_csv: area.csv y 
+paciente_csv: paciente.csv
+)*
+
+Respuestas
+- Código HTTP 200
+
+```json
+{
+	"message": "Datos cargados exitosamente en Neo4j"
+}
+```
+- Código HTTP 500
+
+```json
+{
+	"message": "Error al cargar los datos en Neo4j"
+}
+```
 
 
 <h2> Diagrama de Arquitectura del Backend </h2>
@@ -2767,6 +2847,7 @@ Los expedientes médicos estarán almacenados en MongoDB en formato JSON, su est
 - Escalabilidad Horizontal: Ideal para sistemas hospitalarios con grandes volúmenes de datos.
 - Historial Completo: Permite almacenar múltiples registros médicos en un solo documento de manera ordenada.
 
+
 <h1> Bitácora y Gestión de Errores </h1>
 Se han implementado dos archivos principales para la gestión de la bitácora
 
@@ -3050,6 +3131,14 @@ Backups para:
 - SQL Server (Usuarios y Áreas)
 - Redis (Bitácora)
 
+![Imagen General de los backups](img_manual/Imagen%20de%20WhatsApp%202024-12-30%20a%20las%2021.27.53_0fc19990.jpg)
+
+![Backup SQL](img_manual/Imagen%20de%20WhatsApp%202024-12-30%20a%20las%2021.28.04_8cc4e117.jpg)
+
+![Backup Redis](img_manual/Imagen%20de%20WhatsApp%202024-12-30%20a%20las%2021.28.18_94a2d6e3.jpg)
+
+![Backup Mongo](img_manual/Imagen%20de%20WhatsApp%202024-12-30%20a%20las%2021.28.32_225defaf.jpg)
+
 ```python
 @base_mongo.route('/crear_backups', methods=['POST'])
 def crear_backup_Mongo():
@@ -3142,3 +3231,9 @@ def crear_backup_Mongo():
     #save_log_param("consulta", "INFO", "crear_backup_Mongo", "Mongo_Controller", "Backups creado con exito") 
     return jsonify({"mongo_status": status_mongo, "file_mongo_id": file_mongo_id, "sql_status": status_sql,"file_sql_id": file_sql_id }), 200
 ```
+
+- Se implementó una funcionalidad que permita visualizar gráficamente la distribución de pacientes en las diferentes áreas del hospital utilizando Neo4j, se generan 2 archivos: area_csv y paciente_csv y se cargan a Neo4j.
+
+![Imagen arquitectura](img_manual/Captura%20de%20pantalla%202024-12-30%20203513.png)
+
+Para manejar todas las funciones relacionadas a Neo4J se creó un servicio, extraemos los datos de las tablas de SQL Server, luego se crean los 2 archivos anteriormente mencionados y luego se cargarn a Neo4J para poder visualizarlos en Neo4J Browser
