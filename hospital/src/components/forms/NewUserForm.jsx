@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react"
 import PropTypes from "prop-types"
-import { registerUser } from "../../services/userServices"
-import { getSpecialties } from "../../services/adminServices"
 import useAppContext from "../../hooks/useAppContext"
 
-const NewUserForm = ({ currentUserRole }) => {
+const NewUserForm = ({ currentUserRole, registerUser, lsitSpecialities }) => {
   const [form, setForm] = useState({
     nombres: "",
     apellidos: "",
@@ -80,15 +78,7 @@ const NewUserForm = ({ currentUserRole }) => {
     }
   }
 
-  const [specialities, setSpecialities] = useState([])
-
-  useEffect(() => {
-    const fetchSpecialties = async () => {
-      const data = await getSpecialties()
-      setSpecialities(data.especialidades)
-    }
-    fetchSpecialties()
-  }, [])
+  const [specialities] = useState(lsitSpecialities)
 
   useEffect(() => {
     setIsNurse(form.id_rol === 3) 
@@ -310,6 +300,8 @@ const NewUserForm = ({ currentUserRole }) => {
 
 NewUserForm.propTypes = {
   currentUserRole: PropTypes.number,
+  registerUser: PropTypes.func.isRequired,
+  lsitSpecialities: PropTypes.array.isRequired
 }
 
 export default NewUserForm
