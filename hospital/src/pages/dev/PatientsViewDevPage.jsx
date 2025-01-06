@@ -1,14 +1,14 @@
 
 import { useState, useEffect } from 'react';
 import PatientTable from '../../components/admin/PatientTable'
-import { getPatients, deletePatient, updatePatient, getAreas } from '../../services/adminServices'
+import { getPatients, deletePatient, updatePatient, getAreas } from '../../services/developerService'
 import useAppContext from '../../hooks/useAppContext'
 import PatientDeleteModal from '../../components/mod/PatientDeleteModal'
 import PatientEditModal from '../../components/mod/PatientEditModal'
 import PatientViewModal from '../../components/mod/PatientViewModal'
 import Waiting from '../../components/shared/Waiting'
 
-const PatientViewPage = () => {
+const PatientsViewDevPage = () => {
     const [patients, setPatients] = useState([])
     const [areas, setAreas] = useState([])
     const [search, setSearch] = useState('')
@@ -138,9 +138,9 @@ const PatientViewPage = () => {
                             onDelete={handleDelete}
                             onEdit={handleEdit}
                             onView={handleView}
-                            btnStatusDelete={false}
-                            btnStatusEdit={false}
                             btnStatusView={false}
+                            btnStatusEdit={false}
+                            btnStatusDelete={true}
                         />
                     </div>
                     <div className="flex justify-center">
@@ -174,4 +174,4 @@ const PatientViewPage = () => {
     )
 }
 
-export default PatientViewPage
+export default PatientsViewDevPage

@@ -9,7 +9,7 @@ export const dataUser =
     "apellidos": "Pérez",
     "correo": "juan.perez@example.com",
     "contrasena": "123",
-    "id_rol": 1,
+    "id_rol": 2,
     "telefono": "55555555",
     "dpi": "1234567890123",
     "genero": "masculino",
@@ -77,7 +77,7 @@ export const listUsers =
             "fecha_ingreso": "Fri, 13 Dec 2024 00:00:00 GMT",
             "fecha_vencimiento_colegiado": null,
             "genero": "Masculino",
-            "id_rol": 4,
+            "id_rol": 1,
             "id_usuario": 1,
             "nombres": "Eduardo Alexander",
             "telefono": "35958027",
@@ -92,7 +92,7 @@ export const listUsers =
             "fecha_ingreso": "Fri, 13 Dec 2024 00:00:00 GMT",
             "fecha_vencimiento_colegiado": null,
             "genero": "Masculino",
-            "id_rol": 4,
+            "id_rol": 3,
             "id_usuario": 1,
             "nombres": "Eduardo Alexander",
             "telefono": "35958027",
@@ -107,7 +107,7 @@ export const listUsers =
             "fecha_ingreso": "Fri, 13 Dec 2024 00:00:00 GMT",
             "fecha_vencimiento_colegiado": null,
             "genero": "Masculino",
-            "id_rol": 4,
+            "id_rol": 1,
             "id_usuario": 1,
             "nombres": "Eduardo Alexander",
             "telefono": "35958027",
@@ -372,8 +372,7 @@ export const listAttendedPatients = [
     }
 ]
 
-export const commonDignosis = {
-    "diagnosticos": [
+export const commonDignosis = [
         {
             "diagnostico": "Cáncer de pulmón",
             "frecuencia": 15
@@ -399,7 +398,6 @@ export const commonDignosis = {
             "frecuencia": 10
         }
     ]
-}
 
 export const patientDontAreaAssigned = {
     "pacientes_sin_area": [
@@ -699,3 +697,239 @@ export const lastPatientsIngresed = {
         }
     ]
 }
+
+export const getDataRecordPatient =
+{
+    "expediente": {
+        "_id": "7234567890101",
+        "antecedentes": {
+            "familiaresPatologicos": "Padre con hipertension y diabetes tipo 2, madre con cancer de mama diagnosticado a los 50 anos.",
+            "personalesNoPatologicos": {
+                "alimentacion": "Alimentacion variada, en su mayoria equilibrada, consume poca comida rapida.",
+                "crecimiento": "Crecimiento normal para su edad",
+                "desarrollo": "Comenzo a caminar a los 12 meses",
+                "ginecoObstetricos": {
+                    "abortos": "0 abortos.",
+                    "anticonceptivos": "No usa anticonceptivos, metodos naturales.",
+                    "cesareas": "0 cesareas.",
+                    "ciclosMenstruales": "Ciclos regulares de 28 dias.",
+                    "gestas": "0 gestas.",
+                    "hijosVivos": "0 hijos vivos.",
+                    "menarquia": "Menarquia a los 12 anos.",
+                    "partos": "0 partos.",
+                    "ultimaMenstruacion": "Ultima menstruacion el 10 de diciembre de 2023."
+                },
+                "habitos": "Hace ejercicio 3 veces a la semana, no consume alcohol ni drogas recreativas.",
+                "inmunizaciones": "Vacunas completas segun el calendario infantil.",
+                "natal": "n/a",
+                "neonatalPostnatal": "n/a",
+                "prenatal": "n/a"
+            },
+            "personalesPatologicos": {
+                "alergicos": "Alergico al polen. Requiere antihistaminicos durante la temporada de alergias.",
+                "ginecologicos": "n/a",
+                "medicos": "Diabetes tipo 2 controlada con metformina.",
+                "obstetricos": "n/a",
+                "psychiatricos": "Diagnostico de depresion en 2017, tratada con terapia psicologica y medicacion (antidepresivos).",
+                "quirurgicos": "Cirugia de rodilla en 2016 debido a lesion deportiva.",
+                "toxicomanias": "Fumador durante 10 anos, dejo de fumar hace 2 anos.",
+                "transfusiones": "Recibio transfusion sanguinea despues de una cirugia en 2016.",
+                "traumaticos": "Fractura de pierna derecha en accidente de trafico en 2020. Recibio tratamiento quirurgico y rehabilitacion."
+            },
+            "socioPersonales": "Paciente vive con sus padres, en su tiempo libre disfruta de actividades al aire libre y leer."
+        },
+        "contactoEmergencia": [
+            {
+                "nombre": "Carlos Perez",
+                "relacion": "Hermano",
+                "telefono": "555-8765"
+            },
+            {
+                "nombre": "Ana Lopez",
+                "relacion": "Madre",
+                "telefono": "555-4321"
+            }
+        ],
+        "datosPaciente": {
+            "alfabeto": "Si",
+            "edad": 24,
+            "escolaridad": "Universitaria",
+            "estadoCivil": "Soltero",
+            "fechaNacimiento": "15-01-2000",
+            "grupoEtnico": "Ladino",
+            "grupoSanguineo": "O+",
+            "ocupacion": "Estudiante",
+            "procedencia": "Domicilio",
+            "profesion": "Estudiante",
+            "religion": "Evangelico",
+            "tipoSangre": "O"
+        },
+        "historialIngresos": [
+            {
+                "DesarrolloDeProblemas": {
+                    "Fecha": "15-12-2024",
+                    "Hora": "10:00 AM",
+                    "Número Y Nombre DéCada Problema": {
+                        "1": "Dolor abdominal agudo",
+                        "2": "Lesion musculo-esqueletica"
+                    }
+                },
+                "Diagnostico": "Dolor abdominal agudo, probable distension muscular",
+                "EspecialidadMedica": "Medicina General",
+                "EvolucionDeProblemas": {
+                    "Fecha": "15-12-2024",
+                    "Hora": "10:00 AM",
+                    "NumeroYNombreDeCadaProblema": {
+                        "1": "Dolor abdominal controlado",
+                        "2": "Recuperacion parcial de la lesion"
+                    }
+                },
+                "ExamenFisico": {
+                    "Abdomen": "Dolor a la palpacion en la region epigastrica, sin signos de defensa",
+                    "Boca": "Mucosa bucal sana, sin lesiones",
+                    "Cabeza": "Sin deformidades",
+                    "Cuello": "Sin adenopatias, libre de masas",
+                    "ExamenGinecologico": "No realizado",
+                    "ExamenMental": "Orientado en tiempo, espacio y persona",
+                    "ExamenNeurologico": "Reflejos normales, sin deficit motor o sensitivo",
+                    "ExtremidadesInferiores": "Sin edema, pulsos normales",
+                    "ExtremidadesSuperiores": "Sin edema, pulsos normales",
+                    "Faneras": "Cabello sano, unas sin alteraciones",
+                    "GenitalesExternos": "Normales",
+                    "InspeccionGeneral": "Paciente en buen estado general",
+                    "Linfaticos": "No se palpan adenopatias",
+                    "Mamas": "No se palpan masas",
+                    "Nariz": "No presenta secreciones o congestion",
+                    "Oidos": "Sin secreciones, audicion normal",
+                    "Ojos": {
+                        "AgudezaVisual": {
+                            "ConLentes": {
+                                "AmbosOjos": "20/20",
+                                "OjoDerecho": "20/20",
+                                "OjoIzquierdo": "20/20"
+                            },
+                            "SinLentes": {
+                                "AmbosOjos": "20/25",
+                                "OjoDerecho": "20/25",
+                                "OjoIzquierdo": "20/25"
+                            }
+                        }
+                    },
+                    "Orofaringe": "Normal",
+                    "Piel": "Sin alteraciones, hidratada",
+                    "RegionLumbosacra": "Sin alteraciones",
+                    "RegionPelvica": "Normal",
+                    "SignosVitales": {
+                        "Antropometria": {
+                            "CircunferenciaAbdominal": "80 cm",
+                            "CircunferenciaCefalica": "Normal",
+                            "IndiceMasaCorporal": "23.7",
+                            "Peso": {
+                                "KG": "70",
+                                "Libras": "154"
+                            },
+                            "Talla": "1.72 m"
+                        },
+                        "FrecuenciaCardiaca": "78 latidos por minuto",
+                        "FrecuenciaDePulso": "74 pulsaciones por minuto",
+                        "FrecuenciaRespiratoria": "16 respiraciones por minuto",
+                        "Perifericos": {
+                            "Carotideo": "Normal",
+                            "Femoral": "Normal",
+                            "Radial": "Normal"
+                        },
+                        "PresionArterial": {
+                            "BrazoDerecho": "120/80 mm/Hg",
+                            "BrazoIzquierdo": "118/78 mm/Hg",
+                            "Posicion": "Sentado"
+                        },
+                        "RegionAnatomica": "Abdomen",
+                        "TemperaturaEnC": "36.8"
+                    },
+                    "TactoRectal": "No realizado",
+                    "Torax": {
+                        "Anterior": "Simetrico, sin alteraciones",
+                        "Lateral": "Normal",
+                        "Posterior": "Normal"
+                    }
+                },
+                "FechaDeLaVisita": "2024-11-05",
+                "HistoriaDeLaVisitaActual": "Estaba jugando pelota, cuando le dio un dolor fuerte en la zona abdominal",
+                "ListaInicialDeProblemas": {
+                    "Numero1": "Dolor abdominal agudo",
+                    "Numero2": "Posible lesion musculo-esqueletica",
+                    "Numero3": "Posible dispepsia",
+                    "Numero4": "Ninguno"
+                },
+                "MedicoResponsable": "Dr. Laura Gomez",
+                "MotivoDeLaVisita": "Dolor abdominal",
+                "ObservacionesAdicionales": "Evitar actividades fisicas intensas hasta la proxima consulta, seguir dieta ligera",
+                "ProcedimientosRealizados": "Radiografia de abdomen, examen fisico, analisis de sangre",
+                "ResultadoDeLaVisita": "Dolor controlado con medicacion, sin signos de complicaciones",
+                "RevisionPorOrganosAparatosYSistemas": {
+                    "Boca": "Higiene adecuada, sin lesiones",
+                    "Cabeza": "Sin signos de trauma o alteracion",
+                    "Cardiovascular": "Ritmo regular, sin soplos",
+                    "Cuello": "Sin adenopatias",
+                    "Digestivo": "Dolor abdominal localizado en la region epigastrica",
+                    "Endocrino": "Sin signos de alteracion",
+                    "Faneras": "Cabello sin alteraciones",
+                    "Garganta": "Sin signos de inflamacion",
+                    "Genitourinario": "Sin alteraciones",
+                    "Hematopoyetico": "Sin signos de anemia",
+                    "Linfatico": "Sin adenopatias palpables",
+                    "MusculoEsqueletico": "Dolor en la zona abdominal",
+                    "Nariz": "No presenta secreciones",
+                    "Nervioso": "Sin deficit neurologico",
+                    "Oidos": "Sin signos de infeccion",
+                    "Ojos": "No presenta alteraciones",
+                    "Piel": "Sin alteraciones",
+                    "PsiquiatricoAfecto": "Afecto adecuado",
+                    "Reproductor": "No relevante",
+                    "Respiratorio": "Sin dificultad respiratoria",
+                    "SintomasGenerales": "DolorAbdominal"
+                },
+                "SeguimientoRecomendado": "Consulta de seguimiento en 1 semana",
+                "TipoDeVisita": "Consulta externa",
+                "TratamientoOPrescripcion": "Ibuprofeno 400mg cada 8 horas en caso de dolor, reposo relativo"
+            }
+        ]
+    },
+    "message": "Expediente Obtenido"
+}
+
+
+export const listPatientByDoctor = {
+    "pacientes_asignados": [
+        {
+            "id_paciente": 1,
+            "nombre": "Juan",
+            "apellido": "Pérez",
+            "dpi": "123456789",
+            "genero": "Masculino",
+            "fecha_nacimiento": "1985-06-15",
+            "telefono": "555123456",
+            "direccion": "Calle Ficticia 123",
+            "estado": "Activo",
+            "area": "Cardiología"
+        },
+        {
+            "id_paciente": 2,
+            "nombre": "María",
+            "apellido": "Gómez",
+            "dpi": "987654321",
+            "genero": "Femenino",
+            "fecha_nacimiento": "1990-02-20",
+            "telefono": "555654321",
+            "direccion": "Avenida Real 456",
+            "estado": "Activo",
+            "area": "Pediatría"
+        }
+    ]
+}
+
+
+export const expireCollegiate = {
+	"dias_restantes": 8
+}
+

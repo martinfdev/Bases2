@@ -17,9 +17,12 @@ const AreaForm = ({ onSubmit }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const response = await onSubmit(form)
-        if (response)
+        try {
+            await onSubmit(form)
             clearForm()
+        } catch (error) {
+            console.error('Error al guardar el área:', error)
+        }
     }
 
     const clearForm = () => {

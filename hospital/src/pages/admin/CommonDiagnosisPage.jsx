@@ -16,7 +16,7 @@ const CommonDiagnosisPage = () => {
             setLoading(true)
             try {
                 const data = await getCommonDiagnosis()
-                setCommonDiagnosis(data.diagnosticos)
+                setCommonDiagnosis(data)
             } catch (error) {
                 console.error('Error al obtener lista de diagnosticos comunes:', error)
                 setError(error.message)

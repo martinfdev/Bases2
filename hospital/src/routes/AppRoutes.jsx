@@ -16,13 +16,32 @@ import CommonDiagnosisPage from '../pages/admin/CommonDiagnosisPage'
 import DownloadReportsPage from '../pages/admin/DownloadReportsPage'
 import PatientDontAreaAsign from '../pages/admin/PatientDontAreaAsign'
 import LastIngresedPatientsPage from '../pages/admin/LastIngresedPatientsPage'
+import StaticsPage from '../pages/admin/SaticsPage'
 import DeveloperLayout from '../layouts/DeveloperLayout'  
 import PageDeveloperDashboard from '../pages/dev/DevDashboardPage'
 import NewUserRegisterDevPage from '../pages/dev/NewUserRegisterDevPage'
+import NewSpecialityDevPage from '../pages/dev/NewSpetialityDevPage'
+import ViewSpecialitiesDevPage from '../pages/dev/ViewSpecialitiesDevPage'
+import UserViewDev from '../pages/dev/UserViewDev'
+// import NewAreaDevPage from '../pages/dev/NewAreaDevPage'
+import PatientsViewDevPage from '../pages/dev/PatientsViewDevPage'
+import PatientsDontHaveAreaDev  from '../pages/dev/PatientsDontHaveAreaDev'
+import ViewAreasPageDev from '../pages/dev/ViewAreasPageDev'
+import LastIngresedPatientsDevPage from '../pages/dev/LastIngresedPatientsDevPage'
 import LogVitacore from '../components/dev/LogVitacore'
+import SettingsPage from '../pages/dev/SettingsPage'
 import DoctorLayout from '../layouts/DoctorLayout'
+import DocDashboard from '../pages/doc/DocDashboard'
 import PatientRecordPage from '../pages/PatientRecordPage'
+import PatientsViewDoctorPage from '../pages/doc/PatientsViewDoctorPage'
+import ViewPatientRecorPage from '../pages/doc/ViewPatientRecorPage'
+import PatientEditRecordPage from '../pages/doc/PatientEditRecordPage'
+import ViewAreasDocPage from '../pages/doc/ViewAreasDocPage'
+import ViewDischargePatientPAge from '../pages/doc/ViewDischargePatientPAge'
+import ViewAssignedPatients from '../pages/doc/ViewAssignedPatients'
 import NurseLayout from '../layouts/NurseLayout'
+import PatientsViewNursePage from '../pages/nurse/PatientsViewNursePage'
+import RegisterNotePage from '../pages/nurse/RegisterNotePage'
 import NotFound from '../pages/NotFound'
 import Unauthorized from '../pages/Unauthorized'
 
@@ -52,7 +71,7 @@ const AppRouter = () => {
         <Route path="logs" element={<LogVitacore />} />
         <Route path="reports/generate" element={<DownloadReportsPage />} />
         <Route path="reports/common-diagnosis" element={<CommonDiagnosisPage />} />
-        <Route path="statistics" element={<NotFound />} />
+        <Route path="statistics" element={<StaticsPage />} />
         <Route path="notifications/send" element={<NotFound />} />
         <Route path="notifications/requests" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />
@@ -64,21 +83,31 @@ const AppRouter = () => {
         <Route path="dashboard" element={<PageDeveloperDashboard />} />
         <Route path="logs" element={<LogVitacore />} />
         <Route path="users/create" element={<NewUserRegisterDevPage currentUserRole={4} />} />
+        <Route path="users/list" element={<UserViewDev />} />
+        <Route path="speciality/create" element={<NewSpecialityDevPage />} />
+        <Route path="speciality/view" element={<ViewSpecialitiesDevPage />} />
+        {/* <Route path="areas/create" element={<NewAreaDevPage />} /> */}
+        <Route path="patients/list" element={<PatientsViewDevPage />} />
+        <Route path="patients/dont-have-area" element={<PatientsDontHaveAreaDev />} />
+        <Route path="patients/last-ingresed" element={<LastIngresedPatientsDevPage />} />
+        <Route path="areas/list" element={<ViewAreasPageDev />} />
         <Route path="records/view" element={<NotFound />} />
         <Route path="records/edit" element={<NotFound />} />
-        <Route path="settings" element={<NotFound />} />
+        <Route path="settings" element={< SettingsPage/>} />
         <Route path="*" element={<NotFound />} />
       </Route>
 
       {/* protected routes for doctor users */}
       <Route path='doctor/' element={<PrivateRoute roles={[2]}><DoctorLayout /></PrivateRoute>}>
         <Route index element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard" element={<NotFound />} />
-        <Route path="records/view" element={<NotFound />} />
+        <Route path="dashboard" element={<DocDashboard />} />
+        <Route path="records/view" element={<ViewPatientRecorPage />} />
         <Route path="records/create" element={<PatientRecordPage />} />
-        <Route path="records/edit" element={<NotFound />} />
-        <Route path="areas" element={<NotFound />} />
-        <Route path="areas/assign" element={<NotFound />} />
+        <Route path="records/edit" element={<PatientEditRecordPage />} />
+        <Route path="patients/list" element={<ViewAssignedPatients />} />
+        <Route path="patients/discharge" element={<ViewDischargePatientPAge />} />
+        <Route path="areas/view" element={<ViewAreasDocPage />} />
+        <Route path="areas/assign" element={<PatientsViewDoctorPage />} />
         <Route path="notifications" element={<NotFound />} />
         <Route path="reports/patient" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />
@@ -88,8 +117,12 @@ const AppRouter = () => {
       <Route path='nurse/' element={<PrivateRoute roles={[3]}><NurseLayout /></PrivateRoute>}>
       <Route index element={<Navigate to="dashboard" replace />} />
       <Route path="dashboard" element={<NotFound />} />
-      <Route path="patients/list" element={<NotFound />} />
-      <Route path="patients/notes" element={<NotFound />} />
+      <Route path="records/view" element={<ViewPatientRecorPage />} />
+      <Route path="records/edit" element={<PatientEditRecordPage />} />
+      <Route path="records/create" element={<PatientRecordPage />} />
+      <Route path="patients/assign" element={<NotFound />} />
+      <Route path="patients/list" element={<PatientsViewNursePage />} />
+      <Route path="patients/notes" element={<RegisterNotePage />} />
       <Route path="patients/location" element={<NotFound />} />
       <Route path="notifications" element={<NotFound />} />
       <Route path="*" element={<NotFound />} />

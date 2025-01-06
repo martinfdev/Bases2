@@ -596,7 +596,7 @@ export const getCommonDiagnosis = async () => {
 
 export const getPatientsDontHaveArea = async () => {
     try {
-        // const response = await fetch(`${API_URL}/admin/pacientes_sin_area_asignada`, {
+        // const response = await fetch(`${API_URL}/admin/paciente_sin_area`, {
         //     method: 'GET',
         //     headers: {
         //          'Content-Type': 'application/json', 

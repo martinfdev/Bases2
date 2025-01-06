@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import UserTable from '../../components/admin/UserTable'
-import { getUsers, deleteUser, updateUser, getSpecialties } from '../../services/adminServices'
+import { getUsers, deleteUser, updateUser, getSpecialties } from '../../services/developerService'
 import ViewUserModal from '../../components/user/ViewUserModal'
 import EditUserModal from '../../components/user/EditUserModal'
 import DeleteConfirmationModal from '../../components/user/DeleteConfirmationModal'
 import useAppContext from '../../hooks/useAppContext'
 
-const UsersView = () => {
+const UserViewDev = () => {
   const [users, setUsers] = useState([])
   const [search, setSearch] = useState('')
   const [roleFilter, setRoleFilter] = useState('')
@@ -186,4 +186,4 @@ const UsersView = () => {
   )
 }
 
-export default UsersView
+export default UserViewDev

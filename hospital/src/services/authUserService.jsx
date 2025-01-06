@@ -53,7 +53,6 @@ export async function getUserData() {
         // if (!response.ok) {
         //   throw new Error(data.error || 'Error al obtener datos del usuario.')
         // }
-
         const data = dataUser
         return data
       } catch (error) {

@@ -1,4 +1,4 @@
-import {FaStethoscope, FaBookMedical, FaUserMd, FaEdit, FaHospital, FaUserCheck, FaEnvelope, FaFileMedicalAlt } from 'react-icons/fa'
+import {FaStethoscope, FaBookMedical, FaUserMd, FaEdit, FaHospital, FaUserCheck, FaEnvelope, FaFileMedicalAlt, FaUsers } from 'react-icons/fa'
 import Layout from './Layout'
 
 const DoctorLayout = () => {
@@ -29,14 +29,26 @@ const DoctorLayout = () => {
           icon: <FaEdit />,
         },
         {
+          section: 'Pacientes',
+          label: 'Ver Pacientes Asignados',
+          path: '/doctor/patients/list',
+          icon: <FaUsers />,
+        },
+        {
+          section: 'Pacientes',
+          label: 'Dar de Alta Paciente',
+          path: '/doctor/patients/discharge',
+          icon: <FaUserCheck />,
+        },
+        {
           section: 'Áreas Hospitalarias',
           label: 'Ver Áreas',
-          path: '/doctor/areas',
+          path: '/doctor/areas/view',
           icon: <FaHospital />,
         },
         {
           section: 'Áreas Hospitalarias',
-          label: 'Asignar Pacientes',
+          label: 'Atender Pacientes',
           path: '/doctor/areas/assign',
           icon: <FaUserCheck />,
         },

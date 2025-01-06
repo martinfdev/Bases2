@@ -1,28 +1,23 @@
 import { useState, useEffect } from 'react'
 import PatientTable from '../../components/tables/PatientTable'
-import { getPatientsAssigned, dischargePatient, getReportByPatientPdf } from '../../services/doctorService'
+import {getPatientsAssigned, getReportByPatientPdf } from '../../services/doctorService'
 import Waiting from '../../components/shared/Waiting'
-import useAppContext from '../../hooks/useAppContext'
 
-const ViewDischargePatientPAge = () => {
+const ViewAssignedPatients = () => {
     const [patients, setPatients] = useState([])
     const [search, setSearch] = useState('')
     const [filteredPatients, setFilteredPatients] = useState([])
     const [selectedPatient, setSelectedPatient] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
-    const { addNotification } = useAppContext()
 
     useEffect(() => {
         setLoading(true)
         const fetchPatients = async () => {
             try {
                 const data = await getPatientsAssigned()
-                if(data.pacientes_asignados!==undefined || data.pacientes_asignados!==null){
-                    setPatients(data.pacientes_asignados)
-                }else{
-                setError(data.message)
-                }
+                setPatients(data.paciente)
+                console.log('data:', data)
             } catch (error) {
                 console.error('Error al obtener pacientes:', error)
                 setError(error)
@@ -41,58 +36,18 @@ const ViewDischargePatientPAge = () => {
         }
     }, [search, patients])
 
-
-    const handleDischarge = async (idPatient) => {
+    const handleReport = async (idPatient) => {
         setLoading(true)
         try {
-            const data =await dischargePatient(idPatient)
-            addNotification(
-                {
-                    type: 'success',
-                    message: data.message,
-                }
-            )
-            setSelectedPatient(null)   
+            await getReportByPatientPdf(idPatient)
         } catch (error) {
-            console.error('Error al dar de alta paciente:', error)
+            console.error('Error al obtener reporte:', error)
             setError(error)
-            addNotification(
-                {
-                    type: 'error',
-                    message: error.message,
-                }
-            )
-        } finally {
+        }finally {
             setLoading(false)
         }
     }
 
-    const handleReportPatient = async (idPatient) => {
-        setLoading(true)
-        try {
-            const data =await getReportByPatientPdf(idPatient)
-            addNotification(
-                {
-                    type: 'success',
-                    message: data.message,
-                }
-            )
-            setSelectedPatient(null)
-        } catch (error) {
-            console.error('Error al obtener reporte de paciente:', error)
-            setError(error)
-            addNotification(
-                {
-                    type: 'error',
-                    message: error.message,
-                }
-            )
-        } finally {
-            setLoading(false)
-        }
-    }
-
-            
     const actions = [
         (patient) => (
             <button
@@ -110,15 +65,14 @@ const ViewDischargePatientPAge = () => {
         (patient) => (
             <button
                 className="flex items-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-                onClick={() => {
-                    handleReportPatient(patient.id_paciente)
-                }}
+                onClick={() => handleReport(patient.id)}
             >
-               <svg className="w-8 h-8 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v8m0 0l-3-3m3 3l3-3M9 21h6M4 3h16M4 7h16"/></svg>
+                <svg className="w-8 h-8 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 9a6 6 0 00-6 6"/></svg>
                 Reporte
             </button>
-        ),
+        )
     ]
 
     if (loading) return <Waiting />
@@ -139,13 +93,6 @@ const ViewDischargePatientPAge = () => {
                     onClick={() => setSelectedPatient(null)}
                   >
                     Cancelar
-                  </button>
-                  <button
-                    className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition"
-                    onClick={() => handleDischarge(selectedPatient.id_paciente)
-                    }
-                  >
-                    Aceptar
                   </button>
                 </div>
               </div>
@@ -169,4 +116,4 @@ const ViewDischargePatientPAge = () => {
     )
 }
 
-export default ViewDischargePatientPAge
+export default ViewAssignedPatients

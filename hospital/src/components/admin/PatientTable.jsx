@@ -1,6 +1,6 @@
 import PropsTypes from 'prop-types'
 
-const PatientTable = ({ patients, onDelete, onEdit, onView, buttonStatus }) => {
+const PatientTable = ({ patients, onDelete, onEdit, onView, btnStatusEdit, btnStatusDelete, btnStatusView }) => {
     const getState = (state) => {
         return state === "1" ? "Activo" : "Inactivo"
     }
@@ -44,8 +44,8 @@ const PatientTable = ({ patients, onDelete, onEdit, onView, buttonStatus }) => {
                             <td className="py-3 px-4 flex space-x-2">
                                 <button
                                     onClick={() => onView(patient)}
-                                    disabled={buttonStatus}
-                                    className={buttonStatus?"flex items-center bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition cursor-not-allowed "
+                                    disabled={btnStatusView}
+                                    className={btnStatusView?"flex items-center bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition cursor-not-allowed "
                                         :"flex items-center bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
                                     }
                                 >
@@ -57,8 +57,8 @@ const PatientTable = ({ patients, onDelete, onEdit, onView, buttonStatus }) => {
                                 </button>
                                 <button
                                     onClick={() => onEdit(patient)}
-                                    disabled={buttonStatus}
-                                    className= {buttonStatus?"flex items-center bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition cursor-not-allowed "
+                                    disabled={btnStatusEdit}
+                                    className= {btnStatusEdit?"flex items-center bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition cursor-not-allowed "
                                         :"flex items-center bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"}  
                                 >
                                     <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,8 +68,8 @@ const PatientTable = ({ patients, onDelete, onEdit, onView, buttonStatus }) => {
                                 </button>
                                 <button
                                     onClick={() => onDelete(patient)}
-                                    disabled={buttonStatus}
-                                    className={buttonStatus? "flex items-center bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition cursor-not-allowed "
+                                    disabled={btnStatusDelete}
+                                    className={btnStatusDelete? "flex items-center bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition cursor-not-allowed "
                                         :"flex items-center bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
                                     }
                                 >
@@ -92,7 +92,9 @@ PatientTable.propTypes = {
     onDelete: PropsTypes.func.isRequired,
     onEdit: PropsTypes.func.isRequired,
     onView: PropsTypes.func.isRequired,
-    buttonStatus: PropsTypes.bool.isRequired
+    btnStatusDelete: PropsTypes.bool.isRequired,
+    btnStatusEdit: PropsTypes.bool.isRequired,
+    btnStatusView: PropsTypes.bool.isRequired,
 }
 
 export default PatientTable

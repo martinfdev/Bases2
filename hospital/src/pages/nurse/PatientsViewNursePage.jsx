@@ -1,14 +1,14 @@
 
 import { useState, useEffect } from 'react';
 import PatientTable from '../../components/admin/PatientTable'
-import { getPatients, deletePatient, updatePatient, getAreas } from '../../services/adminServices'
+import { assignedPatients, updatePatient, getAreas } from '../../services/nurseServices'
 import useAppContext from '../../hooks/useAppContext'
 import PatientDeleteModal from '../../components/mod/PatientDeleteModal'
 import PatientEditModal from '../../components/mod/PatientEditModal'
 import PatientViewModal from '../../components/mod/PatientViewModal'
 import Waiting from '../../components/shared/Waiting'
 
-const PatientViewPage = () => {
+const PatientsViewNursePage = () => {
     const [patients, setPatients] = useState([])
     const [areas, setAreas] = useState([])
     const [search, setSearch] = useState('')
@@ -25,8 +25,8 @@ const PatientViewPage = () => {
         const fetchPatients = async () => {
             setLoading(true)
             try {
-                const data = await getPatients()
-                setPatients(data.paciente)
+                const data = await assignedPatients()
+                setPatients(data.pacientes_asignados)
             } catch (error) {
                 console.error('Error al obtener datos de pacientes:', error)
                 setError(error.message)
@@ -74,26 +74,26 @@ const PatientViewPage = () => {
     }
 
 
-    const handleConfirmDelete = async (patient) => {
-        try {
-            const remainingPatients = patients.filter(p => p.dpi !== patient.dpi)
-            setPatients(remainingPatients)
-            setFilteredPatients(remainingPatients)
-            setIsDeleteOpen(false)
+    // const handleConfirmDelete = async (patient) => {
+    //     try {
+    //         const remainingPatients = patients.filter(p => p.dpi !== patient.dpi)
+    //         setPatients(remainingPatients)
+    //         setFilteredPatients(remainingPatients)
+    //         setIsDeleteOpen(false)
 
-            await deletePatient(patient.dpi)
-            addNotification({
-                type: 'success',
-                message: 'Paciente eliminado correctamente',
-            })
-        } catch (error) {
-            addNotification({
-                type: 'error',
-                message: 'Error al eliminar paciente',
-            })
-            console.error('Error al eliminar paciente:', error)
-        }
-    }
+    //         await deletePatient(patient.dpi)
+    //         addNotification({
+    //             type: 'success',
+    //             message: 'Paciente eliminado correctamente',
+    //         })
+    //     } catch (error) {
+    //         addNotification({
+    //             type: 'error',
+    //             message: 'Error al eliminar paciente',
+    //         })
+    //         console.error('Error al eliminar paciente:', error)
+    //     }
+    // }
 
     const handleUpdate = async (patient) => {
         try {
@@ -138,16 +138,16 @@ const PatientViewPage = () => {
                             onDelete={handleDelete}
                             onEdit={handleEdit}
                             onView={handleView}
-                            btnStatusDelete={false}
-                            btnStatusEdit={false}
                             btnStatusView={false}
+                            btnStatusEdit={false}
+                            btnStatusDelete={true}
                         />
                     </div>
                     <div className="flex justify-center">
                         <PatientDeleteModal
                             isOpen={isDeleteOpen}
                             onClose={() => setIsDeleteOpen(false)}
-                            onConfirm={handleConfirmDelete}
+                            onConfirm={() =>{}}
                             patient={selectedPatient}
                         />
                     </div>
@@ -174,4 +174,4 @@ const PatientViewPage = () => {
     )
 }
 
-export default PatientViewPage
+export default PatientsViewNursePage

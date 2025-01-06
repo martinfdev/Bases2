@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 
 const AreaTable = ({ areas, onEdit, onDelete, onView }) => {
     return (
-        <div className="max-w-full mx-auto p-6 bg-white shadow-lg rounded-lg">
+        <div className="w-full  mx-auto p-6 bg-white shadow-lg rounded-lg">
             <table className="min-w-full bg-white rounded-lg overflow-hidden shadow">
                 <thead className='bg-gray-900 text-gray-100'>
                     <tr>
